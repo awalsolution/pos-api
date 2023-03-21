@@ -1,0 +1,179 @@
+{
+  "paths":
+    {
+      "/v1/permissions":
+        {
+          "post":
+            {
+              "summary": "Add a new permission",
+              "tags": ["permissions"],
+              "requestBody":
+                { "$ref": "#/components/requestBodies/permissionBody" },
+              "responses":
+                {
+                  "200": { "description": "OK" },
+                  "400": { "description": "Bad request." },
+                  "401":
+                    {
+                      "description": "Authorization information is missing or invalid.",
+                    },
+                },
+            },
+          "get":
+            {
+              "summary": "Get total permissions",
+              "tags": ["permissions"],
+              "parameters":
+                [
+                  {
+                    "in": "query",
+                    "name": "offset",
+                    "schema": { "type": "integer", "minimum": 0, "default": 0 },
+                    "required": false,
+                    "description": "The number of items to skip before starting to collect the result set.",
+                  },
+                  {
+                    "in": "query",
+                    "name": "limit",
+                    "schema":
+                      {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 100,
+                        "default": 20,
+                      },
+                    "required": false,
+                    "description": "The number of items to return.",
+                  },
+                ],
+              "responses":
+                {
+                  "200": { "description": "OK" },
+                  "400": { "description": "Bad request." },
+                  "401":
+                    {
+                      "description": "Authorization information is missing or invalid.",
+                    },
+                },
+            },
+        },
+      "/v1/permissions/{permissionId}":
+        {
+          "get":
+            {
+              "summary": "Get a permission by ID",
+              "tags": ["permissions"],
+              "parameters":
+                [
+                  {
+                    "in": "path",
+                    "name": "permissionId",
+                    "schema": { "type": "integer" },
+                    "required": true,
+                    "description": "Numeric ID of the permission to get",
+                  },
+                ],
+              "responses":
+                {
+                  "200": { "description": "OK" },
+                  "400": { "description": "Bad request." },
+                  "401":
+                    {
+                      "description": "Authorization information is missing or invalid.",
+                    },
+                },
+            },
+          "patch":
+            {
+              "summary": "Update a permission",
+              "tags": ["permissions"],
+              "parameters":
+                [
+                  {
+                    "in": "path",
+                    "name": "permissionId",
+                    "schema": { "type": "integer" },
+                    "required": true,
+                    "description": "Numeric ID of the permission to get",
+                  },
+                ],
+              "requestBody":
+                { "$ref": "#/components/requestBodies/permissionBody" },
+              "responses":
+                {
+                  "200": { "description": "OK" },
+                  "400": { "description": "Bad request." },
+                  "401":
+                    {
+                      "description": "Authorization information is missing or invalid.",
+                    },
+                },
+            },
+          "delete":
+            {
+              "summary": "Delete a permission",
+              "tags": ["permissions"],
+              "parameters":
+                [
+                  {
+                    "in": "path",
+                    "name": "permissionId",
+                    "schema": { "type": "integer" },
+                    "required": true,
+                    "description": "Numeric ID of the permission to get",
+                  },
+                ],
+              "requestBody":
+                { "$ref": "#/components/requestBodies/permissionBody" },
+              "responses":
+                {
+                  "200": { "description": "OK" },
+                  "400": { "description": "Bad request." },
+                  "401":
+                    {
+                      "description": "Authorization information is missing or invalid.",
+                    },
+                },
+            },
+        },
+    },
+  "components":
+    {
+      "requestBodies":
+        {
+          "permissionBody":
+            {
+              "description": "A JSON object containing permission information",
+              "required": true,
+              "content":
+                {
+                  "application/json":
+                    { "schema": { "$ref": "#/components/schemas/permission" } },
+                },
+            },
+        },
+      "schemas":
+        {
+          "permission":
+            {
+              "title": "Permission Schemas Information",
+              "type": "object",
+              "properties":
+                {
+                  "name":
+                    {
+                      "type": "string",
+                      "example": "view menu",
+                      "description": "add permission name",
+                    },
+                  "description":
+                    {
+                      "type": "string",
+                      "example": "this is simple permission",
+                      "description": "add permission description",
+                    },
+                },
+            },
+        },
+    },
+}
