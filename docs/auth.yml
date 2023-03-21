@@ -1,0 +1,134 @@
+{
+  "paths":
+    {
+      "/v1/auth/login":
+        {
+          "post":
+            {
+              "summary": "login user",
+              "tags": ["auth"],
+              "requestBody": { "$ref": "#/components/requestBodies/loginBody" },
+              "responses":
+                {
+                  "200": { "description": "OK" },
+                  "400": { "description": "Bad request." },
+                  "401":
+                    {
+                      "description": "Authorization information is missing or invalid.",
+                    },
+                },
+            },
+        },
+      "/v1/auth/register":
+        {
+          "post":
+            {
+              "summary": "Register user",
+              "tags": ["auth"],
+              "requestBody":
+                { "$ref": "#/components/requestBodies/registerBody" },
+              "responses":
+                {
+                  "200": { "description": "OK" },
+                  "400": { "description": "Bad request." },
+                  "401":
+                    {
+                      "description": "Authorization information is missing or invalid.",
+                    },
+                },
+            },
+        },
+    },
+  "components":
+    {
+      "requestBodies":
+        {
+          "loginBody":
+            {
+              "description": "A JSON object containing Login information",
+              "required": true,
+              "content":
+                {
+                  "application/json":
+                    { "schema": { "$ref": "#/components/schemas/login" } },
+                },
+            },
+          "registerBody":
+            {
+              "description": "A JSON object containing Register information",
+              "required": true,
+              "content":
+                {
+                  "application/json":
+                    { "schema": { "$ref": "#/components/schemas/register" } },
+                },
+            },
+        },
+      "schemas":
+        {
+          "login":
+            {
+              "title": "Login Schemas Information",
+              "type": "object",
+              "properties":
+                {
+                  "email":
+                    {
+                      "type": "string",
+                      "example": "iqbal@gmail.com",
+                      "required": "true",
+                      "description": "email",
+                    },
+                  "password":
+                    {
+                      "type": "string",
+                      "example": "newPassword@12345",
+                      "required": "true",
+                      "description": "password",
+                    },
+                },
+            },
+          "register":
+            {
+              "title": "Register Schemas Information",
+              "type": "object",
+              "properties":
+                {
+                  "firstName":
+                    {
+                      "type": "string",
+                      "example": "Iqbal",
+                      "description": "First Name",
+                    },
+                  "lastName":
+                    {
+                      "type": "string",
+                      "example": "Hassan",
+                      "description": "Last Name",
+                    },
+                  "email":
+                    {
+                      "type": "string",
+                      "example": "iqbal@gmail.com",
+                      "required": "true",
+                      "description": "email",
+                    },
+                  "newPassword":
+                    {
+                      "type": "string",
+                      "example": "newPassword@12345",
+                      "required": "true",
+                      "description": "newPassword",
+                    },
+                  "confirmNewPassword":
+                    {
+                      "type": "string",
+                      "example": "newPassword@12345",
+                      "required": "true",
+                      "description": "confirmNewPassword",
+                    },
+                },
+            },
+        },
+    },
+}
