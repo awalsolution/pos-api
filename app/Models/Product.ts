@@ -6,10 +6,31 @@ export default class Product extends BaseModel {
   public id: number;
 
   @column()
-  public name: string;
+  public product_sku: string;
+
+  @column()
+  public title: string;
+
+  @column()
+  public slug: string;
 
   @column()
   public description: string;
+
+  @column()
+  public short_description: string;
+
+  @column()
+  public product_images: string;
+
+  @column()
+  public price: number;
+
+  @column()
+  public sale_price: number;
+
+  @column()
+  public is_active: boolean;
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime;
