@@ -1,0 +1,176 @@
+{
+  "paths":
+    {
+      "/v1/roles":
+        {
+          "post":
+            {
+              "summary": "Add a new role",
+              "tags": ["roles"],
+              "requestBody": { "$ref": "#/components/requestBodies/roleBody" },
+              "responses":
+                {
+                  "200": { "description": "OK" },
+                  "400": { "description": "Bad request." },
+                  "401":
+                    {
+                      "description": "Authorization information is missing or invalid.",
+                    },
+                },
+            },
+          "get":
+            {
+              "summary": "Get total roles",
+              "tags": ["roles"],
+              "parameters":
+                [
+                  {
+                    "in": "query",
+                    "name": "offset",
+                    "schema": { "type": "integer", "minimum": 0, "default": 0 },
+                    "required": false,
+                    "description": "The number of items to skip before starting to collect the result set.",
+                  },
+                  {
+                    "in": "query",
+                    "name": "limit",
+                    "schema":
+                      {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 100,
+                        "default": 20,
+                      },
+                    "required": false,
+                    "description": "The number of items to return.",
+                  },
+                ],
+              "responses":
+                {
+                  "200": { "description": "OK" },
+                  "400": { "description": "Bad request." },
+                  "401":
+                    {
+                      "description": "Authorization information is missing or invalid.",
+                    },
+                },
+            },
+        },
+      "/v1/roles/{roleId}":
+        {
+          "get":
+            {
+              "summary": "Get a role by ID",
+              "tags": ["roles"],
+              "parameters":
+                [
+                  {
+                    "in": "path",
+                    "name": "roleId",
+                    "schema": { "type": "integer" },
+                    "required": true,
+                    "description": "Numeric ID of the role to get",
+                  },
+                ],
+              "responses":
+                {
+                  "200": { "description": "OK" },
+                  "400": { "description": "Bad request." },
+                  "401":
+                    {
+                      "description": "Authorization information is missing or invalid.",
+                    },
+                },
+            },
+          "patch":
+            {
+              "summary": "Update a role",
+              "tags": ["roles"],
+              "parameters":
+                [
+                  {
+                    "in": "path",
+                    "name": "roleId",
+                    "schema": { "type": "integer" },
+                    "required": true,
+                    "description": "Numeric ID of the role to get",
+                  },
+                ],
+              "requestBody": { "$ref": "#/components/requestBodies/roleBody" },
+              "responses":
+                {
+                  "200": { "description": "OK" },
+                  "400": { "description": "Bad request." },
+                  "401":
+                    {
+                      "description": "Authorization information is missing or invalid.",
+                    },
+                },
+            },
+          "delete":
+            {
+              "summary": "Delete a role",
+              "tags": ["roles"],
+              "parameters":
+                [
+                  {
+                    "in": "path",
+                    "name": "roleId",
+                    "schema": { "type": "integer" },
+                    "required": true,
+                    "description": "Numeric ID of the role to get",
+                  },
+                ],
+              "requestBody": { "$ref": "#/components/requestBodies/roleBody" },
+              "responses":
+                {
+                  "200": { "description": "OK" },
+                  "400": { "description": "Bad request." },
+                  "401":
+                    {
+                      "description": "Authorization information is missing or invalid.",
+                    },
+                },
+            },
+        },
+    },
+  "components":
+    {
+      "requestBodies":
+        {
+          "roleBody":
+            {
+              "description": "A JSON object containing role information",
+              "required": true,
+              "content":
+                {
+                  "application/json":
+                    { "schema": { "$ref": "#/components/schemas/role" } },
+                },
+            },
+        },
+      "schemas":
+        {
+          "role":
+            {
+              "title": "Role Schemas Information",
+              "type": "object",
+              "properties":
+                {
+                  "name":
+                    {
+                      "type": "string",
+                      "example": "admin",
+                      "description": "add Role name",
+                    },
+                  "description":
+                    {
+                      "type": "string",
+                      "example": "this is super admin rule",
+                      "description": "add Role description",
+                    },
+                },
+            },
+        },
+    },
+}

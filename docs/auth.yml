@@ -82,7 +82,7 @@
                   "password":
                     {
                       "type": "string",
-                      "example": "newPassword@12345",
+                      "example": "123456",
                       "required": "true",
                       "description": "password",
                     },
@@ -113,19 +113,19 @@
                       "required": "true",
                       "description": "email",
                     },
-                  "newPassword":
+                  "password":
                     {
                       "type": "string",
-                      "example": "newPassword@12345",
+                      "example": "123456",
                       "required": "true",
-                      "description": "newPassword",
+                      "description": "password",
                     },
-                  "confirmNewPassword":
+                  "confirmPassword":
                     {
                       "type": "string",
-                      "example": "newPassword@12345",
+                      "example": "123456",
                       "required": "true",
-                      "description": "confirmNewPassword",
+                      "description": "confirmPassword",
                     },
                 },
             },
