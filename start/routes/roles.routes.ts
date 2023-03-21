@@ -1,9 +1,9 @@
 import Route from "@ioc:Adonis/Core/Route";
 
 Route.group(() => {
-  Route.post("/users", "UsersController.create");
-  Route.get("/users", "UsersController.index");
-  Route.get("/users/:userId", "UsersController.show");
-  Route.patch("/users/:userId", "UsersController.update");
-  Route.delete("/users/:userId", "UsersController.delete");
+  Route.post("/roles", "RolesController.create");
+  Route.get("/roles", "RolesController.index");
+  Route.get("/roles/:userId", "RolesController.show");
+  Route.patch("/roles/:userId", "RolesController.update");
+  Route.delete("/roles/:userId", "RolesController.delete");
 }).prefix("/v1");
