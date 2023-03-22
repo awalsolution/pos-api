@@ -9,14 +9,12 @@ export default class extends BaseSchema {
       table
         .integer("user_id")
         .unsigned()
-        .unique()
         .notNullable()
-        .references("id")
-        .inTable("users")
+        .references("users.id")
         .onDelete("CASCADE");
       table.string("first_name").nullable();
       table.string("last_name").nullable();
-      table.string("phone").nullable();
+      table.string("phone_number").nullable();
       table.string("address").nullable();
       table.string("city").nullable();
       table.string("zip").nullable();

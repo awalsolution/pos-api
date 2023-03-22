@@ -4,8 +4,11 @@ import {
   beforeSave,
   BaseModel,
   beforeCreate,
+  hasOne,
+  HasOne,
 } from "@ioc:Adonis/Lucid/Orm";
 import UserHook from "./hooks/UserHook";
+import UserProfile from "App/Models/UserProfile";
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
@@ -65,4 +68,6 @@ export default class User extends BaseModel {
   public static hashPassword(user: User) {
     UserHook.hashPassword(user);
   }
+  @hasOne(() => UserProfile)
+  public user_profile_relation: HasOne<typeof UserProfile>;
 }

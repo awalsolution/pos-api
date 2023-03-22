@@ -4,9 +4,11 @@ import Logger from "@ioc:Adonis/Core/Logger";
 import Role from "App/Models/Role";
 import User from "App/Models/User";
 import RegistorValidator from "App/Validators/RegistorValidator";
+// import UserProfile from "App/Models/UserProfile";
 
 export default class AuthController {
   public async register({ request, response }: HttpContextContract) {
+    console.log(User);
     const form = await request.validate(RegistorValidator);
     const {
       email,
@@ -38,9 +40,8 @@ export default class AuthController {
       account_activated_at: DateTime.now(),
       roleId: role?.id ? role.id : "user",
     });
-
     if (user) {
-      await user.related("profile").create({
+      await user.related("user_profile_relation").create({
         first_name,
         last_name,
         phone_number,
