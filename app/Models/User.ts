@@ -8,8 +8,8 @@ import {
   beforeCreate,
   hasOne,
   HasOne,
-  HasMany,
-  hasMany,
+  ManyToMany,
+  manyToMany,
 } from "@ioc:Adonis/Lucid/Orm";
 import Role from "App/Models/Role";
 import UserProfile from "App/Models/UserProfile";
@@ -97,8 +97,14 @@ export default class User extends BaseModel {
     }
   }
 
-  @hasMany(() => Role)
-  public roles_relation: HasMany<typeof Role>;
+  // @hasMany(() => Role)
+  // public roles_relation: HasMany<typeof Role>;
+
+  @manyToMany(() => Role, {
+    pivotTable: "user_has_roles",
+    pivotTimestamps: true,
+  })
+  public roles: ManyToMany<typeof Role>;
 
   @hasOne(() => UserProfile)
   public user_profile_relation: HasOne<typeof UserProfile>;

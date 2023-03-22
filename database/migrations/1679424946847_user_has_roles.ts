@@ -19,7 +19,7 @@ export default class extends BaseSchema {
         .onDelete("CASCADE")
         .onUpdate("CASCADE");
 
-      table.unique(["role_id", "user_id"]);
+      table.unique(["user_id", "role_id"]);
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */
