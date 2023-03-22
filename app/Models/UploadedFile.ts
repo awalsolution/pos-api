@@ -84,7 +84,7 @@ export default class UploadedFile extends BaseModel {
     foreignKey: "profile_picture",
     onQuery: (query) => query.where("usage_type", "user_profile_picture"),
   })
-  public userProfilePictures: HasMany<typeof UserProfile>;
+  public user_profile_picture_relation: HasMany<typeof UserProfile>;
 
   @beforeSave()
   public static async stringifyFormats(file: UploadedFile) {

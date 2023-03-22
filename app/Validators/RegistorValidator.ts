@@ -3,9 +3,9 @@ import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 
 export default class RegistorValidator {
   constructor(protected ctx: HttpContextContract) {}
-  public refs = schema.refs({
-    confirmPassword: this.ctx.request.body().password,
-  });
+  // public refs = schema.refs({
+  //   confirmPassword: this.ctx.request.body().confirmPassword,
+  // });
   public schema = schema.create({
     email: schema.string({ escape: true, trim: true }, [
       rules.email(),
@@ -17,28 +17,32 @@ export default class RegistorValidator {
     first_name: schema.string({ escape: true, trim: true }, [
       rules.maxLength(30),
     ]),
-    last_name: schema.string.optional({ escape: true, trim: true }, [
+    last_name: schema.string.nullableAndOptional({ escape: true, trim: true }, [
       rules.maxLength(30),
     ]),
-    password: schema.string({ escape: true, trim: true }, [rules.minLength(6)]),
-    confirmPassword: schema.string({ escape: true, trim: true }, [
-      rules.equalTo(this.refs.confirmPassword),
+    password: schema.string({ escape: true, trim: true }, [
+      rules.minLength(6),
+      rules.confirmed("confirmPassword"),
     ]),
-    phone_number: schema.string.optional({ escape: true, trim: true }, [
-      rules.mobile(),
-    ]),
-    address: schema.string.optional(),
-    city: schema.string.optional(),
-    state: schema.string.optional(),
-    country: schema.string.optional(),
+    // confirmPassword: schema.string({ escape: true, trim: true }, [
+    //   rules.equalTo(this.refs.confirmPassword),
+    // ]),
+    phone_number: schema.string.nullableAndOptional(
+      { escape: true, trim: true },
+      [rules.mobile()]
+    ),
+    address: schema.string.nullableAndOptional(),
+    city: schema.string.nullableAndOptional(),
+    state: schema.string.nullableAndOptional(),
+    country: schema.string.nullableAndOptional(),
   });
 
   public messages: CustomMessages = {
     "email.required": "Email is required.",
     "email.email": "Email is not valid.",
     "email.unique": "This email is already used.",
-    "firstName.required": "First Name is required.",
-    "firstName.maxLength":
+    "first_name.required": "First Name is required.",
+    "first_name.maxLength":
       "First Name should be maximum of {{options.choices}} characters.",
     "password.required": "Password is required.",
     "password.regex": "Please provide a greater then 6 characters password.",

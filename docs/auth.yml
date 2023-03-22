@@ -94,13 +94,13 @@
               "type": "object",
               "properties":
                 {
-                  "firstName":
+                  "first_name":
                     {
                       "type": "string",
                       "example": "Iqbal",
                       "description": "First Name",
                     },
-                  "lastName":
+                  "last_name":
                     {
                       "type": "string",
                       "example": "Hassan",

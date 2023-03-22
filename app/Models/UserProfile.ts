@@ -17,10 +17,10 @@ export default class UserProfile extends BaseModel {
   public userId: number;
 
   @column()
-  public first_name: string;
+  public first_name: string | null;
 
   @column()
-  public last_name: string;
+  public last_name: string | null;
 
   @column()
   public phone_number: string | null;
@@ -60,5 +60,5 @@ export default class UserProfile extends BaseModel {
   public user: BelongsTo<typeof User>;
 
   @belongsTo(() => UploadedFile, { foreignKey: "profile_picture" })
-  public profilePictureFile: BelongsTo<typeof UploadedFile>;
+  public profile_picture_file: BelongsTo<typeof UploadedFile>;
 }

@@ -9,6 +9,7 @@ import {
 } from "@ioc:Adonis/Lucid/Orm";
 import UserHook from "./hooks/UserHook";
 import UserProfile from "App/Models/UserProfile";
+const STANDARD_DATE_TIME_FORMAT = "yyyy-LL-dd HH:mm:ss";
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
@@ -27,36 +28,51 @@ export default class User extends BaseModel {
   public is_account_activated: boolean;
 
   @column()
+  public remember_token: string | null;
+
+  @column()
   public banned: boolean;
-
-  @column()
-  public login_status: boolean;
-
-  @column()
-  public is_email_verified: boolean;
-
-  @column()
-  public forgot_password_code: number;
-
-  @column()
-  public rememberMeToken: string | null;
 
   @column()
   public activation_code: string | null;
 
   @column()
-  public last_login_time: DateTime | null;
+  public login_status: boolean;
 
   @column()
+  public forgot_password_code: number | null;
+
+  @column()
+  public is_email_verified: boolean;
+
+  @column()
+  public last_login_time: DateTime | null;
+
+  @column.dateTime({
+    serialize(value: DateTime) {
+      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : "";
+    },
+  })
   public account_activated_at: DateTime | null;
 
   @column()
   public email_verified_at: DateTime | null;
 
-  @column.dateTime({ autoCreate: true })
+  @column.dateTime({
+    autoCreate: true,
+    serialize(value: DateTime) {
+      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : "";
+    },
+  })
   public createdAt: DateTime;
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  @column.dateTime({
+    autoCreate: true,
+    autoUpdate: true,
+    serialize(value: DateTime) {
+      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : "";
+    },
+  })
   public updatedAt: DateTime;
 
   @beforeCreate()

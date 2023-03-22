@@ -4,7 +4,6 @@ import Logger from "@ioc:Adonis/Core/Logger";
 import Role from "App/Models/Role";
 import User from "App/Models/User";
 import RegistorValidator from "App/Validators/RegistorValidator";
-// import UserProfile from "App/Models/UserProfile";
 
 export default class AuthController {
   public async register({ request, response }: HttpContextContract) {
