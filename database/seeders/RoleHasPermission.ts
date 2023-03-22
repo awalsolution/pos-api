@@ -1,16 +1,16 @@
 import BaseSeeder from "@ioc:Adonis/Lucid/Seeder";
-import { rolesPermissions } from "Database/data/roles_permissions";
+import { roleHasPermission } from "Database/data/roleHasPermission";
 import Role from "App/Models/Role";
 import Permission from "App/Models/Permission";
 
 export default class PermissionRoleSeeder extends BaseSeeder {
   public async run() {
     try {
-      for (const i in rolesPermissions) {
-        const foundRole = await Role.findBy("name", rolesPermissions[i].role);
+      for (const i in roleHasPermission) {
+        const foundRole = await Role.findBy("name", roleHasPermission[i].role);
         if (foundRole) {
           let permissions: number[] = [];
-          const perms = rolesPermissions[i].permissions;
+          const perms = roleHasPermission[i].permissions;
           for (const j in perms) {
             try {
               const foundPermission = await Permission.findBy("name", perms[j]);

@@ -1,4 +1,4 @@
-export const rolesPermissions = [
+export const roleHasPermission = [
   {
     role: "owner",
     permissions: [
