@@ -96,8 +96,9 @@ export default class User extends BaseModel {
       user.password = await Hash.make(user.password);
     }
   }
-  // @hasMany(() => Role)
-  // public user_roles_relation: HasMany<typeof Role>;
+
+  @hasMany(() => Role)
+  public user_roles_relation: HasMany<typeof Role>;
 
   @hasOne(() => UserProfile)
   public user_profile_relation: HasOne<typeof UserProfile>;
