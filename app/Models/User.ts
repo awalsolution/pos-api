@@ -8,16 +8,16 @@ import {
   beforeCreate,
   hasOne,
   HasOne,
+  HasMany,
+  hasMany,
 } from "@ioc:Adonis/Lucid/Orm";
+import Role from "App/Models/Role";
 import UserProfile from "App/Models/UserProfile";
 import { STANDARD_DATE_TIME_FORMAT } from "App/Helpers/utils";
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
   public id: number;
-
-  @column()
-  public roleId: number;
 
   @column()
   public email: string;
@@ -96,6 +96,8 @@ export default class User extends BaseModel {
       user.password = await Hash.make(user.password);
     }
   }
+  // @hasMany(() => Role)
+  // public user_roles_relation: HasMany<typeof Role>;
 
   @hasOne(() => UserProfile)
   public user_profile_relation: HasOne<typeof UserProfile>;
