@@ -98,7 +98,7 @@ export default class User extends BaseModel {
   }
 
   @hasMany(() => Role)
-  public user_roles_relation: HasMany<typeof Role>;
+  public roles_relation: HasMany<typeof Role>;
 
   @hasOne(() => UserProfile)
   public user_profile_relation: HasOne<typeof UserProfile>;

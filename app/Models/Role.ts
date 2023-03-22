@@ -4,8 +4,8 @@ import {
   BaseModel,
   manyToMany,
   ManyToMany,
-  hasMany,
-  HasMany,
+  belongsTo,
+  BelongsTo,
 } from "@ioc:Adonis/Lucid/Orm";
 import User from "App/Models/User";
 import Permission from "App/Models/Permission";
@@ -26,9 +26,9 @@ export default class Role extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime;
 
-  @hasMany(() => User)
-  public users_relation: HasMany<typeof User>;
+  @belongsTo(() => User)
+  public user: BelongsTo<typeof User>;
 
-  @manyToMany(() => Permission)
+  @manyToMany(() => Permission, { pivotTable: "role_has_permission" })
   public permissions: ManyToMany<typeof Permission>;
 }
