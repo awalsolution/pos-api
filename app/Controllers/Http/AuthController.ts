@@ -36,10 +36,7 @@ export default class AuthController {
     const user = await User.create({
       email,
       password: password,
-      is_account_activated: true,
-      login_status: false,
-      account_activated_at: DateTime.now(),
-      roleId: role?.id ? role.id : "user",
+      roleId: role?.id ? role.id : null,
     });
     if (user) {
       await user.related("user_profile_relation").create({
@@ -59,11 +56,13 @@ export default class AuthController {
 
       const token = await auth.use("api").attempt(email, password);
       // Check if credentials are valid, else return error
-      if (!token)
+      if (!token) {
         throw new NoLoginException({
           message: "Email address or password is not correct.",
         });
-
+      } else {
+        await User.create({ login_status: true });
+      }
       /* Retrieve user with company information */
       const userService = new UserServices({ email });
       const fetchUser = await userService.getUserModel();
@@ -99,20 +98,14 @@ export default class AuthController {
 
     let user = await userService.getUserModel();
 
-    if (!user) throw new NoLoginException({ message: "Log in not allowed" });
-    else {
-      // Check if user can log in.
-      // Get login status
-      const loginStatus = Boolean(user.login_status);
-      console.log(loginStatus);
-      if (!loginStatus) {
-        throw new NoLoginException({
-          message: "Log in is not permitted for this account!",
-        });
-      }
-
+    if (!user) {
+      throw new NoLoginException({
+        message: "Your account is not register",
+      });
+    } else {
       // Get activation status
       const activationStatus = Boolean(user.is_account_activated);
+      console.log(activationStatus);
       if (!activationStatus) {
         throw new NoLoginException({
           message:

@@ -1,7 +1,7 @@
 import BaseSchema from "@ioc:Adonis/Lucid/Schema";
 
 export default class extends BaseSchema {
-  protected tableName = "user_profiles";
+  protected tableName = "user_has_roles";
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
@@ -9,18 +9,17 @@ export default class extends BaseSchema {
       table
         .integer("user_id")
         .unsigned()
-        .notNullable()
         .references("users.id")
-        .onDelete("CASCADE");
-      table.string("first_name").nullable();
-      table.string("last_name").nullable();
-      table.string("phone_number").nullable();
-      table.string("address").nullable();
-      table.string("city").nullable();
-      table.string("zipcode").nullable();
-      table.string("state").nullable();
-      table.string("country").nullable();
-      table.string("profile_picture").nullable();
+        .onDelete("CASCADE")
+        .onUpdate("CASCADE");
+      table
+        .integer("role_id")
+        .unsigned()
+        .references("roles.id")
+        .onDelete("CASCADE")
+        .onUpdate("CASCADE");
+
+      table.unique(["role_id", "user_id"]);
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */

@@ -13,14 +13,13 @@ export default class extends BaseSchema {
         .references("id")
         .inTable("users")
         .onDelete("CASCADE");
-      table.string("name").notNullable();
-      table.string("url").notNullable();
-      table.string("previewUrl").notNullable();
-      table.string("extension").notNullable();
-      table.string("caption").notNullable();
-      table.string("hash").notNullable();
+      table.string("name").nullable();
+      table.string("url").nullable();
+      table.string("previewUrl").nullable();
+      table.string("extension").nullable();
+      table.string("caption").nullable();
+      table.string("hash").nullable();
       table.json("formats").nullable();
-      table.boolean("public").notNullable().defaultTo(0);
       table.timestamp("deleted_at").nullable();
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
