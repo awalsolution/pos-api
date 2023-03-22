@@ -4,9 +4,10 @@ import Logger from "@ioc:Adonis/Core/Logger";
 import Role from "App/Models/Role";
 import User from "App/Models/User";
 import RegistorValidator from "App/Validators/RegistorValidator";
+import NoLoginException from "App/Exceptions/NoLoginException";
 
 export default class AuthController {
-  public async register({ request, response }: HttpContextContract) {
+  public async register({ request, response, auth }: HttpContextContract) {
     console.log(User);
     const form = await request.validate(RegistorValidator);
     const {
@@ -55,12 +56,12 @@ export default class AuthController {
       //   user,
       // });
 
-      // const token = await auth.use("api").attempt(email, password);
+      const token = await auth.use("api").attempt(email, password);
       // Check if credentials are valid, else return error
-      // if (!token)
-      //   throw new NoLoginException({
-      //     message: "Email address or password is not correct.",
-      //   });
+      if (!token)
+        throw new NoLoginException({
+          message: "Email address or password is not correct.",
+        });
 
       /* Retrieve user with company information */
       // const userService = new UserServices({ email });
@@ -79,7 +80,7 @@ export default class AuthController {
 
       return response.created({
         message: "Account was created successfully.",
-        // token: token,
+        token: token,
         data: user,
       });
     } else {

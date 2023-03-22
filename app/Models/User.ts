@@ -1,4 +1,6 @@
 import { DateTime } from "luxon";
+import crypto from "crypto";
+import Hash from "@ioc:Adonis/Core/Hash";
 import {
   column,
   beforeSave,
@@ -7,9 +9,8 @@ import {
   hasOne,
   HasOne,
 } from "@ioc:Adonis/Lucid/Orm";
-import UserHook from "./hooks/UserHook";
 import UserProfile from "App/Models/UserProfile";
-const STANDARD_DATE_TIME_FORMAT = "yyyy-LL-dd HH:mm:ss";
+import { STANDARD_DATE_TIME_FORMAT } from "App/Helpers/utils";
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
@@ -45,7 +46,11 @@ export default class User extends BaseModel {
   @column()
   public is_email_verified: boolean;
 
-  @column()
+  @column.dateTime({
+    serialize(value: DateTime) {
+      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : "";
+    },
+  })
   public last_login_time: DateTime | null;
 
   @column.dateTime({
@@ -55,7 +60,11 @@ export default class User extends BaseModel {
   })
   public account_activated_at: DateTime | null;
 
-  @column()
+  @column.dateTime({
+    serialize(value: DateTime) {
+      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : "";
+    },
+  })
   public email_verified_at: DateTime | null;
 
   @column.dateTime({
@@ -77,13 +86,17 @@ export default class User extends BaseModel {
 
   @beforeCreate()
   public static generateActivationCode(user: User) {
-    UserHook.generateActivationCode(user);
+    user.activation_code = crypto.randomBytes(3).toString("hex");
+    // UserHook.generateActivationCode(user);
   }
 
   @beforeSave()
-  public static hashPassword(user: User) {
-    UserHook.hashPassword(user);
+  public static async hashPassword(user: User) {
+    if (user.$dirty.password) {
+      user.password = await Hash.make(user.password);
+    }
   }
+
   @hasOne(() => UserProfile)
   public user_profile_relation: HasOne<typeof UserProfile>;
 }
