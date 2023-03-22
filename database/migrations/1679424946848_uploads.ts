@@ -14,10 +14,12 @@ export default class extends BaseSchema {
         .inTable("users")
         .onDelete("CASCADE");
       table.string("name").notNullable();
-      table.string("path").notNullable();
+      table.string("url").notNullable();
+      table.string("previewUrl").notNullable();
       table.string("extension").notNullable();
       table.string("caption").notNullable();
       table.string("hash").notNullable();
+      table.json("formats").nullable();
       table.boolean("public").notNullable().defaultTo(0);
       table.timestamp("deleted_at").nullable();
       /**

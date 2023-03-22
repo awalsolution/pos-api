@@ -7,7 +7,7 @@ import {
   computed,
 } from "@ioc:Adonis/Lucid/Orm";
 import User from "App/Models/User";
-// import UploadedFile from "App/Models/UploadedFile";
+import UploadedFile from "App/Models/UploadedFile";
 
 export default class UserProfile extends BaseModel {
   @column({ isPrimary: true })
