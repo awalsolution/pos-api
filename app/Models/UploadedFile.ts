@@ -46,34 +46,22 @@ export default class UploadedFile extends BaseModel {
   public userId: string;
 
   @column()
-  public name: string;
+  public name: string | null;
 
   @column()
-  public url: string;
+  public url: string | null;
 
   @column()
-  public previewUrl: string;
+  public previewUrl: string | null;
 
   @column()
-  public extension: string;
-
-  @column()
-  public hash: string;
+  public extension: string | null;
 
   @column()
   public formats: FileFormats | string | null;
 
   @column()
-  public public: boolean;
-
-  @column()
-  public deleted_at: DateTime;
-
-  @column()
   public usage_type: FileUsageType;
-
-  @column()
-  public caption: string;
 
   @column.dateTime({
     autoCreate: true,

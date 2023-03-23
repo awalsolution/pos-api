@@ -17,10 +17,7 @@ export default class extends BaseSchema {
       table.string("url").nullable();
       table.string("previewUrl").nullable();
       table.string("extension").nullable();
-      table.string("caption").nullable();
-      table.string("hash").nullable();
       table.json("formats").nullable();
-      table.timestamp("deleted_at").nullable();
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */
