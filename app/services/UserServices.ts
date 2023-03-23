@@ -49,10 +49,11 @@ export default class UserServices {
 
     const user = await User.query()
       .preload("roles", (roleQuery) => roleQuery.select("name", "id"))
-      .preload("user_profile_relation", (profileQuery) => {
-        profileQuery.preload("profile_picture_file", (fileQuery) =>
-          fileQuery.select("formats", "url")
-        );
+      .preload("userProfile", (profileQuery) => {
+        profileQuery.preload("userProfilePicture", (fileQuery) => {
+          let url = fileQuery.select("formats", "url");
+          console.log("urlurl", url);
+        });
         profileQuery.select(
           "first_name",
           "last_name",

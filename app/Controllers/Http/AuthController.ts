@@ -36,7 +36,7 @@ export default class AuthController {
     });
     if (user) {
       await user.related("roles").attach(finnd_role?.id);
-      await user.related("user_profile_relation").create({
+      await user.related("userProfile").create({
         first_name,
         last_name,
         phone_number,

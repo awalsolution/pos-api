@@ -38,7 +38,7 @@ export type FileUsageType =
   | "product_gallery_image"
   | "category_header_image";
 
-export default class UploadedFile extends BaseModel {
+export default class Upload extends BaseModel {
   @column({ isPrimary: true })
   public id: number;
 
@@ -84,22 +84,22 @@ export default class UploadedFile extends BaseModel {
     foreignKey: "profile_picture",
     onQuery: (query) => query.where("usage_type", "user_profile_picture"),
   })
-  public user_profile_picture_relation: HasMany<typeof UserProfile>;
+  public uploads: HasMany<typeof UserProfile>;
 
   @beforeSave()
-  public static async stringifyFormats(file: UploadedFile) {
+  public static async stringifyFormats(file: Upload) {
     if (file.$dirty.formats && file.formats !== undefined) {
       file.formats = JSON.stringify(file.formats);
     }
   }
 
   @afterFind()
-  public static async parseFormats(file: UploadedFile) {
+  public static async parseFormats(file: Upload) {
     file.formats = JSON.parse(file.formats as string);
   }
 
   @afterFetch()
-  public static async parseAllFormats(files: UploadedFile[]) {
+  public static async parseAllFormats(files: Upload[]) {
     files.map((file) => {
       file.formats = JSON.parse(file.formats as string);
       return file;

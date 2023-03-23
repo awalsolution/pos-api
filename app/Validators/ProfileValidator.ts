@@ -4,7 +4,7 @@ import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 export default class ProfileValidator {
   constructor(protected ctx: HttpContextContract) {}
   public schema = schema.create({
-    first_name: schema.string([rules.required]),
+    first_name: schema.string([rules.required()]),
     last_name: schema.string.nullableAndOptional(),
     phone_number: schema.string.nullableAndOptional(),
     address: schema.string.nullableAndOptional(),

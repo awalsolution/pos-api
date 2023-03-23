@@ -1,7 +1,7 @@
 import { DateTime } from "luxon";
 import { BaseModel, column, belongsTo, BelongsTo } from "@ioc:Adonis/Lucid/Orm";
 import User from "App/Models/User";
-import UploadedFile from "App/Models/UploadedFile";
+import Upload from "App/Models/Upload";
 import { STANDARD_DATE_TIME_FORMAT } from "App/Helpers/utils";
 
 export default class UserProfile extends BaseModel {
@@ -58,6 +58,6 @@ export default class UserProfile extends BaseModel {
   @belongsTo(() => User)
   public user: BelongsTo<typeof User>;
 
-  @belongsTo(() => UploadedFile, { foreignKey: "profile_picture" })
-  public profile_picture_file: BelongsTo<typeof UploadedFile>;
+  @belongsTo(() => Upload, { foreignKey: "profile_picture" })
+  public userProfilePicture: BelongsTo<typeof Upload>;
 }

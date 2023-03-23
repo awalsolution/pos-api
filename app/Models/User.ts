@@ -83,5 +83,5 @@ export default class User extends BaseModel {
   public roles: ManyToMany<typeof Role>;
 
   @hasOne(() => UserProfile)
-  public user_profile_relation: HasOne<typeof UserProfile>;
+  public userProfile: HasOne<typeof UserProfile>;
 }
