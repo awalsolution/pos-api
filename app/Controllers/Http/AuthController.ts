@@ -1,4 +1,4 @@
-import { DateTime } from "luxon";
+// import { DateTime } from "luxon";
 import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import Logger from "@ioc:Adonis/Core/Logger";
 import Role from "App/Models/Role";
@@ -6,39 +6,36 @@ import User from "App/Models/User";
 import RegistorValidator from "App/Validators/RegistorValidator";
 import NoLoginException from "App/Exceptions/NoLoginException";
 import UserServices from "App/services/UserServices";
+import ProfileValidator from "App/Validators/ProfileValidator";
 
 export default class AuthController {
-  public async register({ request, response, auth }: HttpContextContract) {
-    console.log(User);
-    const form = await request.validate(RegistorValidator);
+  public async register({ request, response }: HttpContextContract) {
+    const { email, password } = await request.validate(RegistorValidator);
     const {
-      email,
       first_name,
       last_name,
-      password,
       phone_number,
       address,
       city,
       state,
       country,
-    } = form;
+    } = await request.validate(ProfileValidator);
 
-    // Get the CompanyAdmin role
-    let role: any;
+    // find role
+    let finnd_role: any;
     try {
-      role = await Role.findByOrFail("name", "user");
+      finnd_role = await Role.findByOrFail("name", "user");
     } catch (error) {
       Logger.error("Role not found at AuthController.register:\n%o", error);
       return response.abort({ message: "Account could not be created" });
     }
-
     // Create a new user
     const user = await User.create({
       email,
       password: password,
-      roleId: role?.id ? role.id : null,
     });
     if (user) {
+      await user.related("roles").attach(finnd_role?.id);
       await user.related("user_profile_relation").create({
         first_name,
         last_name,
@@ -54,15 +51,15 @@ export default class AuthController {
       //   user,
       // });
 
-      const token = await auth.use("api").attempt(email, password);
+      // const token = await auth.use("api").attempt(email, password);
       // Check if credentials are valid, else return error
-      if (!token) {
-        throw new NoLoginException({
-          message: "Email address or password is not correct.",
-        });
-      } else {
-        await User.create({ login_status: true });
-      }
+      // if (!token) {
+      //   throw new NoLoginException({
+      //     message: "Email address or password is not correct.",
+      //   });
+      // } else {
+      //   await User.create({ login_status: true });
+      // }
       /* Retrieve user with company information */
       const userService = new UserServices({ email });
       const fetchUser = await userService.getUserModel();
@@ -81,7 +78,7 @@ export default class AuthController {
 
       return response.created({
         message: "Account was created successfully.",
-        token: token,
+        // token: token,
         data: fetchUser,
       });
     } else {
@@ -99,18 +96,28 @@ export default class AuthController {
     let user = await userService.getUserModel();
 
     if (!user) {
-      throw new NoLoginException({
+      response.created({
         message: "Your account is not register",
+        error: response.notFound(),
+        status: response.status(400),
       });
+      // throw new NoLoginException({
+      //   message: "Your account is not register",
+      // });
     } else {
       // Get activation status
       const activationStatus = Boolean(user.is_account_activated);
-      console.log(activationStatus);
       if (!activationStatus) {
-        throw new NoLoginException({
-          message:
-            "Your account is not activated. Please activate your account with the activation link sent to you via email.",
-        });
+        response
+          .status(400)
+          .notFound(
+            "Your account is not activated. Please activate your account with the activation link sent to you via email."
+          );
+
+        // throw new NoLoginException({
+        //   message:
+        //     "Your account is not activated. Please activate your account with the activation link sent to you via email.",
+        // });
       }
 
       let token: any;
@@ -122,9 +129,9 @@ export default class AuthController {
           message: "Email address or password is not correct.",
         });
 
-      /* Retrieve user with company information */
+      /* Retrieve user profile information */
 
-      // const cachedUser = await userService.getUserSummary();
+      const fullUserInfo = await userService.get_user_full_profile();
 
       //console.log(user)
 
@@ -140,9 +147,9 @@ export default class AuthController {
       // });
 
       return response.created({
-        message: "Login successful.",
+        message: "Login Successfully.",
         token: token,
-        data: user,
+        data: fullUserInfo,
       });
     }
   }

@@ -10,6 +10,7 @@ import {
 } from "@ioc:Adonis/Lucid/Orm";
 // import FileProvider from "App/Models/FileProvider";
 import UserProfile from "App/Models/UserProfile";
+import { STANDARD_DATE_TIME_FORMAT } from "App/Helpers/utils";
 
 export type FormatAttributes = {
   name: string;
@@ -74,10 +75,21 @@ export default class UploadedFile extends BaseModel {
   @column()
   public caption: string;
 
-  @column.dateTime({ autoCreate: true })
+  @column.dateTime({
+    autoCreate: true,
+    serialize(value: DateTime) {
+      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : "";
+    },
+  })
   public createdAt: DateTime;
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  @column.dateTime({
+    autoCreate: true,
+    autoUpdate: true,
+    serialize(value: DateTime) {
+      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : "";
+    },
+  })
   public updatedAt: DateTime;
 
   @hasMany(() => UserProfile, {

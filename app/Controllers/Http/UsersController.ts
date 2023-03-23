@@ -12,14 +12,13 @@ export default class UsersController {
     let newUser: any;
     if (ctx.params.userId) {
       newUser = await User.find(ctx.params.userId);
-      console.log(newUser);
     } else {
       const check_user_email = await User.findBy(
         "email",
         ctx.request.body().email
       );
       const check_user_phone = await User.findBy(
-        "phone",
+        "phone_number",
         ctx.request.body().phone
       );
       if (check_user_email || check_user_phone) {
@@ -33,7 +32,7 @@ export default class UsersController {
       last_name: schema.string.optional(),
       email: schema.string([rules.required()]),
       password: schema.string([rules.required()]),
-      phone: schema.string.optional(),
+      phone_number: schema.string.optional(),
       company: schema.string.optional(),
       address: schema.string.optional(),
       email_verified_at: schema.string.optional(),
@@ -46,8 +45,7 @@ export default class UsersController {
     newUser.last_name = payload.last_name;
     newUser.email = payload.email;
     newUser.password = payload.password;
-    newUser.phone = payload.phone;
-    newUser.company = payload.company;
+    newUser.phone_number = payload.phone_number;
     newUser.address = payload.address;
     newUser.email_verified_at = payload.email_verified_at;
     newUser.remember_me_token = payload.remember_me_token;

@@ -29,36 +29,16 @@ export default class User extends BaseModel {
   public is_account_activated: boolean;
 
   @column()
-  public remember_token: string | null;
-
-  @column()
-  public banned: boolean;
+  public remember_token: boolean | null;
 
   @column()
   public activation_code: string | null;
-
-  @column()
-  public login_status: boolean;
 
   @column()
   public forgot_password_code: number | null;
 
   @column()
   public is_email_verified: boolean;
-
-  @column.dateTime({
-    serialize(value: DateTime) {
-      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : "";
-    },
-  })
-  public last_login_time: DateTime | null;
-
-  @column.dateTime({
-    serialize(value: DateTime) {
-      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : "";
-    },
-  })
-  public account_activated_at: DateTime | null;
 
   @column.dateTime({
     serialize(value: DateTime) {
@@ -87,7 +67,6 @@ export default class User extends BaseModel {
   @beforeCreate()
   public static generateActivationCode(user: User) {
     user.activation_code = crypto.randomBytes(3).toString("hex");
-    // UserHook.generateActivationCode(user);
   }
 
   @beforeSave()
@@ -96,9 +75,6 @@ export default class User extends BaseModel {
       user.password = await Hash.make(user.password);
     }
   }
-
-  // @hasMany(() => Role)
-  // public roles_relation: HasMany<typeof Role>;
 
   @manyToMany(() => Role, {
     pivotTable: "user_has_roles",

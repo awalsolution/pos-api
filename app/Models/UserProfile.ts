@@ -1,13 +1,8 @@
 import { DateTime } from "luxon";
-import {
-  BaseModel,
-  column,
-  belongsTo,
-  BelongsTo,
-  computed,
-} from "@ioc:Adonis/Lucid/Orm";
+import { BaseModel, column, belongsTo, BelongsTo } from "@ioc:Adonis/Lucid/Orm";
 import User from "App/Models/User";
 import UploadedFile from "App/Models/UploadedFile";
+import { STANDARD_DATE_TIME_FORMAT } from "App/Helpers/utils";
 
 export default class UserProfile extends BaseModel {
   @column({ isPrimary: true })
@@ -43,18 +38,22 @@ export default class UserProfile extends BaseModel {
   @column()
   public profile_picture: number | null;
 
-  @column.dateTime({ autoCreate: true })
+  @column.dateTime({
+    autoCreate: true,
+    serialize(value: DateTime) {
+      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : "";
+    },
+  })
   public createdAt: DateTime;
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  @column.dateTime({
+    autoCreate: true,
+    autoUpdate: true,
+    serialize(value: DateTime) {
+      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : "";
+    },
+  })
   public updatedAt: DateTime;
-
-  @computed()
-  public get full_name() {
-    return `${
-      this.last_name ? this.first_name + " " + this.last_name : this.first_name
-    }`;
-  }
 
   @belongsTo(() => User)
   public user: BelongsTo<typeof User>;

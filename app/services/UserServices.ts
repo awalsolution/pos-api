@@ -1,6 +1,6 @@
 "use strict";
 import User from "App/Models/User";
-import { UserOptions } from "./types/user_types";
+import { UserFullDetails, UserOptions } from "./types/user_types";
 export default class UserServices {
   protected email: string | undefined;
   protected id: number | undefined;
@@ -41,5 +41,39 @@ export default class UserServices {
     } catch (error) {
       throw new Error("User not found");
     }
+  }
+
+  // user with profile
+  public async get_user_full_profile(): Promise<UserFullDetails> {
+    let userDetails: UserFullDetails | null = null;
+
+    const user = await User.query()
+      .preload("roles", (roleQuery) => roleQuery.select("name", "id"))
+      .preload("user_profile_relation", (profileQuery) => {
+        profileQuery.preload("profile_picture_file", (fileQuery) =>
+          fileQuery.select("formats", "url")
+        );
+        profileQuery.select(
+          "first_name",
+          "last_name",
+          "profile_picture",
+          "phone_number",
+          "address",
+          "city",
+          "zipcode",
+          "state",
+          "country",
+          "created_at",
+          "updated_at"
+        );
+      })
+      .where("id", this.id!)
+      .first();
+
+    const serialisedUserDetails = user?.serialize();
+
+    userDetails = serialisedUserDetails as UserFullDetails;
+
+    return userDetails!;
   }
 }

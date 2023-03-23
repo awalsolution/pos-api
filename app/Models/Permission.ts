@@ -6,6 +6,7 @@ import {
   ManyToMany,
 } from "@ioc:Adonis/Lucid/Orm";
 import Role from "App/Models/Role";
+import { STANDARD_DATE_TIME_FORMAT } from "App/Helpers/utils";
 
 export default class Permission extends BaseModel {
   @column({ isPrimary: true })
@@ -17,10 +18,21 @@ export default class Permission extends BaseModel {
   @column()
   public description: string;
 
-  @column.dateTime({ autoCreate: true })
+  @column.dateTime({
+    autoCreate: true,
+    serialize(value: DateTime) {
+      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : "";
+    },
+  })
   public createdAt: DateTime;
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  @column.dateTime({
+    autoCreate: true,
+    autoUpdate: true,
+    serialize(value: DateTime) {
+      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : "";
+    },
+  })
   public updatedAt: DateTime;
 
   @manyToMany(() => Role, { pivotTable: "role_has_permissions" })
