@@ -5,7 +5,7 @@ import User from "App/Models/User";
 export default class UsersController {
   public async index({ response }: HttpContextContract) {
     const users = await User.all();
-    return response.ok({ data: users, message: "Users Find Successfully" });
+    return response.ok({ result: users, message: "Users Find Successfully" });
   }
 
   public async create(ctx: HttpContextContract) {
@@ -53,7 +53,7 @@ export default class UsersController {
     await newUser.save();
 
     return ctx.response.ok({
-      data: newUser,
+      result: newUser,
       message: "Operation Successfully",
     });
   }
@@ -63,7 +63,7 @@ export default class UsersController {
     if (!user) {
       return response.notFound({ message: "User not found" });
     }
-    return response.ok({ data: user, message: "User Find Successfully" });
+    return response.ok({ result: user, message: "User Find Successfully" });
   }
 
   public async delete({ params, response }: HttpContextContract) {

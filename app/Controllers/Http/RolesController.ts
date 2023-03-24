@@ -5,7 +5,7 @@ import Role from "App/Models/Role";
 export default class RolesController {
   public async index({ response }: HttpContextContract) {
     const roles = await Role.all();
-    return response.ok({ data: roles, message: "Roles Find Successfully" });
+    return response.ok({ result: roles, message: "Roles Find Successfully" });
   }
 
   public async create(ctx: HttpContextContract) {
@@ -33,7 +33,7 @@ export default class RolesController {
     await newRole.save();
 
     return ctx.response.ok({
-      data: newRole,
+      result: newRole,
       message: "Operation Successfully",
     });
   }
@@ -43,7 +43,7 @@ export default class RolesController {
     if (!role) {
       return response.notFound({ message: "Role not found" });
     }
-    return response.ok({ data: role, message: "Role Find Successfully" });
+    return response.ok({ result: role, message: "Role Find Successfully" });
   }
 
   public async delete({ params, response }: HttpContextContract) {
