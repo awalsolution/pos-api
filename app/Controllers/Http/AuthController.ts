@@ -78,24 +78,21 @@ export default class AuthController {
 
   public async login({ request, auth, response }: HttpContextContract) {
     const { password, email } = request.body();
-    const userService = new UserServices({ email: email });
-    let user = await userService.getUserModel();
-    if (!user) {
-      response.ok({ message: "Your Account is not Register", result: user! });
-    } else if (user.is_account_activated == false) {
-      response.ok({
-        message: "Your Account is not Activated",
-        result: user!,
-      });
-    } else {
-      let token: any;
-      token = await auth.use("api").attempt(email, password);
+
+    await User.findByOrFail("email", email);
+
+    try {
+      const token = await auth.use("api").attempt(email, password);
+      const userService = new UserServices({ email: email });
+      await userService.getUserModel();
       const fullUserInfo = await userService.get_user_full_profile();
       return response.ok({
         message: "Login Successfully.",
         token: token,
         result: fullUserInfo,
       });
+    } catch (error) {
+      return response.unauthorized(error);
     }
   }
 }

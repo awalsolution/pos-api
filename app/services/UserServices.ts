@@ -40,6 +40,7 @@ export default class UserServices {
       return user!;
     } catch (error) {
       throw new Error("User not found");
+      //
     }
   }
 
@@ -51,8 +52,7 @@ export default class UserServices {
       .preload("roles", (roleQuery) => roleQuery.select("name", "id"))
       .preload("userProfile", (profileQuery) => {
         profileQuery.preload("userProfilePicture", (fileQuery) => {
-          let url = fileQuery.select("formats", "url");
-          console.log("urlurl", url);
+          fileQuery.select("formats", "url");
         });
         profileQuery.select(
           "first_name",
