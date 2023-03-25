@@ -17,8 +17,8 @@ export default class ProductsController {
       newproduct = await Product.find(ctx.params.productId);
     } else {
       const check_product = await Product.findBy(
-        "name",
-        ctx.request.body().name
+        "product_sku",
+        ctx.request.body().product_sku
       );
       if (check_product) {
         return ctx.response.conflict({ message: "Product Already Exist" });
@@ -27,14 +27,28 @@ export default class ProductsController {
     }
 
     const productSchema = schema.create({
-      name: schema.string([rules.required()]),
+      title: schema.string([rules.required()]),
+      product_sku: schema.string.optional(),
+      slug: schema.string.optional(),
+      short_description: schema.string.optional(),
       description: schema.string.optional(),
+      price: schema.string.optional(),
+      sale_price: schema.string.optional(),
+      is_active: schema.string.optional(),
+      product_images: schema.string.optional(),
     });
 
     const payload: any = await ctx.request.validate({ schema: productSchema });
 
-    newproduct.name = payload.name;
+    newproduct.title = payload.title;
+    newproduct.product_sku = payload.product_sku;
+    newproduct.slug = payload.slug;
+    newproduct.short_description = payload.short_description;
     newproduct.description = payload.description;
+    newproduct.price = payload.price;
+    newproduct.sale_price = payload.sale_price;
+    newproduct.is_active = payload.is_active;
+    newproduct.product_images = payload.product_images;
 
     await newproduct.save();
 

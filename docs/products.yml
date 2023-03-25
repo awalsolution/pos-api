@@ -169,6 +169,54 @@
                   "description":
                     {
                       "type": "string",
+                      "example": "Product description",
+                      "description": "add product description",
+                    },
+                  "title":
+                    {
+                      "type": "string",
+                      "example": "Product Title",
+                      "description": "add product title",
+                    },
+                  "product_sku":
+                    {
+                      "type": "number",
+                      "example": 11111,
+                      "description": "add product product_sku",
+                    },
+                  "slug":
+                    {
+                      "type": "string",
+                      "example": "product-slug",
+                      "description": "add product Slug",
+                    },
+                  "short_description":
+                    {
+                      "type": "string",
+                      "example": "this is super admin rule",
+                      "description": "add product description",
+                    },
+                  "price":
+                    {
+                      "type": "string",
+                      "example": "this is super admin rule",
+                      "description": "add product description",
+                    },
+                  "sale_price":
+                    {
+                      "type": "string",
+                      "example": "this is super admin rule",
+                      "description": "add product description",
+                    },
+                  "is_active":
+                    {
+                      "type": "string",
+                      "example": "this is super admin rule",
+                      "description": "add product description",
+                    },
+                  "product_images":
+                    {
+                      "type": "string",
                       "example": "this is super admin rule",
                       "description": "add product description",
                     },
