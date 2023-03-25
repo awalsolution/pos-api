@@ -5,6 +5,7 @@ import Permission from "App/Models/Permission";
 export default class PermissionsController {
   public async index({ response }: HttpContextContract) {
     const permissions = await Permission.all();
+    console.log(permissions);
     return response.ok({
       result: permissions,
       message: "Permissions Find Successfully",

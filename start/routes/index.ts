@@ -27,3 +27,4 @@ Route.get("/", async () => {
 import "./auth.routes";
 import "./users.routes";
 import "./roles.routes";
+import "./permissions.routes";

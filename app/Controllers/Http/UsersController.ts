@@ -4,7 +4,25 @@ import User from "App/Models/User";
 
 export default class UsersController {
   public async index({ response }: HttpContextContract) {
-    const users = await User.all();
+    // const users = await User.all();
+    const users = await User.query()
+      .preload("roles", (roleQuery) => roleQuery.select("name", "id"))
+      .preload("userProfile", (profileQuery) => {
+        profileQuery.select(
+          "first_name",
+          "last_name",
+          "profile_picture",
+          "phone_number",
+          "address",
+          "city",
+          "zipcode",
+          "state",
+          "country",
+          "created_at",
+          "updated_at"
+        );
+      });
+
     return response.ok({ result: users, message: "Users Find Successfully" });
   }
 

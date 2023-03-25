@@ -66,7 +66,7 @@ export default class AuthController {
       //   user,
       // });
 
-      return response.created({
+      return response.ok({
         message: "Account was created successfully.",
         result: fetchUser,
       });
