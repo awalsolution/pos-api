@@ -28,3 +28,4 @@ import "./auth.routes";
 import "./users.routes";
 import "./roles.routes";
 import "./permissions.routes";
+import "./products.routes";
