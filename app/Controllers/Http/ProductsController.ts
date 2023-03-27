@@ -6,7 +6,7 @@ export default class ProductsController {
   public async index({ response }: HttpContextContract) {
     const products = await Product.all();
     return response.ok({
-      data: products,
+      result: products,
       message: "Products Find Successfully",
     });
   }
@@ -32,9 +32,9 @@ export default class ProductsController {
       slug: schema.string.optional(),
       short_description: schema.string.optional(),
       description: schema.string.optional(),
-      price: schema.string.optional(),
-      sale_price: schema.string.optional(),
-      is_active: schema.string.optional(),
+      price: schema.number.optional(),
+      sale_price: schema.number.optional(),
+      is_active: schema.boolean.optional(),
       product_images: schema.string.optional(),
     });
 

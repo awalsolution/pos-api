@@ -160,18 +160,6 @@
               "type": "object",
               "properties":
                 {
-                  "name":
-                    {
-                      "type": "string",
-                      "example": "admin",
-                      "description": "add product name",
-                    },
-                  "description":
-                    {
-                      "type": "string",
-                      "example": "Product description",
-                      "description": "add product description",
-                    },
                   "title":
                     {
                       "type": "string",
@@ -180,8 +168,8 @@
                     },
                   "product_sku":
                     {
-                      "type": "number",
-                      "example": 11111,
+                      "type": "string",
+                      "example": "11111",
                       "description": "add product product_sku",
                     },
                   "slug":
@@ -190,35 +178,41 @@
                       "example": "product-slug",
                       "description": "add product Slug",
                     },
+                  "description":
+                    {
+                      "type": "string",
+                      "example": "Product description",
+                      "description": "add product description",
+                    },
                   "short_description":
                     {
                       "type": "string",
-                      "example": "this is super admin rule",
-                      "description": "add product description",
+                      "example": "Product short_description",
+                      "description": "add product short_description",
                     },
                   "price":
                     {
-                      "type": "string",
-                      "example": "this is super admin rule",
-                      "description": "add product description",
+                      "type": "number",
+                      "example": 200,
+                      "description": "product price",
                     },
                   "sale_price":
                     {
-                      "type": "string",
-                      "example": "this is super admin rule",
-                      "description": "add product description",
+                      "type": "number",
+                      "example": 150,
+                      "description": "product sale price",
                     },
                   "is_active":
                     {
-                      "type": "string",
-                      "example": "this is super admin rule",
-                      "description": "add product description",
+                      "type": "boolean",
+                      "example": false,
+                      "description": "product Publish or unPublish",
                     },
                   "product_images":
                     {
                       "type": "string",
-                      "example": "this is super admin rule",
-                      "description": "add product description",
+                      "example": "product image",
+                      "description": "add product image",
                     },
                 },
             },
