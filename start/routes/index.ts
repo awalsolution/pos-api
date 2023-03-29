@@ -24,8 +24,13 @@ Route.get("/", async () => {
   return { hello: "world" };
 });
 
-import "./auth.routes";
-import "./users.routes";
-import "./roles.routes";
-import "./permissions.routes";
-import "./products.routes";
+// import "./auth.routes";
+// import "./users.routes";
+// import "./roles.routes";
+// import "./permissions.routes";
+// import "./products.routes";
+
+import "./api/user";
+import "./api/auth";
+import "./api/acl/roles";
+import "./api/acl/permissions";
