@@ -1,7 +1,7 @@
 import { schema, CustomMessages, rules } from "@ioc:Adonis/Core/Validator";
 import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 
-export default class RegistorValidator {
+export class RegistorValidator {
   constructor(protected ctx: HttpContextContract) {}
   public schema = schema.create({
     email: schema.string({ escape: true, trim: true }, [
