@@ -1,98 +1,99 @@
-// import { DateTime } from "luxon";
+import Hash from "@ioc:Adonis/Core/Hash";
+import { BaseController } from "App/Controllers/BaseController";
 import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
-import Logger from "@ioc:Adonis/Core/Logger";
 import Role from "App/Models/Acl/Role";
 import User from "App/Models/User";
-import RegistorValidator from "App/Validators/RegistorValidator";
-import UserServices from "App/services/UserServices";
-import ProfileValidator from "App/Validators/ProfileValidator";
+import { RegistorValidator } from "App/Validators/user/RegistorValidator";
+import ResponseMessages from "App/Enums/ResponseMessages";
+import OldPasswordResetValidator from "App/Validators/user/OldPasswordResetValidator";
 
-export default class AuthController {
+export default class AuthController extends BaseController {
+  public MODEL: typeof User;
+
+  constructor() {
+    super();
+    this.MODEL = User;
+  }
+
   public async register({ request, response }: HttpContextContract) {
-    const { email, password } = await request.validate(RegistorValidator);
-    const {
-      first_name,
-      last_name,
-      phone_number,
-      address,
-      city,
-      state,
-      country,
-    } = await request.validate(ProfileValidator);
-
-    // find role
-    let finnd_role: any;
+    const payload = await request.validate(RegistorValidator);
     try {
-      finnd_role = await Role.findByOrFail("name", "user");
-    } catch (error) {
-      Logger.error("Role not found at AuthController.register:\n%o", error);
-      return response.abort({ message: "Account could not be created" });
+      let user = await this.MODEL.findBy("email", payload.email);
+      if (user && !user.isEmailVerified) {
+        delete user.$attributes.password;
+        return response.conflict({
+          status: false,
+          message: "Already exists",
+          data: { user: user, verified: false },
+        });
+      }
+      user = await this.MODEL.create(payload);
+      const adminRole = await Role.findBy("name", "user");
+      if (adminRole) {
+        user.related("roles").sync([adminRole.id]);
+      }
+      delete user.$attributes.password;
+      return response.send({
+        status: true,
+        message: "Register Successfully",
+        data: user,
+      });
+    } catch (e) {
+      console.log(e.toString());
+      return response.internalServerError({
+        status: false,
+        message: e.toString(),
+      });
     }
-    // Create a new user
-    const user = await User.create({
-      email,
-      password: password,
-    });
-    if (user) {
-      await user.related("roles").attach(finnd_role?.id);
-      await user.related("userProfile").create({
-        first_name,
-        last_name,
-        phone_number,
-        address,
-        city,
-        state,
-        country,
-      });
-
-      // // Send verification email
-      // Event.emit("auth::new-registration-verification", {
-      //   user,
-      // });
-
-      /* Retrieve user with company information */
-      const userService = new UserServices({ email });
-      const fetchUser = await userService.getUserModel();
-      // const cachedUser = await userService.getUserSummary();
-
-      /**
-       * Emit event to log login activity and
-       * persist login meta information to DB
-       * Also Clean up login code information
-       */
-      // const ip = request.ip();
-      // Event.emit("auth::new-login", {
-      //   ip,
-      //   user,
-      // });
-
-      return response.ok({
-        message: "Account was created successfully.",
-        result: fetchUser,
-      });
-    } else {
-      Logger.error("User could not be created at AuthController.register");
-      return response.abort({ message: "Account could not be created" });
+  }
+  public async login({ auth, request, response }: HttpContextContract) {
+    try {
+      const token = await auth
+        .use("api")
+        .attempt(request.input("email"), request.input("password"));
+      return {
+        status: true,
+        data: {
+          user: auth.user,
+          token: token.token,
+        },
+        message: "Login Successfully",
+      };
+    } catch (e) {
+      console.log(e);
+      return response.badRequest("Invalid credentials");
     }
   }
 
-  public async login({ request, auth, response }: HttpContextContract) {
-    const { password, email } = request.body();
+  public async logout({ auth }: HttpContextContract) {
+    return auth.use("api").logout();
+  }
 
-    await User.findByOrFail("email", email);
-
-    try {
-      const token = await auth.use("api").attempt(email, password);
-      const userService = new UserServices({ email: email });
-      await userService.getUserModel();
-      const fullUserInfo = await userService.get_user_full_profile();
-      return response.ok({
-        message: "Login Successfully.",
-        token: token,
-        result: fullUserInfo,
-      });
-    } catch (error) {
-      return response.unauthorized(error);
+  public async resetPasswordUsingOldPassword({
+    auth,
+    request,
+    response,
+  }: HttpContextContract) {
+    if (!auth.user) {
+      return response.unauthorized({ message: ResponseMessages.UNAUTHORIZED });
     }
+    const payload = await request.validate(OldPasswordResetValidator);
+    const passwordMatched = await Hash.verify(
+      auth.user.password,
+      payload.oldPassword
+    );
+    if (passwordMatched) {
+      const user = await User.findBy("id", auth.user.id);
+      if (user) {
+        await user
+          .merge({
+            password: payload.password,
+          })
+          .save();
+        return response.send({ message: "Password changed" });
+      }
+      return response.notFound({ message: "User" });
+    }
+    return response.notAcceptable({ message: "Wrong password" });
   }
 }
