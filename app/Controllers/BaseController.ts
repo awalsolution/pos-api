@@ -1,14 +1,14 @@
 import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import { BaseModel } from "@ioc:Adonis/Lucid/Orm";
 import HttpCodes from "App/Enums/HttpCodes";
-import pagination from "App/Enums/Pagination";
+import Pagination from "App/Enums/Pagination";
 import User from "App/Models/User";
 import _ from "lodash";
 
-export default class BaseController {
+export class BaseController {
   public MODEL: typeof BaseModel;
 
-  public toJSON(payload) {
+  public toJSON(payload: any) {
     if (typeof payload === "string") {
       return JSON.parse(payload);
     }
@@ -73,8 +73,8 @@ export default class BaseController {
     }
     return response.send(
       await baseQuery.paginate(
-        request.input(pagination.PAGE_KEY, pagination.PAGE),
-        request.input(pagination.PER_PAGE_KEY, pagination.PER_PAGE)
+        request.input(Pagination.PAGE_KEY, Pagination.PAGE),
+        request.input(Pagination.PER_PAGE_KEY, Pagination.PER_PAGE)
       )
     );
   }
