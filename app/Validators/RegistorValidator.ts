@@ -11,10 +11,12 @@ export default class RegistorValidator {
         table: "users",
       }),
     ]),
+    phone: schema.string.optional(),
     password: schema.string({ escape: true, trim: true }, [
       rules.minLength(6),
       rules.confirmed("confirmPassword"),
     ]),
+    roles: schema.array.optional().members(schema.string()),
   });
 
   public messages: CustomMessages = {
@@ -25,5 +27,6 @@ export default class RegistorValidator {
     "password.regex": "Please provide a greater then 6 characters password.",
     "confirmPassword.equalTo": "Both passwords should be the same.",
     "confirmPassword.required": "Confirm Password is required.",
+    "roles.array": "{{ field }} must be an array of strings",
   };
 }
