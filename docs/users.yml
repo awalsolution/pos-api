@@ -183,35 +183,12 @@
                       "required": "true",
                       "description": "password",
                     },
-                  "phone":
+                  "confirmPassword":
                     {
                       "type": "string",
-                      "example": "123456789",
-                      "description": "phone",
-                    },
-                  "company":
-                    {
-                      "type": "string",
-                      "example": "company name",
-                      "description": "Company Name",
-                    },
-                  "address":
-                    {
-                      "type": "string",
-                      "example": "Lahore",
-                      "description": "Address",
-                    },
-                  "email_verified_at":
-                    {
-                      "type": "string",
-                      "example": "",
-                      "description": "email_verified_at",
-                    },
-                  "remember_me_token":
-                    {
-                      "type": "boolean",
-                      "example": false,
-                      "description": "remember_me_token",
+                      "example": "password",
+                      "required": "true",
+                      "description": "Confirm Password",
                     },
                 },
             },
