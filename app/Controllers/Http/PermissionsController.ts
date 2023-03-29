@@ -1,6 +1,6 @@
 import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import { schema, rules } from "@ioc:Adonis/Core/Validator";
-import Permission from "App/Models/Permission";
+import Permission from "App/Models/Acl/Permission";
 
 export default class PermissionsController {
   public async index({ response }: HttpContextContract) {

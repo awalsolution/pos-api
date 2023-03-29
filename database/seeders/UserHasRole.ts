@@ -1,7 +1,7 @@
 import BaseSeeder from "@ioc:Adonis/Lucid/Seeder";
 import { userHasRole } from "Database/data/userHasRoles";
 import User from "App/Models/User";
-import Role from "App/Models/Role";
+import Role from "App/Models/Acl/Role";
 
 export default class extends BaseSeeder {
   public async run() {

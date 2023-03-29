@@ -1,15 +1,14 @@
 import { DateTime } from "luxon";
 import {
-  column,
   BaseModel,
+  column,
   manyToMany,
   ManyToMany,
 } from "@ioc:Adonis/Lucid/Orm";
-import User from "App/Models/User";
-import Permission from "App/Models/Permission";
+import Role from "App/Models/Acl/Role";
 import { STANDARD_DATE_TIME_FORMAT } from "App/Helpers/utils";
 
-export default class Role extends BaseModel {
+export default class Permission extends BaseModel {
   @column({ isPrimary: true })
   public id: number;
 
@@ -36,16 +35,6 @@ export default class Role extends BaseModel {
   })
   public updatedAt: DateTime;
 
-  @manyToMany(() => User, {
-    pivotTable: "user_has_roles",
-    pivotTimestamps: true,
-    localKey: "id",
-    pivotForeignKey: "role_id",
-    relatedKey: "id",
-    pivotRelatedForeignKey: "user_id",
-  })
-  public users: ManyToMany<typeof User>;
-
-  @manyToMany(() => Permission, { pivotTable: "role_has_permissions" })
-  public permissions: ManyToMany<typeof Permission>;
+  @manyToMany(() => Role, { pivotTable: "role_has_permissions" })
+  public roles: ManyToMany<typeof Role>;
 }

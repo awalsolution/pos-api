@@ -9,7 +9,7 @@ export default class extends BaseSchema {
       table.string("phone", 255).notNullable().unique();
       table.string("email").notNullable().unique().index();
       table.string("password").notNullable();
-      table.boolean("remember_token").nullable();
+      table.string("remember_token").nullable();
       table.boolean("is_email_verified").defaultTo(false).index();
       table.boolean("is_phone_verified").defaultTo(false).index();
       // table.boolean("is_account_activated").notNullable().defaultTo(1);

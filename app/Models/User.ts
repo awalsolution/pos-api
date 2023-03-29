@@ -1,19 +1,17 @@
 import { DateTime } from "luxon";
-import crypto from "crypto";
 import Hash from "@ioc:Adonis/Core/Hash";
 import {
   column,
   beforeSave,
   BaseModel,
-  beforeCreate,
-  hasOne,
-  HasOne,
   ManyToMany,
   manyToMany,
+  hasOne,
+  HasOne,
 } from "@ioc:Adonis/Lucid/Orm";
-import Role from "App/Models/Role";
+import Permission from "App/Models/Acl/Permission";
+import Role from "App/Models/Acl/Role";
 import UserProfile from "App/Models/UserProfile";
-import { STANDARD_DATE_TIME_FORMAT } from "App/Helpers/utils";
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
@@ -22,52 +20,26 @@ export default class User extends BaseModel {
   @column()
   public email: string;
 
+  @column()
+  public phone: string;
+
   @column({ serializeAs: null })
   public password: string;
 
   @column()
-  public is_account_activated: boolean;
+  public isPhoneVerified: boolean;
 
   @column()
-  public remember_token: boolean | null;
+  public isEmailVerified: boolean;
 
   @column()
-  public activation_code: string | null;
+  public rememberMeToken: string | null;
 
-  @column()
-  public forgot_password_code: number | null;
-
-  @column()
-  public is_email_verified: boolean;
-
-  @column.dateTime({
-    serialize(value: DateTime) {
-      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : "";
-    },
-  })
-  public email_verified_at: DateTime | null;
-
-  @column.dateTime({
-    autoCreate: true,
-    serialize(value: DateTime) {
-      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : "";
-    },
-  })
+  @column.dateTime({ autoCreate: true })
   public createdAt: DateTime;
 
-  @column.dateTime({
-    autoCreate: true,
-    autoUpdate: true,
-    serialize(value: DateTime) {
-      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : "";
-    },
-  })
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime;
-
-  @beforeCreate()
-  public static generateActivationCode(user: User) {
-    user.activation_code = crypto.randomBytes(3).toString("hex");
-  }
 
   @beforeSave()
   public static async hashPassword(user: User) {
@@ -76,15 +48,24 @@ export default class User extends BaseModel {
     }
   }
 
+  // Relations
   @manyToMany(() => Role, {
     pivotTable: "user_has_roles",
-    pivotTimestamps: true,
     localKey: "id",
     pivotForeignKey: "user_id",
     relatedKey: "id",
     pivotRelatedForeignKey: "role_id",
   })
   public roles: ManyToMany<typeof Role>;
+
+  @manyToMany(() => Permission, {
+    pivotTable: "user_has_permissions",
+    localKey: "id",
+    pivotForeignKey: "user_id",
+    relatedKey: "id",
+    pivotRelatedForeignKey: "permission_id",
+  })
+  public permissions: ManyToMany<typeof Permission>;
 
   @hasOne(() => UserProfile)
   public userProfile: HasOne<typeof UserProfile>;

@@ -1,7 +1,7 @@
 import BaseSeeder from "@ioc:Adonis/Lucid/Seeder";
 import { roleHasPermission } from "Database/data/roleHasPermission";
-import Role from "App/Models/Role";
-import Permission from "App/Models/Permission";
+import Role from "App/Models/Acl/Role";
+import Permission from "App/Models/Acl/Permission";
 
 export default class PermissionRoleSeeder extends BaseSeeder {
   public async run() {

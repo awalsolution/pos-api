@@ -1,6 +1,6 @@
 import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import Logger from "@ioc:Adonis/Core/Logger";
-import Role from "App/Models/Role";
+import Role from "App/Models/Acl/Role";
 import User from "App/Models/User";
 import ProfileValidator from "App/Validators/ProfileValidator";
 import RegistorValidator from "App/Validators/RegistorValidator";

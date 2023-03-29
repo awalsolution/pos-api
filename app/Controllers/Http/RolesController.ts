@@ -1,6 +1,6 @@
 import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import { schema, rules } from "@ioc:Adonis/Core/Validator";
-import Role from "App/Models/Role";
+import Role from "App/Models/Acl/Role";
 
 export default class RolesController {
   public async index({ response }: HttpContextContract) {
