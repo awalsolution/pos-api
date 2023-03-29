@@ -82,7 +82,7 @@
                     },
                 },
             },
-          "patch":
+          "put":
             {
               "summary": "Update a role",
               "tags": ["roles"],

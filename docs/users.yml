@@ -176,6 +176,13 @@
                       "required": "true",
                       "description": "email",
                     },
+                  "phone":
+                    {
+                      "type": "string",
+                      "example": "123498765",
+                      "required": "true",
+                      "description": "Phone Number",
+                    },
                   "password":
                     {
                       "type": "string",
