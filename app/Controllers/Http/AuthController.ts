@@ -18,13 +18,13 @@ export default class AuthController extends BaseController {
   public async register({ request, response }: HttpContextContract) {
     const payload = await request.validate(RegistorValidator);
     try {
-      let user = await this.MODEL.findBy("email", payload.email);
+      let user = await this.MODEL.findBy("email", request.body().email);
       if (user && !user.isEmailVerified) {
         delete user.$attributes.password;
         return response.conflict({
           status: false,
           message: "Already exists",
-          data: { user: user, verified: false },
+          result: { user: user, verified: false },
         });
       }
       user = await this.MODEL.create(payload);
@@ -36,10 +36,10 @@ export default class AuthController extends BaseController {
       return response.send({
         status: true,
         message: "Register Successfully",
-        data: user,
+        result: user,
       });
     } catch (e) {
-      console.log(e.toString());
+      console.log("register error", e.toString());
       return response.internalServerError({
         status: false,
         message: e.toString(),
@@ -53,7 +53,7 @@ export default class AuthController extends BaseController {
         .attempt(request.input("email"), request.input("password"));
       return {
         status: true,
-        data: {
+        result: {
           user: auth.user,
           token: token.token,
         },

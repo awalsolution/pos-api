@@ -7,7 +7,7 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments("id").primary();
       table.string("email").notNullable().unique().index();
-      table.string("phone", 255).notNullable().unique();
+      table.string("phone", 255).nullable();
       table.string("password").notNullable();
       table.string("remember_token").nullable();
       table.boolean("is_email_verified").defaultTo(false).index();

@@ -113,6 +113,13 @@
                       "required": "true",
                       "description": "email",
                     },
+                  "phone":
+                    {
+                      "type": "string",
+                      "example": "123456789",
+                      "required": "true",
+                      "description": "Phone Number",
+                    },
                   "password":
                     {
                       "type": "string",
