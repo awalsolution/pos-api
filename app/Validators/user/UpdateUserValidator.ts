@@ -6,16 +6,16 @@ export default class UpdateUserValidator {
   public schema = schema.create({
     first_name: schema.string.optional(),
     last_name: schema.string.optional(),
-    email: schema.string.optional([
-      rules.email(),
-      rules.unique({
-        table: "users",
-        column: "email",
-        whereNot: {
-          id: this.ctx.request.param("id"),
-        },
-      }),
-    ]),
+    // email: schema.string.optional([
+    //   rules.email(),
+    //   rules.unique({
+    //     table: "users",
+    //     column: "email",
+    //     whereNot: {
+    //       id: this.ctx.request.param("id"),
+    //     },
+    //   }),
+    // ]),
     // password: schema.string.optional(),
     password: schema.string.optional([
       rules.minLength(6),

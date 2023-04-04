@@ -20,10 +20,40 @@ export default class UsersController extends BaseController {
   }
 
   public async create({ request, response }: HttpContextContract) {
-    const payload = await request.validate(RegistorValidator);
-    const results = await this.MODEL.create(payload);
-    delete results.$attributes.password;
-    return response.send(results);
+    const createUser = await request.validate(RegistorValidator);
+    // const createProfile = await request.validate(Validator);
+    try {
+      // let user = await this.MODEL.findBy("email", request.body().email);
+
+      let user = await this.MODEL.create(createUser);
+      user.related("userProfile").create({
+        first_name: request.body().first_name,
+        last_name: request.body().last_name,
+        phone_number: request.body().phone_number,
+        address: request.body().address,
+        city: request.body().city,
+        zipcode: request.body().zipcode,
+        state: request.body().state,
+        country: request.body().country,
+      });
+
+      const userRole = await Role.findBy("name", "user");
+      if (userRole) {
+        user.related("roles").sync([userRole.id]);
+      }
+      delete user.$attributes.password;
+      return response.send({
+        status: true,
+        message: "User Created Successfully",
+        result: user,
+      });
+    } catch (e) {
+      console.log("register error", e.toString());
+      return response.internalServerError({
+        status: false,
+        message: e.toString(),
+      });
+    }
   }
 
   public async get({ request, response }: HttpContextContract) {
@@ -51,15 +81,15 @@ export default class UsersController extends BaseController {
     }
 
     // check to see if a user is eligible to update
-    const user = auth.user;
-    if (
-      !(this.isSuperAdmin(user) || this.isAdmin(user) || user?.id === exists.id)
-    ) {
-      return response.forbidden({
-        status: false,
-        message: ResponseMessages.FORBIDDEN,
-      });
-    }
+    // const user = auth.user;
+    // if (
+    //   !(this.isSuperAdmin(user) || this.isAdmin(user) || user?.id === exists.id)
+    // ) {
+    //   return response.forbidden({
+    //     status: false,
+    //     message: ResponseMessages.FORBIDDEN,
+    //   });
+    // }
     await exists.merge(payload).save();
     if (payload.roles) {
       const roles: Role[] = await Role.query().whereIn("name", payload.roles);
@@ -68,39 +98,38 @@ export default class UsersController extends BaseController {
     delete exists.$attributes.password;
     return response.send({
       status: true,
-      message: "User updated",
+      message: "User updated Successfully",
       data: exists,
     });
   }
-
-  public async find({ auth, request, response }: HttpContextContract) {
-    if (!auth.user) {
-      return response.unauthorized({ message: ResponseMessages.UNAUTHORIZED });
-    }
+  // auth,
+  public async find({ request, response }: HttpContextContract) {
+    // if (!auth.user) {
+    //   return response.unauthorized({ message: ResponseMessages.UNAUTHORIZED });
+    // }
     try {
-      let baseQuery = Database.from("users")
-        .select(
-          "users.id",
-          "parent_user_id",
-          "first_name",
-          "last_name",
-          "email",
-          "company_profiles.logo as company_logo",
-          "company_profiles.name as company_name",
-          "company_profiles.information",
-          "company_profiles.created_at as company_create",
-          "users.created_at"
-        )
-        .leftOuterJoin(
-          "company_profiles",
-          "company_profiles.user_id",
-          "=",
-          "users.id"
-        )
-        .where("users.id", "!=", auth.user.id);
-      if (this.isAdmin(auth.user)) {
-        baseQuery.where("parent_user_id", auth.user.id);
-      }
+      let baseQuery = Database.from("users").select(
+        "users.id",
+        // "parent_user_id",
+        // "first_name",
+        // "last_name",
+        "email",
+        // "company_profiles.logo as company_logo",
+        // "company_profiles.name as company_name",
+        // "company_profiles.information",
+        // "company_profiles.created_at as company_create",
+        "users.created_at"
+      );
+      // .leftOuterJoin(
+      //   "company_profiles",
+      //   "company_profiles.user_id",
+      //   "=",
+      //   "users.id"
+      // );
+      // .where("users.id", "!=", auth.user.id);
+      // if (this.isAdmin(auth.user)) {
+      //   baseQuery.where("parent_user_id", auth.user.id);
+      // }
       const roles = request.input("roles");
       if (roles && roles.length && !roles.includes("")) {
         baseQuery.whereExists(function (query) {

@@ -36,7 +36,7 @@ export default class UserProfile extends BaseModel {
   public country: string | null;
 
   @column()
-  public profile_picture: number | null;
+  public profile_picture: string | null;
 
   @column.dateTime({
     autoCreate: true,

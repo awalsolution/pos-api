@@ -28,9 +28,19 @@ export default class AuthController extends BaseController {
         });
       }
       user = await this.MODEL.create(payload);
-      const adminRole = await Role.findBy("name", "user");
-      if (adminRole) {
-        user.related("roles").sync([adminRole.id]);
+      user.related("userProfile").create({
+        first_name: request.body().first_name,
+        last_name: request.body().last_name,
+        phone_number: request.body().phone_number,
+        address: request.body().address,
+        city: request.body().city,
+        zipcode: request.body().zipcode,
+        state: request.body().state,
+        country: request.body().country,
+      });
+      const userRole = await Role.findBy("name", "user");
+      if (userRole) {
+        user.related("roles").sync([userRole.id]);
       }
       delete user.$attributes.password;
       return response.send({

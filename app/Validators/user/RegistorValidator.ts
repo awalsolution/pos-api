@@ -11,7 +11,7 @@ export class RegistorValidator {
         table: "users",
       }),
     ]),
-    phone: schema.string.optional([rules.required()]),
+    phone: schema.string.optional(),
     password: schema.string({ escape: true, trim: true }, [
       rules.minLength(6),
       rules.confirmed("confirmPassword"),

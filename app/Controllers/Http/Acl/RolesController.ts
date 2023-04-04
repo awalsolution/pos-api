@@ -24,7 +24,11 @@ export default class RolesController extends BaseController {
       role.name = request.input("name");
       role.description = request.input("description");
       const data = await role.save();
-      return response.send({ status: true, message: "Role saved!", data });
+      return response.send({
+        status: true,
+        message: "Role saved!",
+        result: data,
+      });
     } catch (e) {
       console.log(e);
       return response
@@ -76,7 +80,7 @@ export default class RolesController extends BaseController {
       return response.send({
         status: true,
         message: "Role updated!",
-        date: role,
+        result: role,
       });
     } catch (e) {
       console.log(e);
