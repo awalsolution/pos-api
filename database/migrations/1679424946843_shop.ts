@@ -10,7 +10,6 @@ export default class extends BaseSchema {
       table.string("shop_phone").nullable();
       table.string("address").nullable();
       table.string("city").nullable();
-      table.string("zipcode").nullable();
       table.string("state").nullable();
       table.string("country").nullable();
       table.string("shop_logo").nullable();

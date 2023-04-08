@@ -6,17 +6,17 @@ Route.group(async () => {
   Route.post("/", (ctx: HttpContextContract) => {
     return new PermissionsController().create(ctx);
   });
-  Route.put("/:id", (ctx: HttpContextContract) => {
+  Route.put("/:permissionId", (ctx: HttpContextContract) => {
     return new PermissionsController().update(ctx);
   });
-  Route.delete("/:id", (ctx: HttpContextContract) => {
+  Route.delete("/:permissionId", (ctx: HttpContextContract) => {
     return new PermissionsController().destroy(ctx);
   });
 
   Route.get("/", (ctx: HttpContextContract) => {
     return new PermissionsController().find(ctx);
   });
-  Route.get("/:id", (ctx: HttpContextContract) => {
+  Route.get("/:permissionId", (ctx: HttpContextContract) => {
     return new PermissionsController().get(ctx);
   });
 }).prefix("/v1/permissions");

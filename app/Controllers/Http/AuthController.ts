@@ -64,7 +64,6 @@ export default class AuthController extends BaseController {
   }
 
   public async logout({ auth, response }: HttpContextContract) {
-    console.log(auth);
     await auth.use("api").logout();
     return response.ok({ message: "User logged out Successfully" });
   }

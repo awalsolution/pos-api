@@ -1,14 +1,13 @@
 {
   "paths":
     {
-      "/v1/products":
+      "/v1/shops":
         {
           "post":
             {
-              "summary": "Add a new Product",
-              "tags": ["products"],
-              "requestBody":
-                { "$ref": "#/components/requestBodies/productBody" },
+              "summary": "Add a new shop",
+              "tags": ["Vendor shop"],
+              "requestBody": { "$ref": "#/components/requestBodies/shopBody" },
               "responses":
                 {
                   "200": { "description": "OK" },
@@ -21,8 +20,8 @@
             },
           "get":
             {
-              "summary": "Get total Products",
-              "tags": ["products"],
+              "summary": "Get total shops",
+              "tags": ["Vendor shop"],
               "parameters":
                 [
                   {
@@ -57,20 +56,20 @@
                 },
             },
         },
-      "/v1/products/{productId}":
+      "/v1/shops/{shopId}":
         {
           "get":
             {
-              "summary": "Get a Product by ID",
-              "tags": ["products"],
+              "summary": "Get a shop by ID",
+              "tags": ["Vendor shop"],
               "parameters":
                 [
                   {
                     "in": "path",
-                    "name": "productId",
+                    "name": "shopId",
                     "schema": { "type": "integer" },
                     "required": true,
-                    "description": "Numeric ID of the product to get",
+                    "description": "Numeric ID of the shop to get",
                   },
                 ],
               "responses":
@@ -85,20 +84,19 @@
             },
           "put":
             {
-              "summary": "Update a Product",
-              "tags": ["products"],
+              "summary": "Update a shop",
+              "tags": ["Vendor shop"],
               "parameters":
                 [
                   {
                     "in": "path",
-                    "name": "productId",
+                    "name": "shopId",
                     "schema": { "type": "integer" },
                     "required": true,
-                    "description": "Numeric ID of the product to get",
+                    "description": "Numeric ID of the shop to get",
                   },
                 ],
-              "requestBody":
-                { "$ref": "#/components/requestBodies/productBody" },
+              "requestBody": { "$ref": "#/components/requestBodies/shopBody" },
               "responses":
                 {
                   "200": { "description": "OK" },
@@ -111,20 +109,19 @@
             },
           "delete":
             {
-              "summary": "Delete a Product",
-              "tags": ["products"],
+              "summary": "Delete a shop",
+              "tags": ["Vendor shop"],
               "parameters":
                 [
                   {
                     "in": "path",
-                    "name": "productId",
+                    "name": "shopId",
                     "schema": { "type": "integer" },
                     "required": true,
-                    "description": "Numeric ID of the product to get",
+                    "description": "Numeric ID of the shop to get",
                   },
                 ],
-              "requestBody":
-                { "$ref": "#/components/requestBodies/productBody" },
+              "requestBody": { "$ref": "#/components/requestBodies/shopBody" },
               "responses":
                 {
                   "200": { "description": "OK" },
@@ -141,78 +138,66 @@
     {
       "requestBodies":
         {
-          "productBody":
+          "shopBody":
             {
-              "description": "A JSON object containing product information",
+              "description": "A JSON object containing shop information",
               "required": true,
               "content":
                 {
                   "application/json":
-                    { "schema": { "$ref": "#/components/schemas/product" } },
+                    { "schema": { "$ref": "#/components/schemas/shop" } },
                 },
             },
         },
       "schemas":
         {
-          "product":
+          "shop":
             {
-              "title": "product Schemas Information",
+              "title": "shop Schemas Information",
               "type": "object",
               "properties":
                 {
-                  "title":
+                  "shop_name":
                     {
                       "type": "string",
-                      "example": "Product Title",
-                      "description": "add product title",
+                      "example": "Shop 01",
+                      "description": "add shop name",
                     },
-                  "product_sku":
+                  "shop_phone":
                     {
                       "type": "string",
-                      "example": "11111",
-                      "description": "add product product_sku",
+                      "example": "123456789",
+                      "description": "add shop phone",
                     },
-                  "slug":
+                  "address":
                     {
                       "type": "string",
-                      "example": "product-slug",
-                      "description": "add product Slug",
+                      "example": "DHA Phase 5",
+                      "description": "add shop address",
                     },
-                  "description":
+                  "city":
                     {
                       "type": "string",
-                      "example": "Product description",
-                      "description": "add product description",
+                      "example": "Lahore",
+                      "description": "add shop city",
                     },
-                  "short_description":
+                  "state":
                     {
                       "type": "string",
-                      "example": "Product short_description",
-                      "description": "add product short_description",
+                      "example": "punjab",
+                      "description": "add shop state",
                     },
-                  "price":
-                    {
-                      "type": "number",
-                      "example": 200,
-                      "description": "product price",
-                    },
-                  "sale_price":
-                    {
-                      "type": "number",
-                      "example": 150,
-                      "description": "product sale price",
-                    },
-                  "is_active":
-                    {
-                      "type": "boolean",
-                      "example": false,
-                      "description": "product Publish or unPublish",
-                    },
-                  "product_images":
+                  "country":
                     {
                       "type": "string",
-                      "example": "product image",
-                      "description": "add product image",
+                      "example": "Pakistan",
+                      "description": "add shop country",
+                    },
+                  "shop_logo":
+                    {
+                      "type": "string",
+                      "example": "shop logo",
+                      "description": "add shop logo",
                     },
                 },
             },

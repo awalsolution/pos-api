@@ -1,81 +1,77 @@
 import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import { schema, rules } from "@ioc:Adonis/Core/Validator";
-import Product from "App/Models/Product";
+import Shop from "App/Models/Shop";
 
 export default class ShopController {
   public async index({ response }: HttpContextContract) {
-    const products = await Product.all();
+    const shops = await Shop.all();
     return response.ok({
-      result: products,
-      message: "Products Find Successfully",
+      result: shops,
+      message: "Shops Find Successfully",
     });
   }
 
   public async create(ctx: HttpContextContract) {
-    let newproduct: any;
-    if (ctx.params.productId) {
-      newproduct = await Product.find(ctx.params.productId);
+    let newshop: any;
+    if (ctx.params.shopId) {
+      newshop = await Shop.find(ctx.params.shopId);
     } else {
-      const check_product = await Product.findBy(
-        "product_sku",
-        ctx.request.body().product_sku
+      const check_shop = await Shop.findBy(
+        "shop_name",
+        ctx.request.body().shop_name
       );
-      if (check_product) {
-        return ctx.response.conflict({ message: "Product Already Exist" });
+      if (check_shop) {
+        return ctx.response.conflict({ message: "Shop Already Exist" });
       }
-      newproduct = new Product();
+      newshop = new Shop();
     }
 
-    const productSchema = schema.create({
-      title: schema.string([rules.required()]),
-      product_sku: schema.string.optional(),
-      slug: schema.string.optional(),
-      short_description: schema.string.optional(),
-      description: schema.string.optional(),
-      price: schema.number.optional(),
-      sale_price: schema.number.optional(),
-      is_active: schema.boolean.optional(),
-      product_images: schema.string.optional(),
+    const shopSchema = schema.create({
+      shop_name: schema.string([rules.required()]),
+      shop_phone: schema.string.optional(),
+      address: schema.string.optional(),
+      city: schema.string.optional(),
+      state: schema.string.optional(),
+      country: schema.string.optional(),
+      logo: schema.string.optional(),
     });
 
-    const payload: any = await ctx.request.validate({ schema: productSchema });
+    const payload: any = await ctx.request.validate({ schema: shopSchema });
 
-    newproduct.title = payload.title;
-    newproduct.product_sku = payload.product_sku;
-    newproduct.slug = payload.slug;
-    newproduct.short_description = payload.short_description;
-    newproduct.description = payload.description;
-    newproduct.price = payload.price;
-    newproduct.sale_price = payload.sale_price;
-    newproduct.is_active = payload.is_active;
-    newproduct.product_images = payload.product_images;
+    newshop.shop_name = payload.shop_name;
+    newshop.shop_phone = payload.shop_phone;
+    newshop.address = payload.address;
+    newshop.city = payload.city;
+    newshop.state = payload.state;
+    newshop.country = payload.country;
+    newshop.logo = payload.logo;
 
-    await newproduct.save();
+    await newshop.save();
 
     return ctx.response.ok({
-      data: newproduct,
+      data: newshop,
       message: "Operation Successfully",
     });
   }
   public async show({ params, response }: HttpContextContract) {
-    const product = await Product.find(params.productId);
+    const shop = await Shop.find(params.shopId);
 
-    if (!product) {
-      return response.notFound({ message: "Product not found" });
+    if (!shop) {
+      return response.notFound({ message: "shop not found" });
     }
-    return response.ok({ data: product, message: "Product Find Successfully" });
+    return response.ok({ data: shop, message: "shop Find Successfully" });
   }
 
   public async delete({ params, response }: HttpContextContract) {
-    console.log(params.productId);
-    const product = await Product.find(params.productId);
+    console.log(params.shopId);
+    const shop = await Shop.find(params.shopId);
 
-    if (!product) {
-      return response.notFound({ message: "Product not found" });
+    if (!shop) {
+      return response.notFound({ message: "shop not found" });
     }
 
-    await product.delete();
+    await shop.delete();
 
-    return response.ok({ message: "Product deleted successfully." });
+    return response.ok({ message: "shop deleted successfully." });
   }
 }

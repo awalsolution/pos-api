@@ -82,7 +82,7 @@
                     },
                 },
             },
-          "patch":
+          "put":
             {
               "summary": "Update a user",
               "tags": ["users"],

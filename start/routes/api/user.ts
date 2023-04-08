@@ -9,17 +9,17 @@ Route.group(async () => {
   Route.post("/", (ctx: HttpContextContract) => {
     return new UsersController().create(ctx);
   });
-  Route.put("/:id", (ctx: HttpContextContract) => {
+  Route.put("/:userId", (ctx: HttpContextContract) => {
     return new UsersController().update(ctx);
   });
-  Route.delete("/:id", (ctx: HttpContextContract) => {
+  Route.delete("/:userId", (ctx: HttpContextContract) => {
     return new UsersController().destroy(ctx);
   });
 
   Route.get("/", (ctx: HttpContextContract) => {
     return new UsersController().find(ctx);
   });
-  Route.get("/:id", (ctx: HttpContextContract) => {
+  Route.get("/:userId", (ctx: HttpContextContract) => {
     return new UsersController().get(ctx);
   });
 })

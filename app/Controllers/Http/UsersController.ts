@@ -7,9 +7,9 @@ import User from "App/Models/User";
 import UserHasRole from "App/Models/Acl/UserHasRole";
 import HttpCodes from "App/Enums/HttpCodes";
 import ResponseMessages from "App/Enums/ResponseMessages";
-import UpdateUserValidator from "App/Validators/user/UpdateUserValidator";
+// import UpdateUserValidator from "App/Validators/user/UpdateUserValidator";
 import Pagination from "App/Enums/Pagination";
-import { imageUpload } from "App/Helpers/MainHelpers";
+// import { imageUpload } from "App/Helpers/MainHelpers";
 
 export default class UsersController extends BaseController {
   public MODEL: typeof User;
@@ -31,19 +31,21 @@ export default class UsersController extends BaseController {
           result: { user: user, verified: false },
         });
       }
+
       user = await this.MODEL.create(payload);
-      const userRole = await Role.findBy("name", "user");
+      const userRole = await Role.findBy("name", request.body().user_type);
       if (userRole) {
         user.related("roles").sync([userRole.id]);
       }
       delete user.$attributes.password;
+
       return response.send({
         status: true,
-        message: "User Created Successfully",
+        message: "User Register Successfully",
         result: user,
       });
     } catch (e) {
-      console.log("create error", e.toString());
+      console.log("register error", e.toString());
       return response.internalServerError({
         status: false,
         message: e.toString(),
@@ -57,7 +59,7 @@ export default class UsersController extends BaseController {
       if (data) {
         delete data.$attributes.password;
       }
-      return response.send({ status: true, data: data || {} });
+      return response.send({ status: true, result: data || {} });
     } catch (e) {
       return response
         .status(HttpCodes.SERVER_ERROR)
@@ -65,38 +67,35 @@ export default class UsersController extends BaseController {
     }
   }
 
-  public async update({ auth, request, response }: HttpContextContract) {
-    const payload = await request.validate(UpdateUserValidator);
-    const exists = await this.MODEL.findBy("id", request.param("id"));
-    if (!exists) {
-      return response.notFound({
-        status: false,
-        message: ResponseMessages.NOT_FOUND,
-      });
-    }
+  // public async update({ auth, request, response }: HttpContextContract) {
+  // const payload = await request.validate(UpdateUserValidator);
+  // const exists = await this.MODEL.findBy("id", request.param("id"));
+  // if (!exists) {
+  // return response.notFound({
+  // message: ResponseMessages.NOT_FOUND,
+  // });
+  // }
 
-    // check to see if a user is eligible to update
-    // const user = auth.user;
-    // if (
-    //   !(this.isSuperAdmin(user) || this.isAdmin(user) || user?.id === exists.id)
-    // ) {
-    //   return response.forbidden({
-    //     status: false,
-    //     message: ResponseMessages.FORBIDDEN,
-    //   });
-    // }
-    await exists.merge(payload).save();
-    if (payload.roles) {
-      const roles: Role[] = await Role.query().whereIn("name", payload.roles);
-      exists.related("roles").sync(roles.map((role) => role.id));
-    }
-    delete exists.$attributes.password;
-    return response.send({
-      status: true,
-      message: "User updated Successfully",
-      data: exists,
-    });
-  }
+  // check to see if a user is eligible to update
+  // const user = auth.user;
+  // if (
+  //   !(this.isSuperAdmin(user) || this.isAdmin(user) || user?.id === exists.id)
+  // ) {
+  //   return response.forbidden({
+  //     message: ResponseMessages.FORBIDDEN,
+  //   });
+  // }
+  // await exists.merge(payload).save();
+  // if (payload.roles) {
+  // const roles: Role[] = await Role.query().whereIn("name", payload.roles);
+  // exists.related("roles").sync(roles.map((role) => role.id));
+  // }
+  // delete exists.$attributes.password;
+  //   return response.ok({
+  //     message: "User updated Successfully",
+  //     result: exists,
+  //   });
+  // }
   // auth,
   public async find({ request, response }: HttpContextContract) {
     // if (!auth.user) {
@@ -148,7 +147,7 @@ export default class UsersController extends BaseController {
         .join("roles", "roles.id", "=", "user_has_roles.role_id")
         .whereIn("user_has_roles.user_id", userIds);
       for (const user of usersList.data) {
-        user.company_logo = s3Link(user.company_logo);
+        // user.company_logo = s3Link(user.company_logo);
         delete user.password;
         user.roles = userRoles
           .filter((item) => item.user_id === user.id)
@@ -159,10 +158,9 @@ export default class UsersController extends BaseController {
             };
           });
       }
-      return response.send(usersList);
+      return response.ok(usersList);
     } catch (e) {
       return response.internalServerError({
-        status: false,
         message: e.toString(),
       });
     }
@@ -174,6 +172,6 @@ export default class UsersController extends BaseController {
       return response.unauthorized({ message: ResponseMessages.UNAUTHORIZED });
     }
     delete authenticatedUser.$attributes.password;
-    return response.send({ status: true, data: auth.user });
+    return response.ok({ result: auth.user });
   }
 }
