@@ -9,7 +9,7 @@ import HttpCodes from "App/Enums/HttpCodes";
 import ResponseMessages from "App/Enums/ResponseMessages";
 import UpdateUserValidator from "App/Validators/user/UpdateUserValidator";
 import Pagination from "App/Enums/Pagination";
-import { s3Link } from "App/Helpers/MainHelpers";
+import { imageUpload } from "App/Helpers/MainHelpers";
 
 export default class UsersController extends BaseController {
   public MODEL: typeof User;
@@ -20,23 +20,18 @@ export default class UsersController extends BaseController {
   }
 
   public async create({ request, response }: HttpContextContract) {
-    const createUser = await request.validate(RegistorValidator);
-    // const createProfile = await request.validate(Validator);
+    const payload = await request.validate(RegistorValidator);
     try {
-      // let user = await this.MODEL.findBy("email", request.body().email);
-
-      let user = await this.MODEL.create(createUser);
-      user.related("userProfile").create({
-        first_name: request.body().first_name,
-        last_name: request.body().last_name,
-        phone_number: request.body().phone_number,
-        address: request.body().address,
-        city: request.body().city,
-        zipcode: request.body().zipcode,
-        state: request.body().state,
-        country: request.body().country,
-      });
-
+      let user = await this.MODEL.findBy("email", request.body().email);
+      if (user && !user.isEmailVerified) {
+        delete user.$attributes.password;
+        return response.conflict({
+          status: false,
+          message: "Already exists",
+          result: { user: user, verified: false },
+        });
+      }
+      user = await this.MODEL.create(payload);
       const userRole = await Role.findBy("name", "user");
       if (userRole) {
         user.related("roles").sync([userRole.id]);
@@ -48,7 +43,7 @@ export default class UsersController extends BaseController {
         result: user,
       });
     } catch (e) {
-      console.log("register error", e.toString());
+      console.log("create error", e.toString());
       return response.internalServerError({
         status: false,
         message: e.toString(),

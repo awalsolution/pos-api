@@ -5,6 +5,6 @@ export const userHasRole = [
   },
   {
     user: 2,
-    roles: ["user"],
+    roles: ["user", "vendor"],
   },
 ];

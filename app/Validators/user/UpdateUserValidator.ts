@@ -1,11 +1,11 @@
-import { schema, CustomMessages, rules } from "@ioc:Adonis/Core/Validator";
+import { schema, CustomMessages } from "@ioc:Adonis/Core/Validator";
 import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 
 export default class UpdateUserValidator {
   constructor(protected ctx: HttpContextContract) {}
   public schema = schema.create({
-    first_name: schema.string.optional(),
-    last_name: schema.string.optional(),
+    // first_name: schema.string.optional(),
+    // last_name: schema.string.optional(),
     // email: schema.string.optional([
     //   rules.email(),
     //   rules.unique({
@@ -17,10 +17,10 @@ export default class UpdateUserValidator {
     //   }),
     // ]),
     // password: schema.string.optional(),
-    password: schema.string.optional([
-      rules.minLength(6),
-      rules.confirmed("confirmPassword"),
-    ]),
+    // password: schema.string.optional([
+    //   rules.minLength(6),
+    //   rules.confirmed("confirmPassword"),
+    // ]),
     roles: schema.array.optional().members(schema.string()),
   });
   public messages: CustomMessages = {

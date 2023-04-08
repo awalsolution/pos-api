@@ -38,6 +38,23 @@
                 },
             },
         },
+      "/v1/auth/logout":
+        {
+          "get":
+            {
+              "summary": "logout user",
+              "tags": ["auth"],
+              "responses":
+                {
+                  "200": { "description": "OK" },
+                  "400": { "description": "Bad request." },
+                  "401":
+                    {
+                      "description": "Authorization information is missing or invalid.",
+                    },
+                },
+            },
+        },
     },
   "components":
     {
@@ -94,17 +111,12 @@
               "type": "object",
               "properties":
                 {
-                  "first_name":
+                  "user_type":
                     {
                       "type": "string",
-                      "example": "Iqbal",
-                      "description": "First Name",
-                    },
-                  "last_name":
-                    {
-                      "type": "string",
-                      "example": "Hassan",
-                      "description": "Last Name",
+                      "example": "vendor",
+                      "required": "true",
+                      "description": "vender",
                     },
                   "email":
                     {
@@ -113,7 +125,7 @@
                       "required": "true",
                       "description": "email",
                     },
-                  "phone":
+                  "phone_number":
                     {
                       "type": "string",
                       "example": "123456789",

@@ -4,6 +4,7 @@ import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 export class RegistorValidator {
   constructor(protected ctx: HttpContextContract) {}
   public schema = schema.create({
+    user_type: schema.string.optional(),
     email: schema.string({ escape: true, trim: true }, [
       rules.email(),
       rules.unique({
@@ -11,12 +12,11 @@ export class RegistorValidator {
         table: "users",
       }),
     ]),
-    phone: schema.string.optional(),
+    phone_number: schema.string.optional(),
     password: schema.string({ escape: true, trim: true }, [
       rules.minLength(6),
       rules.confirmed("confirmPassword"),
     ]),
-    roles: schema.array.optional().members(schema.string()),
   });
 
   public messages: CustomMessages = {

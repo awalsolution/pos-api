@@ -9,6 +9,11 @@ Route.group(async () => {
   Route.post("/login", (ctx: HttpContextContract) => {
     return new AuthController().login(ctx);
   });
+  Route.get("/logout", (ctx: HttpContextContract) => {
+    return new AuthController().logout(ctx);
+  });
+
+  // .middleware(["auth:api"]);
   // Route.post('/verify-otp', (ctx: HttpContextContract) => {
   //   return new AuthController().verifyOtp(ctx)
   // })

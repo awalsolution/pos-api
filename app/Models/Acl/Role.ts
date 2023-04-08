@@ -39,13 +39,19 @@ export default class Role extends BaseModel {
   @manyToMany(() => User, {
     pivotTable: "user_has_roles",
     pivotTimestamps: true,
-    localKey: "id",
     pivotForeignKey: "role_id",
     relatedKey: "id",
     pivotRelatedForeignKey: "user_id",
   })
   public users: ManyToMany<typeof User>;
 
-  @manyToMany(() => Permission, { pivotTable: "role_has_permissions" })
+  @manyToMany(() => Permission, {
+    pivotTable: "role_has_permissions",
+    pivotTimestamps: true,
+    localKey: "id",
+    pivotForeignKey: "role_id",
+    relatedKey: "id",
+    pivotRelatedForeignKey: "permission_id",
+  })
   public permissions: ManyToMany<typeof Permission>;
 }

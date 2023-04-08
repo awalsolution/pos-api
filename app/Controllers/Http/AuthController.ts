@@ -27,25 +27,17 @@ export default class AuthController extends BaseController {
           result: { user: user, verified: false },
         });
       }
+
       user = await this.MODEL.create(payload);
-      user.related("userProfile").create({
-        first_name: request.body().first_name,
-        last_name: request.body().last_name,
-        phone_number: request.body().phone_number,
-        address: request.body().address,
-        city: request.body().city,
-        zipcode: request.body().zipcode,
-        state: request.body().state,
-        country: request.body().country,
-      });
-      const userRole = await Role.findBy("name", "user");
+      const userRole = await Role.findBy("name", request.body().user_type);
       if (userRole) {
         user.related("roles").sync([userRole.id]);
       }
       delete user.$attributes.password;
+
       return response.send({
         status: true,
-        message: "Register Successfully",
+        message: "User Register Successfully",
         result: user,
       });
     } catch (e) {
@@ -61,22 +53,20 @@ export default class AuthController extends BaseController {
       const token = await auth
         .use("api")
         .attempt(request.input("email"), request.input("password"));
-      return {
-        status: true,
-        result: {
-          user: auth.user,
-          token: token.token,
-        },
-        message: "Login Successfully",
-      };
+      return response.ok({
+        token: token.token,
+        message: "User Login Successfully",
+      });
     } catch (e) {
       console.log(e);
       return response.badRequest("Invalid credentials");
     }
   }
 
-  public async logout({ auth }: HttpContextContract) {
-    return auth.use("api").logout();
+  public async logout({ auth, response }: HttpContextContract) {
+    console.log(auth);
+    await auth.use("api").logout();
+    return response.ok({ message: "User logged out Successfully" });
   }
 
   public async resetPasswordUsingOldPassword({

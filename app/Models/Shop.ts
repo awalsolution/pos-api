@@ -1,22 +1,35 @@
 import { DateTime } from "luxon";
-import {
-  BaseModel,
-  column,
-  manyToMany,
-  ManyToMany,
-} from "@ioc:Adonis/Lucid/Orm";
-import Role from "App/Models/Acl/Role";
+import { column, BaseModel, HasMany, hasMany } from "@ioc:Adonis/Lucid/Orm";
+import User from "App/Models/User";
 import { STANDARD_DATE_TIME_FORMAT } from "App/Helpers/utils";
 
-export default class Permission extends BaseModel {
+export default class Shop extends BaseModel {
   @column({ isPrimary: true })
   public id: number;
 
   @column()
-  public name: string;
+  public shop_name: string;
 
   @column()
-  public description: string;
+  public shop_phone: string | null;
+
+  @column()
+  public address: string | null;
+
+  @column()
+  public city: string | null;
+
+  @column()
+  public zipcode: string | null;
+
+  @column()
+  public state: string | null;
+
+  @column()
+  public country: string | null;
+
+  @column()
+  public shop_logo: string | null;
 
   @column.dateTime({
     autoCreate: true,
@@ -35,13 +48,10 @@ export default class Permission extends BaseModel {
   })
   public updatedAt: DateTime;
 
-  @manyToMany(() => Role, {
-    pivotTable: "role_has_permissions",
-    pivotTimestamps: true,
+  // Relations
+  @hasMany(() => User, {
     localKey: "id",
-    pivotForeignKey: "permission_id",
-    relatedKey: "id",
-    pivotRelatedForeignKey: "role_id",
+    foreignKey: "user_id",
   })
-  public roles: ManyToMany<typeof Role>;
+  public user: HasMany<typeof User>;
 }

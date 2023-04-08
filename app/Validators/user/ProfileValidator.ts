@@ -6,7 +6,6 @@ export class ProfileValidator {
   public schema = schema.create({
     first_name: schema.string([rules.required()]),
     last_name: schema.string.nullableAndOptional(),
-    phone_number: schema.string.nullableAndOptional(),
     address: schema.string.nullableAndOptional(),
     city: schema.string.nullableAndOptional(),
     zipcode: schema.string.nullableAndOptional(),
