@@ -19,4 +19,4 @@ Route.group(async () => {
   Route.get("/:permissionId", (ctx: HttpContextContract) => {
     return new PermissionsController().get(ctx);
   });
-}).prefix("/v1/permissions");
+}).prefix("/api/v1/permissions");

@@ -29,4 +29,4 @@ Route.group(async () => {
   // Route.post('/email-verification', (ctx: HttpContextContract) => {
   //   return new AuthController().emailVerification(ctx)
   // })
-}).prefix("/v1/auth");
+}).prefix("/api/v1/auth");

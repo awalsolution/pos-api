@@ -24,4 +24,4 @@ Route.group(async () => {
       return new RolesController().get(ctx);
     });
   }).prefix("users");
-}).prefix("/v1/roles");
+}).prefix("/api/v1/roles");
