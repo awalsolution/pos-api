@@ -1,4 +1,4 @@
-## Technology Stack
+## InSync CRM
 
 InSnync CRM API's is developed with the following technologies:
 
