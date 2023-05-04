@@ -16,9 +16,9 @@ Route.group(async () => {
   Route.get("/", (ctx: HttpContextContract) => {
     return new ShopController().index(ctx);
   });
-  Route.get("/:id", (ctx: HttpContextContract) => {
+  Route.get("/:shopId", (ctx: HttpContextContract) => {
     return new ShopController().show(ctx);
   });
 })
-  // .middleware(["auth:api"])
+  .middleware(["auth:api"])
   .prefix("/api/v1/shops");
