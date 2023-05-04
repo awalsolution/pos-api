@@ -5,10 +5,6 @@ InSnync CRM API's is developed with the following technologies:
 2. Adonisjs (a Nodejs framework),
 3. MySQL for (Database).
 
-## Demo
-
-Api's demo http://localhost:5000/api.
-
 ## How to Install
 
 1. Launch your preferred terminal.
