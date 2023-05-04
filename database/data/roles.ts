@@ -1,10 +1,10 @@
 export const roles = [
   {
-    name: "owner",
+    name: "super admin",
     description: "This is the owner of the application",
   },
   {
-    name: "user",
+    name: "admin",
     description: "create,view,edit & delete personal detail. ",
   },
   {
@@ -13,10 +13,10 @@ export const roles = [
   },
 ];
 
-export const globalRoles = ["owner", "user", "vendor"];
+export const globalRoles = ["super admin", "admin", "vendor"];
 
 export enum ROLES {
-  OWNER = "owner",
-  USER = "user",
+  OWNER = "super admin",
+  USER = "admin",
   VENDOR = "vendor",
 }

@@ -172,6 +172,10 @@ export default class UsersController extends BaseController {
       return response.unauthorized({ message: ResponseMessages.UNAUTHORIZED });
     }
     delete authenticatedUser.$attributes.password;
-    return response.ok({ result: auth.user });
+    return response.send({
+      code: 200,
+      result: auth.user,
+      message: "User find Successfully",
+    });
   }
 }

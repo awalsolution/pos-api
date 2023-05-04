@@ -3,7 +3,7 @@ import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import UsersController from "App/Controllers/Http/UsersController";
 
 Route.group(async () => {
-  Route.get("/authenticated", (ctx: HttpContextContract) => {
+  Route.get("/authenticated", async (ctx: HttpContextContract) => {
     return new UsersController().authenticated(ctx);
   });
   Route.post("/", (ctx: HttpContextContract) => {
@@ -23,5 +23,5 @@ Route.group(async () => {
     return new UsersController().get(ctx);
   });
 })
-  // .middleware(["auth:api"])
+  .middleware(["auth:api"])
   .prefix("/v1/users");

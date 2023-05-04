@@ -1,6 +1,6 @@
 export const roleHasPermission = [
   {
-    role: "owner",
+    role: "super admin",
     permissions: [
       "can_create_users",
       "can_view_users",
@@ -9,7 +9,16 @@ export const roleHasPermission = [
     ],
   },
   {
-    role: "user",
+    role: "admin",
+    permissions: [
+      "create_profile",
+      "view_profile",
+      "edit_profile",
+      "delete_profile",
+    ],
+  },
+  {
+    role: "vendor",
     permissions: [
       "create_profile",
       "view_profile",

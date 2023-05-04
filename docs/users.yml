@@ -56,6 +56,46 @@
                 },
             },
         },
+      "/v1/users/authenticated":
+        {
+          "get":
+            {
+              "summary": "Get total users",
+              "tags": ["users"],
+              "parameters":
+                [
+                  {
+                    "in": "query",
+                    "name": "offset",
+                    "schema": { "type": "integer", "minimum": 0, "default": 0 },
+                    "required": false,
+                    "description": "The number of items to skip before starting to collect the result set.",
+                  },
+                  {
+                    "in": "query",
+                    "name": "limit",
+                    "schema":
+                      {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 100,
+                        "default": 20,
+                      },
+                    "required": false,
+                    "description": "The number of items to return.",
+                  },
+                ],
+              "responses":
+                {
+                  "200": { "description": "OK" },
+                  "400": { "description": "Bad request." },
+                  "401":
+                    {
+                      "description": "Authorization information is missing or invalid.",
+                    },
+                },
+            },
+        },
       "/v1/users/{userId}":
         {
           "get":

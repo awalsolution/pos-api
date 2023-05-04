@@ -53,13 +53,19 @@ export default class AuthController extends BaseController {
       const token = await auth
         .use("api")
         .attempt(request.input("email"), request.input("password"));
-      return response.ok({
-        token: token.token,
+      return response.send({
+        code: 200,
+        result: {
+          token: token.token,
+          user: auth.user,
+        },
         message: "User Login Successfully",
       });
     } catch (e) {
-      console.log(e);
-      return response.badRequest("Invalid credentials");
+      return response.send({
+        code: 400,
+        message: e,
+      });
     }
   }
 
