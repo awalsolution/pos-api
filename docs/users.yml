@@ -1,7 +1,7 @@
 {
   "paths":
     {
-      "/v1/users":
+      "/api/v1/users":
         {
           "post":
             {
@@ -56,7 +56,7 @@
                 },
             },
         },
-      "/v1/users/authenticated":
+      "/api/v1/users/authenticated":
         {
           "get":
             {
@@ -96,7 +96,7 @@
                 },
             },
         },
-      "/v1/users/{userId}":
+      "/api/v1/users/{userId}":
         {
           "get":
             {

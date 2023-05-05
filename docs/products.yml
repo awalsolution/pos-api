@@ -1,7 +1,7 @@
 {
   "paths":
     {
-      "/v1/products":
+      "/api/v1/products":
         {
           "post":
             {
@@ -57,7 +57,7 @@
                 },
             },
         },
-      "/v1/products/{productId}":
+      "/api/v1/products/{productId}":
         {
           "get":
             {
