@@ -9,7 +9,6 @@ import {
   hasOne,
   HasOne,
   beforeFind,
-  // beforeFetch,
   afterFetch,
   ModelQueryBuilderContract,
   belongsTo,
@@ -113,11 +112,6 @@ export default class User extends BaseModel {
       })
       .preload("permissions");
   }
-
-  // @beforeFetch()
-  // public static preloadUserRoles(query: UserQuery) {
-  //   query.preload("roles").preload("permissions");
-  // }
 
   @afterFetch()
   public static deletePasswordList(users: User[]) {
