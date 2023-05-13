@@ -1,33 +1,33 @@
-import BaseSchema from "@ioc:Adonis/Lucid/Schema";
+import BaseSchema from '@ioc:Adonis/Lucid/Schema';
 
 export default class extends BaseSchema {
-  protected tableName = "user_has_permissions";
+  protected tableName = 'user_has_permissions';
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments("id");
+      table.increments('id');
       table
-        .integer("user_id")
+        .integer('user_id')
         .unsigned()
-        .references("users.id")
-        .onDelete("CASCADE")
-        .onUpdate("CASCADE");
+        .references('users.id')
+        .onDelete('CASCADE')
+        .onUpdate('CASCADE');
       table
-        .integer("permission_id")
+        .integer('permission_id')
         .unsigned()
-        .references("permissions.id")
-        .onDelete("CASCADE")
-        .onUpdate("CASCADE");
+        .references('permissions.id')
+        .onDelete('CASCADE')
+        .onUpdate('CASCADE');
 
-      table.unique(["user_id", "permission_id"]);
+      table.unique(['user_id', 'permission_id']);
     });
   }
 
   public async down() {
     this.schema
       .alterTable(this.tableName, (table) => {
-        table.dropForeign("user_id");
-        table.dropForeign("permission_id");
+        table.dropForeign('user_id');
+        table.dropForeign('permission_id');
       })
       .dropTable(this.tableName);
   }

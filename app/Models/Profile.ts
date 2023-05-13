@@ -1,17 +1,14 @@
-import { DateTime } from "luxon";
+import { DateTime } from 'luxon';
 import {
   BaseModel,
   column,
-  belongsTo,
-  BelongsTo,
   afterFind,
   afterFetch,
-} from "@ioc:Adonis/Lucid/Orm";
-import User from "App/Models/User";
+} from '@ioc:Adonis/Lucid/Orm';
 // import Upload from "App/Models/Upload";
-import { STANDARD_DATE_TIME_FORMAT } from "App/Helpers/utils";
+import { STANDARD_DATE_TIME_FORMAT } from 'App/Helpers/utils';
 
-export default class UserProfile extends BaseModel {
+export default class Profile extends BaseModel {
   @column({ isPrimary: true })
   public id: number;
 
@@ -25,13 +22,13 @@ export default class UserProfile extends BaseModel {
   public last_name: string | null;
 
   @column()
+  public phone_number: string | null;
+
+  @column()
   public address: string | null;
 
   @column()
   public city: string | null;
-
-  @column()
-  public zipcode: string | null;
 
   @column()
   public state: string | null;
@@ -50,7 +47,7 @@ export default class UserProfile extends BaseModel {
   @column.dateTime({
     autoCreate: true,
     serialize(value: DateTime) {
-      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : "";
+      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : '';
     },
   })
   public createdAt: DateTime;
@@ -59,23 +56,20 @@ export default class UserProfile extends BaseModel {
     autoCreate: true,
     autoUpdate: true,
     serialize(value: DateTime) {
-      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : "";
+      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : '';
     },
   })
   public updatedAt: DateTime;
 
-  @belongsTo(() => User)
-  public user: BelongsTo<typeof User>;
-
   @afterFind()
-  public static profilePictureUrl(profile: UserProfile) {
+  public static profilePictureUrl(profile: Profile) {
     if (profile.profile_picture) {
       profile.profile_picture_url = `${process.env.APP_URL}/${profile.profile_picture}`;
     }
   }
 
   @afterFetch()
-  public static profilePictureUrlFetch(profiles: UserProfile[]) {
+  public static profilePictureUrlFetch(profiles: Profile[]) {
     profiles.map((profile) => {
       if (profile.profile_picture) {
         profile.profile_picture_url = `${process.env.AWS_URL}/${profile.profile_picture}`;

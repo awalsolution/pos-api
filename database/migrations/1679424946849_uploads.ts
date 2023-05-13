@@ -1,28 +1,28 @@
-import BaseSchema from "@ioc:Adonis/Lucid/Schema";
+import BaseSchema from '@ioc:Adonis/Lucid/Schema';
 
 export default class extends BaseSchema {
-  protected tableName = "uploads";
+  protected tableName = 'uploads';
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments("id");
+      table.increments('id');
       table
-        .integer("user_id")
+        .integer('user_id')
         .unsigned()
         .unique()
-        .references("id")
-        .inTable("users")
-        .onDelete("CASCADE");
-      table.string("name").nullable();
-      table.string("url").nullable();
-      table.string("previewUrl").nullable();
-      table.string("extension").nullable();
-      table.json("formats").nullable();
+        .references('id')
+        .inTable('users')
+        .onDelete('CASCADE');
+      table.string('name').nullable();
+      table.string('url').nullable();
+      table.string('previewUrl').nullable();
+      table.string('extension').nullable();
+      table.json('formats').nullable();
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */
-      table.timestamp("created_at", { useTz: true }).defaultTo(this.now());
-      table.timestamp("updated_at", { useTz: true }).defaultTo(this.now());
+      table.timestamp('created_at', { useTz: true }).defaultTo(this.now());
+      table.timestamp('updated_at', { useTz: true }).defaultTo(this.now());
     });
   }
 

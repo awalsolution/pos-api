@@ -1,26 +1,20 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema';
 
 export default class extends BaseSchema {
-  protected tableName = 'role_has_permissions';
+  protected tableName = 'profiles';
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id');
-      table
-        .integer('role_id')
-        .unsigned()
-        .references('roles.id')
-        .onDelete('CASCADE')
-        .onUpdate('CASCADE');
-      table
-        .integer('permission_id')
-        .unsigned()
-        .references('permissions.id')
-        .onDelete('CASCADE')
-        .onUpdate('CASCADE');
-
-      table.unique(['role_id', 'permission_id']);
-
+      table.integer('user_id').unsigned().nullable().references('users.id');
+      table.string('first_name').nullable();
+      table.string('last_name').nullable();
+      table.string('phone_number').nullable();
+      table.string('address').nullable();
+      table.string('city').nullable();
+      table.string('state').nullable();
+      table.string('country').nullable();
+      table.string('profile_picture').nullable();
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */
