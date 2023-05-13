@@ -1,24 +1,24 @@
-import Route from "@ioc:Adonis/Core/Route";
-import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
-import ShopController from "App/Controllers/Http/ShopController";
+import Route from '@ioc:Adonis/Core/Route';
+import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
+import ShopController from 'App/Controllers/Http/ShopController';
 
 Route.group(async () => {
-  Route.post("/", (ctx: HttpContextContract) => {
+  Route.post('/', (ctx: HttpContextContract) => {
     return new ShopController().create(ctx);
   });
-  Route.put("/:shopId", (ctx: HttpContextContract) => {
+  Route.put('/:id', (ctx: HttpContextContract) => {
     return new ShopController().create(ctx);
   });
-  Route.delete("/:shopId", (ctx: HttpContextContract) => {
+  Route.delete('/:id', (ctx: HttpContextContract) => {
     return new ShopController().delete(ctx);
   });
 
-  Route.get("/", (ctx: HttpContextContract) => {
+  Route.get('/', (ctx: HttpContextContract) => {
     return new ShopController().index(ctx);
   });
-  Route.get("/:shopId", (ctx: HttpContextContract) => {
+  Route.get('/:id', (ctx: HttpContextContract) => {
     return new ShopController().show(ctx);
   });
 })
-  .middleware(["auth:api"])
-  .prefix("/api/v1/shops");
+  .middleware(['auth:api'])
+  .prefix('/api/v1/shops');

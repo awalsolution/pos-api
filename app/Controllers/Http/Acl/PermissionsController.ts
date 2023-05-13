@@ -1,7 +1,8 @@
-import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
-import { BaseController } from "App/Controllers/BaseController";
-import HttpCodes from "App/Enums/HttpCodes";
-import Permission from "App/Models/Acl/Permission";
+import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
+import { BaseController } from 'App/Controllers/BaseController';
+import HttpCodes from 'App/Enums/HttpCodes';
+import Pagination from 'App/Enums/Pagination';
+import Permission from 'App/Models/Acl/Permission';
 
 export default class PermissionsController extends BaseController {
   public MODEL: typeof Permission;
@@ -9,22 +10,39 @@ export default class PermissionsController extends BaseController {
     super();
     this.MODEL = Permission;
   }
+  // find permissions list
+  public async find({ request, response }: HttpContextContract) {
+    let baseQuery = this.MODEL.query();
+    if (request.input('name')) {
+      baseQuery.where('name', 'like', `${request.input('name')}%`);
+    }
+    return response.send({
+      code: 200,
+      result: await baseQuery.paginate(
+        request.input(Pagination.PAGE_KEY, Pagination.PAGE),
+        request.input(Pagination.PER_PAGE_KEY, Pagination.PER_PAGE)
+      ),
+      message: 'Permissions Found Successfully',
+    });
+  }
+  // create new permission
   public async create({ request, response }: HttpContextContract) {
     try {
       const permissionExists = await this.MODEL.findBy(
-        "name",
+        'name',
         request.body().name
       );
       if (permissionExists) {
-        return response.conflict({ message: "Permission already exists!" });
+        return response.conflict({ message: 'Permission already exists!' });
       }
       const permission = new this.MODEL();
-      permission.name = request.input("name");
+      permission.name = request.input('name');
+      permission.description = request.input('description');
       const data = await permission.save();
       return response.send({
-        status: true,
-        message: "Permission saved!",
-        data,
+        code: 200,
+        message: 'Permission Created Successfully!',
+        result: data,
       });
     } catch (e) {
       console.log(e);
@@ -33,18 +51,18 @@ export default class PermissionsController extends BaseController {
         .send({ status: false, message: e.toString() });
     }
   }
-
+  // update existing permission
   public async update({ request, response }: HttpContextContract) {
     try {
-      const permission = await this.MODEL.findBy("id", request.param("id"));
+      const permission = await this.MODEL.findBy('id', request.param('id'));
       if (!permission) {
         return response
           .status(HttpCodes.NOT_FOUND)
-          .send({ status: false, message: "Permission does not exists!" });
+          .send({ status: false, message: 'Permission does not exists!' });
       }
       const permissionExists = await this.MODEL.query()
-        .where("name", "like", request.body().name)
-        .whereNot("id", request.param("id"))
+        .where('name', 'like', request.body().name)
+        .whereNot('id', request.param('id'))
         .first();
       if (permissionExists) {
         return response.status(HttpCodes.CONFLICTS).send({
@@ -53,11 +71,12 @@ export default class PermissionsController extends BaseController {
         });
       }
       permission.name = request.body().name;
+      permission.description = request.body().description;
       await permission.save();
       return response.send({
-        status: true,
-        message: "Permission updated!",
-        date: permission,
+        code: 200,
+        message: 'Permission Updated Successfully!',
+        result: permission,
       });
     } catch (e) {
       return response
@@ -65,59 +84,39 @@ export default class PermissionsController extends BaseController {
         .send({ status: false, message: e.message });
     }
   }
-
-  // public async index({ response }: HttpContextContract) {
-  //   const permissions = await Permission.all();
-  //   return response.ok({
-  //     result: permissions,
-  //     message: "Permissions Find Successfully",
-  //   });
-  // }
-  // public async create(ctx: HttpContextContract) {
-  //   let newPermission: any;
-  //   if (ctx.params.permissionId) {
-  //     newPermission = await Permission.find(ctx.params.permissionId);
-  //   } else {
-  //     const check_permission = await Permission.findBy(
-  //       "name",
-  //       ctx.request.body().name
-  //     );
-  //     if (check_permission) {
-  //       return ctx.response.conflict({ message: "Permission Already Exist" });
-  //     }
-  //     newPermission = new Permission();
-  //   }
-  //   const permissionSchema = schema.create({
-  //     name: schema.string([rules.required()]),
-  //     description: schema.string.optional(),
-  //   });
-  //   const payload: any = await ctx.request.validate({
-  //     schema: permissionSchema,
-  //   });
-  //   newPermission.name = payload.name;
-  //   newPermission.description = payload.description;
-  //   await newPermission.save();
-  //   return ctx.response.ok({
-  //     result: newPermission,
-  //     message: "Operation Successfully",
-  //   });
-  // }
-  // public async show({ params, response }: HttpContextContract) {
-  //   const permission = await Permission.find(params.permissionId);
-  //   if (!permission) {
-  //     return response.notFound({ message: "Permission not found" });
-  //   }
-  //   return response.ok({
-  //     result: permission,
-  //     message: "Permission Find Successfully",
-  //   });
-  // }
-  // public async delete({ params, response }: HttpContextContract) {
-  //   const permission = await Permission.find(params.permissionId);
-  //   if (!permission) {
-  //     return response.notFound({ message: "Permission not found" });
-  //   }
-  //   await permission.delete();
-  //   return response.ok({ message: "Permission deleted successfully." });
-  // }
+  // find single permission using id
+  public async get({ request, response }: HttpContextContract) {
+    try {
+      const data = await this.MODEL.findBy('id', request.param('id'));
+      if (!data) {
+        return response
+          .status(HttpCodes.NOT_FOUND)
+          .send({ status: false, message: 'Permission does not exists!' });
+      }
+      return response.send({
+        code: 200,
+        message: 'Permission find Successfully!',
+        result: data,
+      });
+    } catch (e) {
+      return response
+        .status(HttpCodes.SERVER_ERROR)
+        .send({ status: false, message: e.toString() });
+    }
+  }
+  // delete single permission using id
+  public async destroy({ request, response }: HttpContextContract) {
+    const data = await this.MODEL.findBy('id', request.param('id'));
+    if (!data) {
+      return response.status(HttpCodes.NOT_FOUND).send({
+        status: false,
+        message: 'Permission not found',
+      });
+    }
+    await data.delete();
+    return response.send({
+      code: 200,
+      result: { message: 'Permission deleted successfully' },
+    });
+  }
 }

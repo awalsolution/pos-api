@@ -1,5 +1,5 @@
-import { DateTime } from "luxon";
-import Hash from "@ioc:Adonis/Core/Hash";
+import { DateTime } from 'luxon';
+import Hash from '@ioc:Adonis/Core/Hash';
 import {
   column,
   beforeSave,
@@ -13,12 +13,13 @@ import {
   ModelQueryBuilderContract,
   belongsTo,
   BelongsTo,
-} from "@ioc:Adonis/Lucid/Orm";
-import Permission from "App/Models/Acl/Permission";
-import Role from "App/Models/Acl/Role";
-import UserProfile from "App/Models/UserProfile";
-import Shop from "App/Models/Shop";
-import { STANDARD_DATE_TIME_FORMAT } from "App/Helpers/utils";
+  beforeFetch,
+} from '@ioc:Adonis/Lucid/Orm';
+import Permission from 'App/Models/Acl/Permission';
+import Role from 'App/Models/Acl/Role';
+import UserProfile from 'App/Models/UserProfile';
+import Shop from 'App/Models/Shop';
+import { STANDARD_DATE_TIME_FORMAT } from 'App/Helpers/utils';
 
 type UserQuery = ModelQueryBuilderContract<typeof User>;
 type RoleQuery = ModelQueryBuilderContract<typeof Role>;
@@ -54,7 +55,7 @@ export default class User extends BaseModel {
   @column.dateTime({
     autoCreate: true,
     serialize(value: DateTime) {
-      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : "";
+      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : '';
     },
   })
   public createdAt: DateTime;
@@ -63,7 +64,7 @@ export default class User extends BaseModel {
     autoCreate: true,
     autoUpdate: true,
     serialize(value: DateTime) {
-      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : "";
+      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : '';
     },
   })
   public updatedAt: DateTime;
@@ -77,26 +78,26 @@ export default class User extends BaseModel {
 
   // Relations
   @manyToMany(() => Role, {
-    pivotTable: "user_has_roles",
-    localKey: "id",
-    pivotForeignKey: "user_id",
-    relatedKey: "id",
-    pivotRelatedForeignKey: "role_id",
+    pivotTable: 'user_has_roles',
+    localKey: 'id',
+    pivotForeignKey: 'user_id',
+    relatedKey: 'id',
+    pivotRelatedForeignKey: 'role_id',
   })
   public roles: ManyToMany<typeof Role>;
 
   @manyToMany(() => Permission, {
-    pivotTable: "user_has_permissions",
-    localKey: "id",
-    pivotForeignKey: "user_id",
-    relatedKey: "id",
-    pivotRelatedForeignKey: "permission_id",
+    pivotTable: 'user_has_permissions',
+    localKey: 'id',
+    pivotForeignKey: 'user_id',
+    relatedKey: 'id',
+    pivotRelatedForeignKey: 'permission_id',
   })
   public permissions: ManyToMany<typeof Permission>;
 
   @hasOne(() => UserProfile, {
-    localKey: "id",
-    foreignKey: "user_id",
+    localKey: 'id',
+    foreignKey: 'user_id',
   })
   public userProfile: HasOne<typeof UserProfile>;
 
@@ -107,12 +108,15 @@ export default class User extends BaseModel {
   @beforeFind()
   public static preloadListUserRoles(query: UserQuery) {
     query
-      .preload("roles", (rolesQuery: RoleQuery) => {
-        rolesQuery.preload("permissions");
+      .preload('roles', (rolesQuery: RoleQuery) => {
+        rolesQuery.preload('permissions');
       })
-      .preload("permissions");
+      .preload('permissions');
   }
-
+  @beforeFetch()
+  public static preloadUserRoles(query: UserQuery) {
+    query.preload('roles').preload('permissions');
+  }
   @afterFetch()
   public static deletePasswordList(users: User[]) {
     users.forEach((user) => {

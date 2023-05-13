@@ -1,22 +1,22 @@
-import Route from "@ioc:Adonis/Core/Route";
-import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
-import PermissionsController from "App/Controllers/Http/Acl/PermissionsController";
+import Route from '@ioc:Adonis/Core/Route';
+import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
+import PermissionsController from 'App/Controllers/Http/Acl/PermissionsController';
 
 Route.group(async () => {
-  Route.post("/", (ctx: HttpContextContract) => {
+  Route.post('/', (ctx: HttpContextContract) => {
     return new PermissionsController().create(ctx);
   });
-  Route.put("/:permissionId", (ctx: HttpContextContract) => {
+  Route.put('/:id', (ctx: HttpContextContract) => {
     return new PermissionsController().update(ctx);
   });
-  Route.delete("/:permissionId", (ctx: HttpContextContract) => {
+  Route.delete('/:id', (ctx: HttpContextContract) => {
     return new PermissionsController().destroy(ctx);
   });
 
-  Route.get("/", (ctx: HttpContextContract) => {
+  Route.get('/', (ctx: HttpContextContract) => {
     return new PermissionsController().find(ctx);
   });
-  Route.get("/:permissionId", (ctx: HttpContextContract) => {
+  Route.get('/:id', (ctx: HttpContextContract) => {
     return new PermissionsController().get(ctx);
   });
-}).prefix("/api/v1/permissions");
+}).prefix('/api/v1/permissions');
