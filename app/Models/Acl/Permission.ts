@@ -1,12 +1,12 @@
-import { DateTime } from "luxon";
+import { DateTime } from 'luxon';
 import {
   BaseModel,
   column,
   manyToMany,
   ManyToMany,
-} from "@ioc:Adonis/Lucid/Orm";
-import Role from "App/Models/Acl/Role";
-import { STANDARD_DATE_TIME_FORMAT } from "App/Helpers/utils";
+} from '@ioc:Adonis/Lucid/Orm';
+import Role from 'App/Models/Acl/Role';
+import { STANDARD_DATE_TIME_FORMAT } from 'App/Helpers/utils';
 
 export default class Permission extends BaseModel {
   @column({ isPrimary: true })
@@ -15,13 +15,10 @@ export default class Permission extends BaseModel {
   @column()
   public name: string;
 
-  @column()
-  public description: string;
-
   @column.dateTime({
     autoCreate: true,
     serialize(value: DateTime) {
-      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : "";
+      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : '';
     },
   })
   public createdAt: DateTime;
@@ -30,18 +27,18 @@ export default class Permission extends BaseModel {
     autoCreate: true,
     autoUpdate: true,
     serialize(value: DateTime) {
-      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : "";
+      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : '';
     },
   })
   public updatedAt: DateTime;
 
   @manyToMany(() => Role, {
-    pivotTable: "role_has_permissions",
+    pivotTable: 'role_has_permissions',
     pivotTimestamps: true,
-    localKey: "id",
-    pivotForeignKey: "permission_id",
-    relatedKey: "id",
-    pivotRelatedForeignKey: "role_id",
+    localKey: 'id',
+    pivotForeignKey: 'permission_id',
+    relatedKey: 'id',
+    pivotRelatedForeignKey: 'role_id',
   })
   public roles: ManyToMany<typeof Role>;
 }

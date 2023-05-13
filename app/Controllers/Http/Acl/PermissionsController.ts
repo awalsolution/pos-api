@@ -37,7 +37,6 @@ export default class PermissionsController extends BaseController {
       }
       const permission = new this.MODEL();
       permission.name = request.input('name');
-      permission.description = request.input('description');
       const data = await permission.save();
       return response.send({
         code: 200,
@@ -71,7 +70,6 @@ export default class PermissionsController extends BaseController {
         });
       }
       permission.name = request.body().name;
-      permission.description = request.body().description;
       await permission.save();
       return response.send({
         code: 200,
