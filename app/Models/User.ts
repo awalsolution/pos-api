@@ -11,13 +11,10 @@ import {
   beforeFind,
   afterFetch,
   ModelQueryBuilderContract,
-  belongsTo,
-  BelongsTo,
-  beforeFetch,
 } from '@ioc:Adonis/Lucid/Orm';
 import Permission from 'App/Models/Acl/Permission';
 import Role from 'App/Models/Acl/Role';
-import UserProfile from 'App/Models/UserProfile';
+import Profile from 'App/Models/Profile';
 import Shop from 'App/Models/Shop';
 import { STANDARD_DATE_TIME_FORMAT } from 'App/Helpers/utils';
 
@@ -27,9 +24,6 @@ type RoleQuery = ModelQueryBuilderContract<typeof Role>;
 export default class User extends BaseModel {
   @column({ isPrimary: true })
   public id: number;
-
-  @column()
-  public ShopId: number;
 
   @column()
   public email: string;
@@ -95,28 +89,20 @@ export default class User extends BaseModel {
   })
   public permissions: ManyToMany<typeof Permission>;
 
-  @hasOne(() => UserProfile, {
-    localKey: 'id',
-    foreignKey: 'user_id',
-  })
-  public userProfile: HasOne<typeof UserProfile>;
+  @hasOne(() => Profile)
+  public profile: HasOne<typeof Profile>;
 
-  @belongsTo(() => Shop)
-  public shop: BelongsTo<typeof Shop>;
+  @hasOne(() => Shop)
+  public shop: HasOne<typeof Shop>;
 
   //Hooks
   @beforeFind()
   public static preloadListUserRoles(query: UserQuery) {
-    query
-      .preload('roles', (rolesQuery: RoleQuery) => {
-        rolesQuery.preload('permissions');
-      })
-      .preload('permissions');
+    query.preload('permissions').preload('roles', (rolesQuery: RoleQuery) => {
+      rolesQuery.preload('permissions');
+    });
   }
-  @beforeFetch()
-  public static preloadUserRoles(query: UserQuery) {
-    query.preload('roles').preload('permissions');
-  }
+  // delete password for fetched user
   @afterFetch()
   public static deletePasswordList(users: User[]) {
     users.forEach((user) => {

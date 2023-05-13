@@ -1,4 +1,4 @@
-import { DateTime } from "luxon";
+import { DateTime } from 'luxon';
 import {
   BaseModel,
   column,
@@ -7,10 +7,10 @@ import {
   afterFetch,
   hasMany,
   HasMany,
-} from "@ioc:Adonis/Lucid/Orm";
+} from '@ioc:Adonis/Lucid/Orm';
 // import FileProvider from "App/Models/FileProvider";
-import UserProfile from "App/Models/UserProfile";
-import { STANDARD_DATE_TIME_FORMAT } from "App/Helpers/utils";
+import UserProfile from 'App/Models/Profile';
+import { STANDARD_DATE_TIME_FORMAT } from 'App/Helpers/utils';
 
 export type FormatAttributes = {
   name: string;
@@ -32,11 +32,11 @@ export type FileFormats = {
 };
 
 export type FileUsageType =
-  | "user_profile_picture"
-  | "company_logo"
-  | "customer_logo"
-  | "product_gallery_image"
-  | "category_header_image";
+  | 'user_profile_picture'
+  | 'company_logo'
+  | 'customer_logo'
+  | 'product_gallery_image'
+  | 'category_header_image';
 
 export default class Upload extends BaseModel {
   @column({ isPrimary: true })
@@ -66,7 +66,7 @@ export default class Upload extends BaseModel {
   @column.dateTime({
     autoCreate: true,
     serialize(value: DateTime) {
-      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : "";
+      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : '';
     },
   })
   public createdAt: DateTime;
@@ -75,14 +75,14 @@ export default class Upload extends BaseModel {
     autoCreate: true,
     autoUpdate: true,
     serialize(value: DateTime) {
-      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : "";
+      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : '';
     },
   })
   public updatedAt: DateTime;
 
   @hasMany(() => UserProfile, {
-    foreignKey: "profile_picture",
-    onQuery: (query) => query.where("usage_type", "user_profile_picture"),
+    foreignKey: 'profile_picture',
+    onQuery: (query) => query.where('usage_type', 'user_profile_picture'),
   })
   public uploads: HasMany<typeof UserProfile>;
 

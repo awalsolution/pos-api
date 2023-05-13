@@ -38,14 +38,12 @@ export default class RolesController extends BaseController {
   }
   // find all Roles  list
   public async find({ request, response }: HttpContextContract) {
-    let baseQuery = this.MODEL.query();
-    if (request.input('name')) {
-      baseQuery.where('name', 'like', `${request.input('name')}%`);
-    }
+    let data = this.MODEL.query();
 
     return response.send({
       code: 200,
-      result: await baseQuery
+      result: await data
+        .preload('users')
         .preload('permissions')
         .paginate(
           request.input(Pagination.PAGE_KEY, Pagination.PAGE),

@@ -1,11 +1,13 @@
-import { DateTime } from "luxon";
-import { column, BaseModel, HasMany, hasMany } from "@ioc:Adonis/Lucid/Orm";
-import User from "App/Models/User";
-import { STANDARD_DATE_TIME_FORMAT } from "App/Helpers/utils";
+import { DateTime } from 'luxon';
+import { column, BaseModel } from '@ioc:Adonis/Lucid/Orm';
+import { STANDARD_DATE_TIME_FORMAT } from 'App/Helpers/utils';
 
 export default class Shop extends BaseModel {
   @column({ isPrimary: true })
   public id: number;
+
+  @column()
+  public userId: number;
 
   @column()
   public shop_name: string;
@@ -34,7 +36,7 @@ export default class Shop extends BaseModel {
   @column.dateTime({
     autoCreate: true,
     serialize(value: DateTime) {
-      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : "";
+      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : '';
     },
   })
   public createdAt: DateTime;
@@ -43,15 +45,8 @@ export default class Shop extends BaseModel {
     autoCreate: true,
     autoUpdate: true,
     serialize(value: DateTime) {
-      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : "";
+      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : '';
     },
   })
   public updatedAt: DateTime;
-
-  // Relations
-  @hasMany(() => User, {
-    localKey: "id",
-    foreignKey: "user_id",
-  })
-  public user: HasMany<typeof User>;
 }

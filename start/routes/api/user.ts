@@ -9,9 +9,9 @@ Route.group(async () => {
   Route.post('/', (ctx: HttpContextContract) => {
     return new UsersController().create(ctx);
   });
-  Route.put('/:id', (ctx: HttpContextContract) => {
-    return new UsersController().update(ctx);
-  });
+  // Route.put('/:id', (ctx: HttpContextContract) => {
+  //   return new UsersController().update(ctx);
+  // });
   Route.delete('/:id', (ctx: HttpContextContract) => {
     return new UsersController().destroy(ctx);
   });
