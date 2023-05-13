@@ -9,9 +9,9 @@ export default class extends BaseSchema {
       table.integer('user_id').unsigned().nullable().references('users.id');
       table.string('first_name').nullable();
       table.string('last_name').nullable();
+      table.string('phone_number').nullable();
       table.string('address').nullable();
       table.string('city').nullable();
-      table.string('zipcode').nullable();
       table.string('state').nullable();
       table.string('country').nullable();
       table.string('profile_picture').nullable();

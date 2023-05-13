@@ -22,13 +22,13 @@ export default class Profile extends BaseModel {
   public last_name: string | null;
 
   @column()
+  public phone_number: string | null;
+
+  @column()
   public address: string | null;
 
   @column()
   public city: string | null;
-
-  @column()
-  public zipcode: string | null;
 
   @column()
   public state: string | null;

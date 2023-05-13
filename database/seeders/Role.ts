@@ -1,13 +1,19 @@
 import BaseSeeder from '@ioc:Adonis/Lucid/Seeder';
-import { roles } from '../data/roles';
+// import { roles } from '../data/roles';
 import Role from 'App/Models/Acl/Role';
 
-export default class RoleSeeder extends BaseSeeder {
+export default class extends BaseSeeder {
   public async run() {
-    for (let index = 0; index < roles.length; index++) {
-      const roleData = roles[index];
-      const role = await Role.findBy('name', roleData.name);
-      if (!role) await Role.create(roleData);
-    }
+    await Role.createMany([
+      {
+        name: 'super admin',
+      },
+      {
+        name: 'admin',
+      },
+      {
+        name: 'vendor',
+      },
+    ]);
   }
 }
