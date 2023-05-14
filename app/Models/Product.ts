@@ -7,7 +7,7 @@ export default class Product extends BaseModel {
   public id: number;
 
   @column()
-  public shopId: number;
+  public shopId: number | undefined;
 
   @column()
   public product_sku: string;

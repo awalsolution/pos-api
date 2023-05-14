@@ -13,7 +13,7 @@ export default class Profile extends BaseModel {
   public id: number;
 
   @column()
-  public userId: number;
+  public userId: number | undefined;
 
   @column()
   public first_name: string | null;

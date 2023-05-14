@@ -1,77 +1,154 @@
-import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
-import { schema, rules } from "@ioc:Adonis/Core/Validator";
-import Shop from "App/Models/Shop";
+import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
+import { BaseController } from 'App/Controllers/BaseController';
+import HttpCodes from 'App/Enums/HttpCodes';
+import Pagination from 'App/Enums/Pagination';
+import Shop from 'App/Models/Shop';
 
-export default class ShopController {
-  public async index({ response }: HttpContextContract) {
-    const shops = await Shop.all();
-    return response.ok({
-      result: shops,
-      message: "Shops Find Successfully",
+export default class ShopController extends BaseController {
+  public MODEL: typeof Shop;
+  constructor() {
+    super();
+    this.MODEL = Shop;
+  }
+  // find shop list
+  public async find({ request, response }: HttpContextContract) {
+    let data = this.MODEL.query();
+    if (!data) {
+      return response.status(HttpCodes.NOT_FOUND).send({
+        code: HttpCodes.NOT_FOUND,
+        message: 'Shops Data is Empty',
+      });
+    }
+    return response.status(HttpCodes.SUCCESS).send({
+      code: HttpCodes.SUCCESS,
+      result: await data.paginate(
+        request.input(Pagination.PAGE_KEY, Pagination.PAGE),
+        request.input(Pagination.PER_PAGE_KEY, Pagination.PER_PAGE)
+      ),
+      message: 'Shops find Successfully',
     });
   }
+  // find Shop using id
+  public async get({ request, response }: HttpContextContract) {
+    try {
+      const data = await this.MODEL.query().where('id', request.param('id'));
 
-  public async create(ctx: HttpContextContract) {
-    let newshop: any;
-    if (ctx.params.shopId) {
-      newshop = await Shop.find(ctx.params.shopId);
-    } else {
-      const check_shop = await Shop.findBy(
-        "shop_name",
-        ctx.request.body().shop_name
-      );
-      if (check_shop) {
-        return ctx.response.conflict({ message: "Shop Already Exist" });
+      return response.status(HttpCodes.SUCCESS).send({
+        code: HttpCodes.SUCCESS,
+        message: 'Shop find successfully',
+        result: data,
+      });
+    } catch (e) {
+      return response
+        .status(HttpCodes.SERVER_ERROR)
+        .send({ code: HttpCodes.SERVER_ERROR, message: e.toString() });
+    }
+  }
+  // create new shop
+  public async create({ auth, request, response }: HttpContextContract) {
+    try {
+      const shopExists = await this.MODEL.findBy('name', request.body().name);
+      if (shopExists) {
+        return response
+          .status(HttpCodes.CONFLICTS)
+          .send({ message: 'Shop already exists!' });
       }
-      newshop = new Shop();
+      const shop = new this.MODEL();
+      shop.userId = auth.user?.id;
+      shop.shop_name = request.body().shop_name;
+      shop.shop_phone = request.body().shop_phone;
+      shop.address = request.body().address;
+      shop.city = request.body().city;
+      shop.state = request.body().state;
+      shop.country = request.body().country;
+      shop.shop_logo = request.body().shop_logo;
+
+      const data = await shop.save();
+      return response.send({
+        code: HttpCodes.SUCCESS,
+        message: 'Shop Created Successfully!',
+        result: data,
+      });
+    } catch (e) {
+      console.log(e);
+      return response
+        .status(HttpCodes.SERVER_ERROR)
+        .send({ code: HttpCodes.SERVER_ERROR, message: e.toString() });
     }
-
-    const shopSchema = schema.create({
-      shop_name: schema.string([rules.required()]),
-      shop_phone: schema.string.optional(),
-      address: schema.string.optional(),
-      city: schema.string.optional(),
-      state: schema.string.optional(),
-      country: schema.string.optional(),
-      logo: schema.string.optional(),
-    });
-
-    const payload: any = await ctx.request.validate({ schema: shopSchema });
-
-    newshop.shop_name = payload.shop_name;
-    newshop.shop_phone = payload.shop_phone;
-    newshop.address = payload.address;
-    newshop.city = payload.city;
-    newshop.state = payload.state;
-    newshop.country = payload.country;
-    newshop.logo = payload.logo;
-
-    await newshop.save();
-
-    return ctx.response.ok({
-      data: newshop,
-      message: "Operation Successfully",
-    });
-  }
-  public async show({ params, response }: HttpContextContract) {
-    const shop = await Shop.find(params.shopId);
-
-    if (!shop) {
-      return response.notFound({ message: "shop not found" });
-    }
-    return response.ok({ data: shop, message: "shop Find Successfully" });
   }
 
-  public async delete({ params, response }: HttpContextContract) {
-    console.log(params.shopId);
-    const shop = await Shop.find(params.shopId);
+  // update shop using id
+  public async update({ request, response }: HttpContextContract) {
+    try {
+      const shop = await this.MODEL.findBy('id', request.param('id'));
+      if (!shop) {
+        return response.status(HttpCodes.NOT_FOUND).send({
+          code: HttpCodes.NOT_FOUND,
+          message: 'Shop does not exists!',
+        });
+      }
+      const shopTypeExist = await this.MODEL.query()
+        .where('name', 'like', request.body().name)
+        .whereNot('id', request.param('id'))
+        .first();
+      if (shopTypeExist) {
+        return response.status(HttpCodes.CONFLICTS).send({
+          code: HttpCodes.CONFLICTS,
+          message: `${request.body().name} Shop type already exist!`,
+        });
+      }
+      shop.shop_name = request.body().shop_name;
+      shop.shop_name = request.body().shop_phone;
+      shop.status = request.body().status;
+      shop.address = request.body().address;
+      shop.city = request.body().city;
+      shop.state = request.body().state;
+      shop.country = request.body().country;
+      shop.shop_logo = request.body().shop_logo;
 
-    if (!shop) {
-      return response.notFound({ message: "shop not found" });
+      await shop.save();
+      return response.send({
+        code: 200,
+        message: 'Shop updated Successfully!',
+        result: shop,
+      });
+    } catch (e) {
+      console.log(e);
+      return response
+        .status(HttpCodes.SERVER_ERROR)
+        .send({ code: HttpCodes.SERVER_ERROR, message: e.message });
     }
+  }
+  //update shop status
+  public async updateShopStatus({ request, response }: HttpContextContract) {
+    const data = await this.MODEL.findBy('id', request.param('id'));
+    if (!data) {
+      return response.status(HttpCodes.NOT_FOUND).send({
+        code: HttpCodes.NOT_FOUND,
+        message: 'Shop not found',
+      });
+    }
+    data.status = request.body().status;
+    await data.save();
+    return response.status(HttpCodes.SUCCESS).send({
+      code: HttpCodes.SUCCESS,
+      result: { message: 'Shop Status Update successfully' },
+    });
+  }
 
-    await shop.delete();
-
-    return response.ok({ message: "shop deleted successfully." });
+  // delete shop using id
+  public async destroy({ request, response }: HttpContextContract) {
+    const data = await this.MODEL.findBy('id', request.param('id'));
+    if (!data) {
+      return response.status(HttpCodes.NOT_FOUND).send({
+        code: HttpCodes.NOT_FOUND,
+        message: 'Shop not found',
+      });
+    }
+    await data.delete();
+    return response.status(HttpCodes.SUCCESS).send({
+      code: HttpCodes.SUCCESS,
+      result: { message: 'Shop deleted successfully' },
+    });
   }
 }

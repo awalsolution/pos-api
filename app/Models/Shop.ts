@@ -8,13 +8,16 @@ export default class Shop extends BaseModel {
   public id: number;
 
   @column()
-  public userId: number;
+  public userId: number | undefined;
 
   @column()
   public shop_name: string;
 
   @column()
   public shop_phone: string | null;
+
+  @column()
+  public status: boolean;
 
   @column()
   public address: string | null;

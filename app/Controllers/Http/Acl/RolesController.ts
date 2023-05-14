@@ -25,7 +25,7 @@ export default class RolesController extends BaseController {
       const data = await role.save();
       await role.related('permissions').sync(request.body().permissions);
       return response.send({
-        code: 200,
+        code: HttpCodes.SUCCESS,
         message: 'Role Created Successfully!',
         result: data,
       });
@@ -41,7 +41,7 @@ export default class RolesController extends BaseController {
     let data = this.MODEL.query();
 
     return response.send({
-      code: 200,
+      code: HttpCodes.SUCCESS,
       result: await data
         .preload('users')
         .preload('permissions')
@@ -57,9 +57,10 @@ export default class RolesController extends BaseController {
     try {
       const role = await this.MODEL.findBy('id', request.param('id'));
       if (!role) {
-        return response
-          .status(HttpCodes.NOT_FOUND)
-          .send({ status: false, message: 'Role does not exists!' });
+        return response.status(HttpCodes.NOT_FOUND).send({
+          code: HttpCodes.NOT_FOUND,
+          message: 'Role does not exists!',
+        });
       }
       const roleTypeExist = await this.MODEL.query()
         .where('name', 'like', request.body().name)
@@ -67,7 +68,7 @@ export default class RolesController extends BaseController {
         .first();
       if (roleTypeExist) {
         return response.status(HttpCodes.CONFLICTS).send({
-          status: false,
+          code: HttpCodes.NOT_FOUND,
           message: `${request.body().name} Role type already exist!`,
         });
       }
@@ -75,7 +76,7 @@ export default class RolesController extends BaseController {
       await role.related('permissions').sync(request.body().permissions);
       await role.save();
       return response.send({
-        code: 200,
+        code: HttpCodes.SUCCESS,
         message: 'Role updated Successfully!',
         result: role,
       });
@@ -83,7 +84,7 @@ export default class RolesController extends BaseController {
       console.log(e);
       return response
         .status(HttpCodes.SERVER_ERROR)
-        .send({ status: false, message: e.message });
+        .send({ code: HttpCodes.SERVER_ERROR, message: e.message });
     }
   }
   // find Role using id
@@ -94,14 +95,14 @@ export default class RolesController extends BaseController {
         .preload('permissions')
         .first();
       return response.send({
-        code: 200,
+        code: HttpCodes.SUCCESS,
         message: 'Role find Successfully!',
         result: data,
       });
     } catch (e) {
       return response
         .status(HttpCodes.SERVER_ERROR)
-        .send({ status: false, message: e.toString() });
+        .send({ code: HttpCodes.SERVER_ERROR, message: e.toString() });
     }
   }
   // delete Role using id
@@ -109,13 +110,13 @@ export default class RolesController extends BaseController {
     const data = await this.MODEL.findBy('id', request.param('id'));
     if (!data) {
       return response.status(HttpCodes.NOT_FOUND).send({
-        status: false,
+        code: HttpCodes.NOT_FOUND,
         message: 'Role not found',
       });
     }
     await data.delete();
     return response.send({
-      code: 200,
+      code: HttpCodes.SUCCESS,
       result: { message: 'Role deleted successfully' },
     });
   }

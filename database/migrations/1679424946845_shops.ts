@@ -9,6 +9,7 @@ export default class extends BaseSchema {
       table.integer('user_id').unsigned().nullable().references('users.id');
       table.string('shop_name').notNullable().index();
       table.string('shop_phone').nullable();
+      table.boolean('is_active').defaultTo(true).index();
       table.string('address').nullable();
       table.string('city').nullable();
       table.string('state').nullable();

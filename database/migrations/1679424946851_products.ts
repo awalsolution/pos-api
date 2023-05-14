@@ -12,7 +12,7 @@ export default class extends BaseSchema {
       table.string('slug').notNullable();
       table.double('price').nullable().defaultTo(10);
       table.double('sale_price').nullable().defaultTo(9);
-      table.boolean('is_active').nullable().defaultTo(1);
+      table.boolean('is_active').defaultTo(true);
       table.string('description').nullable();
       table.string('short_description').nullable();
       table.string('product_images').nullable();
