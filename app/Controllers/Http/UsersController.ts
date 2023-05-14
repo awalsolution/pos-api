@@ -1,7 +1,7 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import { BaseController } from 'App/Controllers/BaseController';
 import { RegistorValidator } from 'App/Validators/user/RegistorValidator';
-import Role from 'App/Models/Acl/Role';
+// import Role from 'App/Models/Acl/Role';
 import User from 'App/Models/User';
 import HttpCodes from 'App/Enums/HttpCodes';
 import ResponseMessages from 'App/Enums/ResponseMessages';
@@ -19,8 +19,10 @@ export default class UsersController extends BaseController {
   // create new user
   public async create({ request, response }: HttpContextContract) {
     const payload = await request.validate(RegistorValidator);
+    console.log('object', request.body().email);
     try {
       let userExists = await this.MODEL.findBy('email', request.body().email);
+      console.log('userExists', userExists);
       if (userExists && !userExists.isEmailVerified) {
         delete userExists.$attributes.password;
         return response.status(HttpCodes.CONFLICTS).send({
@@ -30,22 +32,14 @@ export default class UsersController extends BaseController {
         });
       }
       const user = new this.MODEL();
+      user.email = payload.email;
+      user.password = payload.password;
+      user.userType = payload.user_type;
+      await user.save();
       user.related('profile').create({
         first_name: request.body().first_name,
         last_name: request.body().last_name,
       });
-      user.related('shop').create({
-        shop_name: request.body().shop_name,
-        shop_phone: request.body().shop_phone,
-      });
-      user.email = payload.email;
-      user.password = payload.password;
-      const userRole = await Role.findBy('name', request.body().user_type);
-      if (userRole) {
-        user.related('roles').sync([userRole.id]);
-      }
-      delete user.$attributes.password;
-      await user.save();
       return response.status(HttpCodes.SUCCESS).send({
         code: HttpCodes.SUCCESS,
         message: 'User Register Successfully!',
@@ -59,7 +53,7 @@ export default class UsersController extends BaseController {
     }
   }
 
-  // find all Roles  list
+  // find all users  list
   public async find({ request, response }: HttpContextContract) {
     let data = this.MODEL.query();
 
@@ -83,7 +77,16 @@ export default class UsersController extends BaseController {
   // find single user by id
   public async get({ request, response }: HttpContextContract) {
     try {
-      const data = await this.MODEL.findBy('id', request.param('id'));
+      const data = await this.MODEL.query()
+        .where('id', request.param('id'))
+        .preload('permissions')
+        .preload('roles', (rolesQuery) => {
+          rolesQuery.preload('permissions');
+        })
+        .preload('profile')
+        .preload('shop')
+        .first();
+      // const data = await this.MODEL.findBy('id', request.param('id'));
       if (data) {
         delete data.$attributes.password;
       }

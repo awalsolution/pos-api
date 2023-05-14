@@ -19,7 +19,7 @@ Route.group(async () => {
   Route.get('/:id', (ctx: HttpContextContract) => {
     return new ProductsController().get(ctx);
   });
-  Route.get('/status/:id', (ctx: HttpContextContract) => {
+  Route.put('/status/:id', (ctx: HttpContextContract) => {
     return new ProductsController().updateProductStatus(ctx);
   });
 })

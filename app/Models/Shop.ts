@@ -26,9 +26,6 @@ export default class Shop extends BaseModel {
   public city: string | null;
 
   @column()
-  public zipcode: string | null;
-
-  @column()
   public state: string | null;
 
   @column()

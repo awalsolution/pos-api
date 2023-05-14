@@ -16,7 +16,7 @@ export default class Product extends BaseModel {
   public title: string;
 
   @column()
-  public slug: string | null;
+  public slug: string;
 
   @column()
   public short_description: string;
