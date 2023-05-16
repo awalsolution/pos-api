@@ -1,218 +1,218 @@
 {
-  "paths":
+  'paths':
     {
-      "/api/v1/products":
+      '/api/v1/products':
         {
-          "post":
+          'post':
             {
-              "summary": "Add a new Product",
-              "tags": ["products"],
-              "requestBody":
-                { "$ref": "#/components/requestBodies/productBody" },
-              "responses":
+              'summary': 'Add a new Product',
+              'tags': ['products'],
+              'requestBody':
+                { '$ref': '#/components/requestBodies/productBody' },
+              'responses':
                 {
-                  "200": { "description": "OK" },
-                  "400": { "description": "Bad request." },
-                  "401":
+                  '200': { 'description': 'OK' },
+                  '400': { 'description': 'Bad request.' },
+                  '401':
                     {
-                      "description": "Authorization information is missing or invalid.",
+                      'description': 'Authorization information is missing or invalid.',
                     },
                 },
             },
-          "get":
+          'get':
             {
-              "summary": "Get total Products",
-              "tags": ["products"],
-              "parameters":
+              'summary': 'Get total Products',
+              'tags': ['products'],
+              'parameters':
                 [
                   {
-                    "in": "query",
-                    "name": "offset",
-                    "schema": { "type": "integer", "minimum": 0, "default": 0 },
-                    "required": false,
-                    "description": "The number of items to skip before starting to collect the result set.",
+                    'in': 'query',
+                    'name': 'offset',
+                    'schema': { 'type': 'integer', 'minimum': 0, 'default': 0 },
+                    'required': false,
+                    'description': 'The number of items to skip before starting to collect the result set.',
                   },
                   {
-                    "in": "query",
-                    "name": "limit",
-                    "schema":
+                    'in': 'query',
+                    'name': 'limit',
+                    'schema':
                       {
-                        "type": "integer",
-                        "minimum": 1,
-                        "maximum": 100,
-                        "default": 20,
+                        'type': 'integer',
+                        'minimum': 1,
+                        'maximum': 100,
+                        'default': 20,
                       },
-                    "required": false,
-                    "description": "The number of items to return.",
+                    'required': false,
+                    'description': 'The number of items to return.',
                   },
                 ],
-              "responses":
+              'responses':
                 {
-                  "200": { "description": "OK" },
-                  "400": { "description": "Bad request." },
-                  "401":
+                  '200': { 'description': 'OK' },
+                  '400': { 'description': 'Bad request.' },
+                  '401':
                     {
-                      "description": "Authorization information is missing or invalid.",
+                      'description': 'Authorization information is missing or invalid.',
                     },
                 },
             },
         },
-      "/api/v1/products/{productId}":
+      '/api/v1/products/{productId}':
         {
-          "get":
+          'get':
             {
-              "summary": "Get a Product by ID",
-              "tags": ["products"],
-              "parameters":
+              'summary': 'Get a Product by ID',
+              'tags': ['products'],
+              'parameters':
                 [
                   {
-                    "in": "path",
-                    "name": "productId",
-                    "schema": { "type": "integer" },
-                    "required": true,
-                    "description": "Numeric ID of the product to get",
+                    'in': 'path',
+                    'name': 'productId',
+                    'schema': { 'type': 'integer' },
+                    'required': true,
+                    'description': 'Numeric ID of the product to get',
                   },
                 ],
-              "responses":
+              'responses':
                 {
-                  "200": { "description": "OK" },
-                  "400": { "description": "Bad request." },
-                  "401":
+                  '200': { 'description': 'OK' },
+                  '400': { 'description': 'Bad request.' },
+                  '401':
                     {
-                      "description": "Authorization information is missing or invalid.",
+                      'description': 'Authorization information is missing or invalid.',
                     },
                 },
             },
-          "put":
+          'put':
             {
-              "summary": "Update a Product",
-              "tags": ["products"],
-              "parameters":
+              'summary': 'Update a Product',
+              'tags': ['products'],
+              'parameters':
                 [
                   {
-                    "in": "path",
-                    "name": "productId",
-                    "schema": { "type": "integer" },
-                    "required": true,
-                    "description": "Numeric ID of the product to get",
+                    'in': 'path',
+                    'name': 'productId',
+                    'schema': { 'type': 'integer' },
+                    'required': true,
+                    'description': 'Numeric ID of the product to get',
                   },
                 ],
-              "requestBody":
-                { "$ref": "#/components/requestBodies/productBody" },
-              "responses":
+              'requestBody':
+                { '$ref': '#/components/requestBodies/productBody' },
+              'responses':
                 {
-                  "200": { "description": "OK" },
-                  "400": { "description": "Bad request." },
-                  "401":
+                  '200': { 'description': 'OK' },
+                  '400': { 'description': 'Bad request.' },
+                  '401':
                     {
-                      "description": "Authorization information is missing or invalid.",
+                      'description': 'Authorization information is missing or invalid.',
                     },
                 },
             },
-          "delete":
+          'delete':
             {
-              "summary": "Delete a Product",
-              "tags": ["products"],
-              "parameters":
+              'summary': 'Delete a Product',
+              'tags': ['products'],
+              'parameters':
                 [
                   {
-                    "in": "path",
-                    "name": "productId",
-                    "schema": { "type": "integer" },
-                    "required": true,
-                    "description": "Numeric ID of the product to get",
+                    'in': 'path',
+                    'name': 'productId',
+                    'schema': { 'type': 'integer' },
+                    'required': true,
+                    'description': 'Numeric ID of the product to get',
                   },
                 ],
-              "requestBody":
-                { "$ref": "#/components/requestBodies/productBody" },
-              "responses":
+              'requestBody':
+                { '$ref': '#/components/requestBodies/productBody' },
+              'responses':
                 {
-                  "200": { "description": "OK" },
-                  "400": { "description": "Bad request." },
-                  "401":
+                  '200': { 'description': 'OK' },
+                  '400': { 'description': 'Bad request.' },
+                  '401':
                     {
-                      "description": "Authorization information is missing or invalid.",
+                      'description': 'Authorization information is missing or invalid.',
                     },
                 },
             },
         },
     },
-  "components":
+  'components':
     {
-      "requestBodies":
+      'requestBodies':
         {
-          "productBody":
+          'productBody':
             {
-              "description": "A JSON object containing product information",
-              "required": true,
-              "content":
+              'description': 'A JSON object containing product information',
+              'required': true,
+              'content':
                 {
-                  "application/json":
-                    { "schema": { "$ref": "#/components/schemas/product" } },
+                  'application/json':
+                    { 'schema': { '$ref': '#/components/schemas/product' } },
                 },
             },
         },
-      "schemas":
+      'schemas':
         {
-          "product":
+          'product':
             {
-              "title": "product Schemas Information",
-              "type": "object",
-              "properties":
+              'title': 'product Schemas Information',
+              'type': 'object',
+              'properties':
                 {
-                  "title":
+                  'title':
                     {
-                      "type": "string",
-                      "example": "Product Title",
-                      "description": "add product title",
+                      'type': 'string',
+                      'example': 'Product Title',
+                      'description': 'add product title',
                     },
-                  "product_sku":
+                  'product_sku':
                     {
-                      "type": "string",
-                      "example": "11111",
-                      "description": "add product product_sku",
+                      'type': 'string',
+                      'example': '11111',
+                      'description': 'add product product_sku',
                     },
-                  "slug":
+                  'slug':
                     {
-                      "type": "string",
-                      "example": "product-slug",
-                      "description": "add product Slug",
+                      'type': 'string',
+                      'example': 'product-slug',
+                      'description': 'add product Slug',
                     },
-                  "description":
+                  'description':
                     {
-                      "type": "string",
-                      "example": "Product description",
-                      "description": "add product description",
+                      'type': 'string',
+                      'example': 'Product description',
+                      'description': 'add product description',
                     },
-                  "short_description":
+                  'short_description':
                     {
-                      "type": "string",
-                      "example": "Product short_description",
-                      "description": "add product short_description",
+                      'type': 'string',
+                      'example': 'Product short_description',
+                      'description': 'add product short_description',
                     },
-                  "price":
+                  'price':
                     {
-                      "type": "number",
-                      "example": 200,
-                      "description": "product price",
+                      'type': 'number',
+                      'example': 200,
+                      'description': 'product price',
                     },
-                  "sale_price":
+                  'sale_price':
                     {
-                      "type": "number",
-                      "example": 150,
-                      "description": "product sale price",
+                      'type': 'number',
+                      'example': 150,
+                      'description': 'product sale price',
                     },
-                  "is_active":
+                  'is_active':
                     {
-                      "type": "boolean",
-                      "example": false,
-                      "description": "product Publish or unPublish",
+                      'type': 'boolean',
+                      'example': false,
+                      'description': 'product Publish or unPublish',
                     },
-                  "product_images":
+                  'product_images':
                     {
-                      "type": "string",
-                      "example": "product image",
-                      "description": "add product image",
+                      'type': 'string',
+                      'example': 'product image',
+                      'description': 'add product image',
                     },
                 },
             },

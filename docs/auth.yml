@@ -1,150 +1,150 @@
 {
-  "paths":
+  'paths':
     {
-      "/api/v1/auth/login":
+      '/api/v1/auth/login':
         {
-          "post":
+          'post':
             {
-              "summary": "login user",
-              "tags": ["auth"],
-              "requestBody": { "$ref": "#/components/requestBodies/loginBody" },
-              "responses":
+              'summary': 'login user',
+              'tags': ['auth'],
+              'requestBody': { '$ref': '#/components/requestBodies/loginBody' },
+              'responses':
                 {
-                  "200": { "description": "OK" },
-                  "400": { "description": "Bad request." },
-                  "401":
+                  '200': { 'description': 'OK' },
+                  '400': { 'description': 'Bad request.' },
+                  '401':
                     {
-                      "description": "Authorization information is missing or invalid.",
+                      'description': 'Authorization information is missing or invalid.',
                     },
                 },
             },
         },
-      "/api/v1/auth/register":
+      '/api/v1/auth/register':
         {
-          "post":
+          'post':
             {
-              "summary": "Register user",
-              "tags": ["auth"],
-              "requestBody":
-                { "$ref": "#/components/requestBodies/registerBody" },
-              "responses":
+              'summary': 'Register user',
+              'tags': ['auth'],
+              'requestBody':
+                { '$ref': '#/components/requestBodies/registerBody' },
+              'responses':
                 {
-                  "200": { "description": "OK" },
-                  "400": { "description": "Bad request." },
-                  "401":
+                  '200': { 'description': 'OK' },
+                  '400': { 'description': 'Bad request.' },
+                  '401':
                     {
-                      "description": "Authorization information is missing or invalid.",
+                      'description': 'Authorization information is missing or invalid.',
                     },
                 },
             },
         },
-      "/api/v1/auth/logout":
+      '/api/v1/auth/logout':
         {
-          "get":
+          'get':
             {
-              "summary": "logout user",
-              "tags": ["auth"],
-              "responses":
+              'summary': 'logout user',
+              'tags': ['auth'],
+              'responses':
                 {
-                  "200": { "description": "OK" },
-                  "400": { "description": "Bad request." },
-                  "401":
+                  '200': { 'description': 'OK' },
+                  '400': { 'description': 'Bad request.' },
+                  '401':
                     {
-                      "description": "Authorization information is missing or invalid.",
+                      'description': 'Authorization information is missing or invalid.',
                     },
                 },
             },
         },
     },
-  "components":
+  'components':
     {
-      "requestBodies":
+      'requestBodies':
         {
-          "loginBody":
+          'loginBody':
             {
-              "description": "A JSON object containing Login information",
-              "required": true,
-              "content":
+              'description': 'A JSON object containing Login information',
+              'required': true,
+              'content':
                 {
-                  "application/json":
-                    { "schema": { "$ref": "#/components/schemas/login" } },
+                  'application/json':
+                    { 'schema': { '$ref': '#/components/schemas/login' } },
                 },
             },
-          "registerBody":
+          'registerBody':
             {
-              "description": "A JSON object containing Register information",
-              "required": true,
-              "content":
+              'description': 'A JSON object containing Register information',
+              'required': true,
+              'content':
                 {
-                  "application/json":
-                    { "schema": { "$ref": "#/components/schemas/register" } },
+                  'application/json':
+                    { 'schema': { '$ref': '#/components/schemas/register' } },
                 },
             },
         },
-      "schemas":
+      'schemas':
         {
-          "login":
+          'login':
             {
-              "title": "Login Schemas Information",
-              "type": "object",
-              "properties":
+              'title': 'Login Schemas Information',
+              'type': 'object',
+              'properties':
                 {
-                  "email":
+                  'email':
                     {
-                      "type": "string",
-                      "example": "iqbal@gmail.com",
-                      "required": "true",
-                      "description": "email",
+                      'type': 'string',
+                      'example': 'iqbal@gmail.com',
+                      'required': 'true',
+                      'description': 'email',
                     },
-                  "password":
+                  'password':
                     {
-                      "type": "string",
-                      "example": "123456",
-                      "required": "true",
-                      "description": "password",
+                      'type': 'string',
+                      'example': '123456',
+                      'required': 'true',
+                      'description': 'password',
                     },
                 },
             },
-          "register":
+          'register':
             {
-              "title": "Register Schemas Information",
-              "type": "object",
-              "properties":
+              'title': 'Register Schemas Information',
+              'type': 'object',
+              'properties':
                 {
-                  "user_type":
+                  'user_type':
                     {
-                      "type": "string",
-                      "example": "vendor",
-                      "required": "true",
-                      "description": "vender",
+                      'type': 'string',
+                      'example': 'vendor',
+                      'required': 'true',
+                      'description': 'vender',
                     },
-                  "email":
+                  'email':
                     {
-                      "type": "string",
-                      "example": "iqbal@gmail.com",
-                      "required": "true",
-                      "description": "email",
+                      'type': 'string',
+                      'example': 'iqbal@gmail.com',
+                      'required': 'true',
+                      'description': 'email',
                     },
-                  "phone_number":
+                  'phone_number':
                     {
-                      "type": "string",
-                      "example": "123456789",
-                      "required": "true",
-                      "description": "Phone Number",
+                      'type': 'string',
+                      'example': '123456789',
+                      'required': 'true',
+                      'description': 'Phone Number',
                     },
-                  "password":
+                  'password':
                     {
-                      "type": "string",
-                      "example": "123456",
-                      "required": "true",
-                      "description": "password",
+                      'type': 'string',
+                      'example': '123456',
+                      'required': 'true',
+                      'description': 'password',
                     },
-                  "confirmPassword":
+                  'confirmPassword':
                     {
-                      "type": "string",
-                      "example": "123456",
-                      "required": "true",
-                      "description": "confirmPassword",
+                      'type': 'string',
+                      'example': '123456',
+                      'required': 'true',
+                      'description': 'confirmPassword',
                     },
                 },
             },
