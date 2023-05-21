@@ -18,10 +18,10 @@
 |
 */
 
-import Route from "@ioc:Adonis/Core/Route";
+import Route from '@ioc:Adonis/Core/Route';
 
-Route.get("/", async () => {
-  return { hello: "world" };
+Route.get('/', async () => {
+  return { hello: 'world' };
 });
 
 // import "./auth.routes";
@@ -30,8 +30,9 @@ Route.get("/", async () => {
 // import "./permissions.routes";
 // import "./products.routes";
 
-import "./api/user";
-import "./api/shop";
-import "./api/auth";
-import "./api/acl/roles";
-import "./api/acl/permissions";
+import './api/user';
+import './api/shop';
+import './api/product';
+import './api/auth';
+import './api/acl/roles';
+import './api/acl/permissions';

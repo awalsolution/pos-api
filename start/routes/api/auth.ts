@@ -1,15 +1,15 @@
-import Route from "@ioc:Adonis/Core/Route";
-import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
-import AuthController from "App/Controllers/Http/AuthController";
+import Route from '@ioc:Adonis/Core/Route';
+import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
+import AuthController from 'App/Controllers/Http/AuthController';
 
 Route.group(async () => {
-  Route.post("/register", (ctx: HttpContextContract) => {
+  Route.post('/register', (ctx: HttpContextContract) => {
     return new AuthController().register(ctx);
   });
-  Route.post("/login", (ctx: HttpContextContract) => {
+  Route.post('/login', (ctx: HttpContextContract) => {
     return new AuthController().login(ctx);
   });
-  Route.get("/logout", (ctx: HttpContextContract) => {
+  Route.get('/logout', (ctx: HttpContextContract) => {
     return new AuthController().logout(ctx);
   });
 
@@ -29,4 +29,4 @@ Route.group(async () => {
   // Route.post('/email-verification', (ctx: HttpContextContract) => {
   //   return new AuthController().emailVerification(ctx)
   // })
-}).prefix("/api/v1/auth");
+}).prefix('/api/v1/auth');

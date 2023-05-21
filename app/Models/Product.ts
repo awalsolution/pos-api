@@ -7,7 +7,7 @@ export default class Product extends BaseModel {
   public id: number;
 
   @column()
-  public shopId: number;
+  public shopId: number | undefined;
 
   @column()
   public product_sku: string;
@@ -16,7 +16,7 @@ export default class Product extends BaseModel {
   public title: string;
 
   @column()
-  public slug: string | null;
+  public slug: string;
 
   @column()
   public short_description: string;

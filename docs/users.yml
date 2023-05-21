@@ -1,241 +1,241 @@
 {
-  "paths":
+  'paths':
     {
-      "/api/v1/users":
+      '/api/v1/users':
         {
-          "post":
+          'post':
             {
-              "summary": "Add a new user",
-              "tags": ["users"],
-              "requestBody": { "$ref": "#/components/requestBodies/userBody" },
-              "responses":
+              'summary': 'Add a new user',
+              'tags': ['users'],
+              'requestBody': { '$ref': '#/components/requestBodies/userBody' },
+              'responses':
                 {
-                  "200": { "description": "OK" },
-                  "400": { "description": "Bad request." },
-                  "401":
+                  '200': { 'description': 'OK' },
+                  '400': { 'description': 'Bad request.' },
+                  '401':
                     {
-                      "description": "Authorization information is missing or invalid.",
+                      'description': 'Authorization information is missing or invalid.',
                     },
                 },
             },
-          "get":
+          'get':
             {
-              "summary": "Get total users",
-              "tags": ["users"],
-              "parameters":
+              'summary': 'Get total users',
+              'tags': ['users'],
+              'parameters':
                 [
                   {
-                    "in": "query",
-                    "name": "offset",
-                    "schema": { "type": "integer", "minimum": 0, "default": 0 },
-                    "required": false,
-                    "description": "The number of items to skip before starting to collect the result set.",
+                    'in': 'query',
+                    'name': 'offset',
+                    'schema': { 'type': 'integer', 'minimum': 0, 'default': 0 },
+                    'required': false,
+                    'description': 'The number of items to skip before starting to collect the result set.',
                   },
                   {
-                    "in": "query",
-                    "name": "limit",
-                    "schema":
+                    'in': 'query',
+                    'name': 'limit',
+                    'schema':
                       {
-                        "type": "integer",
-                        "minimum": 1,
-                        "maximum": 100,
-                        "default": 20,
+                        'type': 'integer',
+                        'minimum': 1,
+                        'maximum': 100,
+                        'default': 20,
                       },
-                    "required": false,
-                    "description": "The number of items to return.",
+                    'required': false,
+                    'description': 'The number of items to return.',
                   },
                 ],
-              "responses":
+              'responses':
                 {
-                  "200": { "description": "OK" },
-                  "400": { "description": "Bad request." },
-                  "401":
+                  '200': { 'description': 'OK' },
+                  '400': { 'description': 'Bad request.' },
+                  '401':
                     {
-                      "description": "Authorization information is missing or invalid.",
+                      'description': 'Authorization information is missing or invalid.',
                     },
                 },
             },
         },
-      "/api/v1/users/authenticated":
+      '/api/v1/users/authenticated':
         {
-          "get":
+          'get':
             {
-              "summary": "Get total users",
-              "tags": ["users"],
-              "parameters":
+              'summary': 'Get total users',
+              'tags': ['users'],
+              'parameters':
                 [
                   {
-                    "in": "query",
-                    "name": "offset",
-                    "schema": { "type": "integer", "minimum": 0, "default": 0 },
-                    "required": false,
-                    "description": "The number of items to skip before starting to collect the result set.",
+                    'in': 'query',
+                    'name': 'offset',
+                    'schema': { 'type': 'integer', 'minimum': 0, 'default': 0 },
+                    'required': false,
+                    'description': 'The number of items to skip before starting to collect the result set.',
                   },
                   {
-                    "in": "query",
-                    "name": "limit",
-                    "schema":
+                    'in': 'query',
+                    'name': 'limit',
+                    'schema':
                       {
-                        "type": "integer",
-                        "minimum": 1,
-                        "maximum": 100,
-                        "default": 20,
+                        'type': 'integer',
+                        'minimum': 1,
+                        'maximum': 100,
+                        'default': 20,
                       },
-                    "required": false,
-                    "description": "The number of items to return.",
+                    'required': false,
+                    'description': 'The number of items to return.',
                   },
                 ],
-              "responses":
+              'responses':
                 {
-                  "200": { "description": "OK" },
-                  "400": { "description": "Bad request." },
-                  "401":
+                  '200': { 'description': 'OK' },
+                  '400': { 'description': 'Bad request.' },
+                  '401':
                     {
-                      "description": "Authorization information is missing or invalid.",
+                      'description': 'Authorization information is missing or invalid.',
                     },
                 },
             },
         },
-      "/api/v1/users/{userId}":
+      '/api/v1/users/{userId}':
         {
-          "get":
+          'get':
             {
-              "summary": "Get a user by ID",
-              "tags": ["users"],
-              "parameters":
+              'summary': 'Get a user by ID',
+              'tags': ['users'],
+              'parameters':
                 [
                   {
-                    "in": "path",
-                    "name": "userId",
-                    "schema": { "type": "integer" },
-                    "required": true,
-                    "description": "Numeric ID of the user to get",
+                    'in': 'path',
+                    'name': 'userId',
+                    'schema': { 'type': 'integer' },
+                    'required': true,
+                    'description': 'Numeric ID of the user to get',
                   },
                 ],
-              "responses":
+              'responses':
                 {
-                  "200": { "description": "OK" },
-                  "400": { "description": "Bad request." },
-                  "401":
+                  '200': { 'description': 'OK' },
+                  '400': { 'description': 'Bad request.' },
+                  '401':
                     {
-                      "description": "Authorization information is missing or invalid.",
+                      'description': 'Authorization information is missing or invalid.',
                     },
                 },
             },
-          "put":
+          'put':
             {
-              "summary": "Update a user",
-              "tags": ["users"],
-              "parameters":
+              'summary': 'Update a user',
+              'tags': ['users'],
+              'parameters':
                 [
                   {
-                    "in": "path",
-                    "name": "userId",
-                    "schema": { "type": "integer" },
-                    "required": true,
-                    "description": "Numeric ID of the user to get",
+                    'in': 'path',
+                    'name': 'userId',
+                    'schema': { 'type': 'integer' },
+                    'required': true,
+                    'description': 'Numeric ID of the user to get',
                   },
                 ],
-              "requestBody": { "$ref": "#/components/requestBodies/userBody" },
-              "responses":
+              'requestBody': { '$ref': '#/components/requestBodies/userBody' },
+              'responses':
                 {
-                  "200": { "description": "OK" },
-                  "400": { "description": "Bad request." },
-                  "401":
+                  '200': { 'description': 'OK' },
+                  '400': { 'description': 'Bad request.' },
+                  '401':
                     {
-                      "description": "Authorization information is missing or invalid.",
+                      'description': 'Authorization information is missing or invalid.',
                     },
                 },
             },
-          "delete":
+          'delete':
             {
-              "summary": "Delete a user",
-              "tags": ["users"],
-              "parameters":
+              'summary': 'Delete a user',
+              'tags': ['users'],
+              'parameters':
                 [
                   {
-                    "in": "path",
-                    "name": "userId",
-                    "schema": { "type": "integer" },
-                    "required": true,
-                    "description": "Numeric ID of the user to get",
+                    'in': 'path',
+                    'name': 'userId',
+                    'schema': { 'type': 'integer' },
+                    'required': true,
+                    'description': 'Numeric ID of the user to get',
                   },
                 ],
-              "requestBody": { "$ref": "#/components/requestBodies/userBody" },
-              "responses":
+              'requestBody': { '$ref': '#/components/requestBodies/userBody' },
+              'responses':
                 {
-                  "200": { "description": "OK" },
-                  "400": { "description": "Bad request." },
-                  "401":
+                  '200': { 'description': 'OK' },
+                  '400': { 'description': 'Bad request.' },
+                  '401':
                     {
-                      "description": "Authorization information is missing or invalid.",
+                      'description': 'Authorization information is missing or invalid.',
                     },
                 },
             },
         },
     },
-  "components":
+  'components':
     {
-      "requestBodies":
+      'requestBodies':
         {
-          "userBody":
+          'userBody':
             {
-              "description": "A JSON object containing user information",
-              "required": true,
-              "content":
+              'description': 'A JSON object containing user information',
+              'required': true,
+              'content':
                 {
-                  "application/json":
-                    { "schema": { "$ref": "#/components/schemas/user" } },
+                  'application/json':
+                    { 'schema': { '$ref': '#/components/schemas/user' } },
                 },
             },
         },
-      "schemas":
+      'schemas':
         {
-          "user":
+          'user':
             {
-              "title": "User Schemas Information",
-              "type": "object",
-              "properties":
+              'title': 'User Schemas Information',
+              'type': 'object',
+              'properties':
                 {
-                  "first_name":
+                  'first_name':
                     {
-                      "type": "string",
-                      "example": "Iqbal",
-                      "description": "First Name",
+                      'type': 'string',
+                      'example': 'Iqbal',
+                      'description': 'First Name',
                     },
-                  "last_name":
+                  'last_name':
                     {
-                      "type": "string",
-                      "example": "Hassan",
-                      "description": "Last Name",
+                      'type': 'string',
+                      'example': 'Hassan',
+                      'description': 'Last Name',
                     },
-                  "email":
+                  'email':
                     {
-                      "type": "string",
-                      "example": "iqbal@gmail.com",
-                      "required": "true",
-                      "description": "email",
+                      'type': 'string',
+                      'example': 'iqbal@gmail.com',
+                      'required': 'true',
+                      'description': 'email',
                     },
-                  "phone":
+                  'phone':
                     {
-                      "type": "string",
-                      "example": "123498765",
-                      "required": "true",
-                      "description": "Phone Number",
+                      'type': 'string',
+                      'example': '123498765',
+                      'required': 'true',
+                      'description': 'Phone Number',
                     },
-                  "password":
+                  'password':
                     {
-                      "type": "string",
-                      "example": "password",
-                      "required": "true",
-                      "description": "password",
+                      'type': 'string',
+                      'example': 'password',
+                      'required': 'true',
+                      'description': 'password',
                     },
-                  "confirmPassword":
+                  'confirmPassword':
                     {
-                      "type": "string",
-                      "example": "password",
-                      "required": "true",
-                      "description": "Confirm Password",
+                      'type': 'string',
+                      'example': 'password',
+                      'required': 'true',
+                      'description': 'Confirm Password',
                     },
                 },
             },

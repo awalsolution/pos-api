@@ -43,7 +43,7 @@ export default class Upload extends BaseModel {
   public id: number;
 
   @column()
-  public userId: string;
+  public userId: number | undefined;
 
   @column()
   public name: string | null;

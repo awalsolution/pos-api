@@ -8,7 +8,7 @@ export default class Shop extends BaseModel {
   public id: number;
 
   @column()
-  public userId: number;
+  public userId: number | undefined;
 
   @column()
   public shop_name: string;
@@ -17,13 +17,13 @@ export default class Shop extends BaseModel {
   public shop_phone: string | null;
 
   @column()
+  public status: boolean;
+
+  @column()
   public address: string | null;
 
   @column()
   public city: string | null;
-
-  @column()
-  public zipcode: string | null;
 
   @column()
   public state: string | null;

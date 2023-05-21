@@ -7,17 +7,20 @@ Route.group(async () => {
     return new ShopController().create(ctx);
   });
   Route.put('/:id', (ctx: HttpContextContract) => {
-    return new ShopController().create(ctx);
+    return new ShopController().update(ctx);
   });
   Route.delete('/:id', (ctx: HttpContextContract) => {
-    return new ShopController().delete(ctx);
+    return new ShopController().destroy(ctx);
   });
 
   Route.get('/', (ctx: HttpContextContract) => {
-    return new ShopController().index(ctx);
+    return new ShopController().find(ctx);
   });
   Route.get('/:id', (ctx: HttpContextContract) => {
-    return new ShopController().show(ctx);
+    return new ShopController().get(ctx);
+  });
+  Route.get('/status/:id', (ctx: HttpContextContract) => {
+    return new ShopController().updateShopStatus(ctx);
   });
 })
   .middleware(['auth:api'])

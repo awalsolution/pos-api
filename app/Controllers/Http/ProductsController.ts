@@ -1,82 +1,158 @@
-import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
-import { schema, rules } from "@ioc:Adonis/Core/Validator";
-import Product from "App/Models/Product";
+import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
+import Product from 'App/Models/Product';
+import { BaseController } from 'App/Controllers/BaseController';
+import HttpCodes from 'App/Enums/HttpCodes';
+import Pagination from 'App/Enums/Pagination';
 
-export default class ProductsController {
-  public async index({ response }: HttpContextContract) {
-    const products = await Product.all();
-    return response.ok({
-      result: products,
-      message: "Products Find Successfully",
+export default class ProductsController extends BaseController {
+  public MODEL: typeof Product;
+  constructor() {
+    super();
+    this.MODEL = Product;
+  }
+  // find Product list
+  public async find({ request, response }: HttpContextContract) {
+    let data = this.MODEL.query();
+    if (!data) {
+      return response.status(HttpCodes.NOT_FOUND).send({
+        code: HttpCodes.NOT_FOUND,
+        message: 'Products Data is Empty',
+      });
+    }
+    return response.status(HttpCodes.SUCCESS).send({
+      code: HttpCodes.SUCCESS,
+      result: await data.paginate(
+        request.input(Pagination.PAGE_KEY, Pagination.PAGE),
+        request.input(Pagination.PER_PAGE_KEY, Pagination.PER_PAGE)
+      ),
+      message: 'Products find Successfully',
+    });
+  }
+  // find Product using id
+  public async get({ request, response }: HttpContextContract) {
+    try {
+      const data = await this.MODEL.query().where('id', request.param('id'));
+
+      return response.status(HttpCodes.SUCCESS).send({
+        code: HttpCodes.SUCCESS,
+        message: 'Product find Successfully',
+        result: data,
+      });
+    } catch (e) {
+      return response
+        .status(HttpCodes.SERVER_ERROR)
+        .send({ code: HttpCodes.SERVER_ERROR, message: e.toString() });
+    }
+  }
+  // create new product
+  public async create({ auth, request, response }: HttpContextContract) {
+    try {
+      const dataExists = await this.MODEL.findBy(
+        'product_sku',
+        request.body().product_sku
+      );
+      if (dataExists) {
+        return response
+          .status(HttpCodes.CONFLICTS)
+          .send({ message: 'Product already exists!' });
+      }
+      const product = new this.MODEL();
+      product.shopId = auth.user?.shop.id;
+      product.product_sku = request.body().product_sku;
+      product.title = request.body().title;
+      product.slug = request.body().slug;
+      product.price = request.body().price;
+      product.sale_price = request.body().sale_price;
+      product.description = request.body().description;
+      product.short_description = request.body().short_description;
+      product.product_images = request.body().product_images;
+
+      const data = await product.save();
+      return response.status(HttpCodes.SUCCESS).send({
+        code: HttpCodes.SUCCESS,
+        message: 'Product Created Successfully!',
+        result: data,
+      });
+    } catch (e) {
+      console.log(e);
+      return response
+        .status(HttpCodes.SERVER_ERROR)
+        .send({ code: HttpCodes.SERVER_ERROR, message: e.toString() });
+    }
+  }
+
+  // update Role using id
+  public async update({ request, response }: HttpContextContract) {
+    try {
+      const product = await this.MODEL.findBy('id', request.param('id'));
+      if (!product) {
+        return response.status(HttpCodes.NOT_FOUND).send({
+          code: HttpCodes.NOT_FOUND,
+          message: 'Product does not exists!',
+        });
+      }
+      const productTypeExist = await this.MODEL.query()
+        .where('name', 'like', request.body().name)
+        .whereNot('id', request.param('id'))
+        .first();
+      if (productTypeExist) {
+        return response.status(HttpCodes.CONFLICTS).send({
+          code: HttpCodes.CONFLICTS,
+          message: `${request.body().name} Product type already exist!`,
+        });
+      }
+      product.product_sku = request.body().product_sku;
+      product.title = request.body().title;
+      product.slug = request.body().slug;
+      product.price = request.body().price;
+      product.sale_price = request.body().sale_price;
+      product.description = request.body().description;
+      product.short_description = request.body().short_description;
+      product.product_images = request.body().product_images;
+
+      await product.save();
+      return response.status(HttpCodes.SUCCESS).send({
+        code: HttpCodes.SUCCESS,
+        message: 'Product updated Successfully!',
+        result: product,
+      });
+    } catch (e) {
+      console.log(e);
+      return response
+        .status(HttpCodes.SERVER_ERROR)
+        .send({ code: HttpCodes.SERVER_ERROR, message: e.message });
+    }
+  }
+  //update product status
+  public async updateProductStatus({ request, response }: HttpContextContract) {
+    const data = await this.MODEL.findBy('id', request.param('id'));
+    if (!data) {
+      return response.status(HttpCodes.NOT_FOUND).send({
+        code: HttpCodes.NOT_FOUND,
+        message: 'Product not found',
+      });
+    }
+    data.is_active = request.body().is_active;
+    await data.save();
+    return response.status(HttpCodes.SUCCESS).send({
+      code: HttpCodes.SUCCESS,
+      result: { message: 'Product Status Update successfully' },
     });
   }
 
-  public async create(ctx: HttpContextContract) {
-    let newproduct: any;
-    if (ctx.params.productId) {
-      newproduct = await Product.find(ctx.params.productId);
-    } else {
-      const check_product = await Product.findBy(
-        "product_sku",
-        ctx.request.body().product_sku
-        );
-        if (check_product) {
-          return ctx.response.conflict({ message: "Product Already Exist" });
-        }
-        newproduct = new Product();
-      }
-      
-      const productSchema = schema.create({
-        title: schema.string([rules.required()]),
-        product_sku: schema.string.optional(),
-        slug: schema.string.optional(),
-        short_description: schema.string.optional(),
-        description: schema.string.optional(),
-        price: schema.number.optional(),
-        sale_price: schema.number.optional(),
-        is_active: schema.boolean.optional(),
-        product_images: schema.string.optional(),
-      });
-      
-      const payload: any = await ctx.request.validate({ schema: productSchema });
-      
-      newproduct.title = payload.title;
-      newproduct.product_sku = payload.product_sku;
-      newproduct.slug = payload.slug;
-      newproduct.short_description = payload.short_description;
-      newproduct.description = payload.description;
-      newproduct.price = payload.price;
-      newproduct.sale_price = payload.sale_price;
-      newproduct.is_active = payload.is_active;
-      newproduct.product_images = payload.product_images;
-      
-      await newproduct.save();
-      
-      return ctx.response.ok({
-        data: newproduct,
-        message: "Operation Successfully",
+  // delete shop using id
+  public async destroy({ request, response }: HttpContextContract) {
+    const data = await this.MODEL.findBy('id', request.param('id'));
+    if (!data) {
+      return response.status(HttpCodes.NOT_FOUND).send({
+        code: HttpCodes.NOT_FOUND,
+        message: 'Product not found',
       });
     }
-    public async show({ params, response }: HttpContextContract) {
-      const product = await Product.find(params.productId);
-      
-      if (!product) {
-        return response.notFound({ message: "Product not found" });
-      }
-      return response.ok({ data: product, message: "Product Find Successfully" });
-    }
-    
-    public async delete({ params, response }: HttpContextContract) {
-      console.log(params.productId)
-      const product = await Product.find(params.productId);
-      
-      if (!product) {
-        return response.notFound({ message: "Product not found" });
-      }
-      
-      await product.delete();
-      
-      return response.ok({ message: "Product deleted successfully." });
-    }
+    await data.delete();
+    return response.status(HttpCodes.SUCCESS).send({
+      code: HttpCodes.SUCCESS,
+      result: { message: 'Product deleted successfully' },
+    });
   }
-  
+}

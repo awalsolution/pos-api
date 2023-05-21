@@ -22,6 +22,9 @@ Route.group(async () => {
   Route.get('/:id', (ctx: HttpContextContract) => {
     return new UsersController().get(ctx);
   });
+  Route.get('/status/:id', (ctx: HttpContextContract) => {
+    return new UsersController().updateUserStatus(ctx);
+  });
 })
   .middleware(['auth:api'])
   .prefix('/api/v1/users');
