@@ -1,11 +1,9 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import { BaseController } from 'App/Controllers/BaseController';
-import { RegistorValidator } from 'App/Validators/user/RegistorValidator';
-// import Role from 'App/Models/Acl/Role';
+import Role from 'App/Models/Acl/Role';
 import User from 'App/Models/User';
 import HttpCodes from 'App/Enums/HttpCodes';
 import ResponseMessages from 'App/Enums/ResponseMessages';
-// import UpdateUserValidator from 'App/Validators/user/UpdateUserValidator';
 import Pagination from 'App/Enums/Pagination';
 // import { imageUpload } from "App/Helpers/MainHelpers";
 
@@ -18,38 +16,46 @@ export default class UsersController extends BaseController {
   }
   // create new user
   public async create({ request, response }: HttpContextContract) {
-    const payload = await request.validate(RegistorValidator);
-    console.log('object', request.body().email);
     try {
       let userExists = await this.MODEL.findBy('email', request.body().email);
-      console.log('userExists', userExists);
       if (userExists && !userExists.isEmailVerified) {
         delete userExists.$attributes.password;
-        return response.status(HttpCodes.CONFLICTS).send({
+
+        return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: 'User Already exists',
-          result: userExists,
+          message: `Provided Email: ' ${request.body().email} ' Already exists`,
         });
       }
+      const userRole = await Role.findBy('name', request.body().user_type);
+
       const user = new this.MODEL();
-      user.email = payload.email;
-      user.password = payload.password;
-      user.userType = payload.user_type;
+      user.email = request.body().email;
+      user.password = request.body().password;
+      user.userType = request.body().user_type;
+
       await user.save();
+
       user.related('profile').create({
         first_name: request.body().first_name,
         last_name: request.body().last_name,
+        phone_number: request.body().phone_number,
       });
-      return response.status(HttpCodes.SUCCESS).send({
+      // assign role to user
+      if (userRole) {
+        user.related('roles').sync([userRole.id]);
+      }
+      delete user.$attributes.password;
+      return response.ok({
         code: HttpCodes.SUCCESS,
         message: 'User Register Successfully!',
         result: user,
       });
     } catch (e) {
       console.log('register error', e.toString());
-      return response
-        .status(HttpCodes.SERVER_ERROR)
-        .send({ code: HttpCodes.SERVER_ERROR, message: e.toString() });
+      return response.internalServerError({
+        code: HttpCodes.SERVER_ERROR,
+        message: e.toString(),
+      });
     }
   }
 

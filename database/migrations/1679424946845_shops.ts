@@ -6,7 +6,13 @@ export default class extends BaseSchema {
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary();
-      table.integer('user_id').unsigned().nullable().references('users.id');
+      table
+        .integer('user_id')
+        .unsigned()
+        .nullable()
+        .references('users.id')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE');
       table.string('shop_name').notNullable().index();
       table.string('shop_phone').nullable();
       table.boolean('is_active').defaultTo(true).index();
