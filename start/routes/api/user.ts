@@ -25,6 +25,9 @@ Route.group(async () => {
   Route.put('/status/:id', (ctx: HttpContextContract) => {
     return new UsersController().updateUserStatus(ctx);
   });
+  Route.put('/profile/:id', (ctx: HttpContextContract) => {
+    return new UsersController().profileUpdate(ctx);
+  });
 })
   .middleware(['auth:api'])
   .prefix('/api/v1/users');

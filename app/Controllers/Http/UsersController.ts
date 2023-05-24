@@ -128,6 +128,36 @@ export default class UsersController extends BaseController {
       result: user,
     });
   }
+  // update user profile
+  public async profileUpdate({ request, response }: HttpContextContract) {
+    const user = await this.MODEL.findBy('id', request.param('id'));
+    if (!user) {
+      return response.notFound({
+        code: HttpCodes.NOT_FOUND,
+        message: 'User Not Found',
+      });
+    }
+
+    user.related('profile').updateOrCreate(
+      {},
+      {
+        first_name: request.body().first_name,
+        last_name: request.body().last_name,
+        phone_number: request.body().phone_number,
+        address: request.body().address,
+        city: request.body().city,
+        state: request.body().state,
+        country: request.body().country,
+      }
+    );
+
+    delete user.$attributes.password;
+    return response.ok({
+      code: HttpCodes.SUCCESS,
+      message: 'User Profile Update successfully.',
+      result: user,
+    });
+  }
 
   //update user status
   public async updateUserStatus({ request, response }: HttpContextContract) {
