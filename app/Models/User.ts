@@ -98,9 +98,13 @@ export default class User extends BaseModel {
   //Hooks
   @beforeFind()
   public static preloadListUserRoles(query: UserQuery) {
-    query.preload('permissions').preload('roles', (rolesQuery: RoleQuery) => {
-      rolesQuery.preload('permissions');
-    });
+    query
+      .preload('permissions')
+      .preload('roles', (rolesQuery: RoleQuery) => {
+        rolesQuery.preload('permissions');
+      })
+      .preload('profile')
+      .preload('shop');
   }
   // delete password for fetched user
   @afterFetch()

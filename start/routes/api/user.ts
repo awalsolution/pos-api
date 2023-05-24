@@ -9,9 +9,9 @@ Route.group(async () => {
   Route.post('/', (ctx: HttpContextContract) => {
     return new UsersController().create(ctx);
   });
-  // Route.put('/:id', (ctx: HttpContextContract) => {
-  //   return new UsersController().update(ctx);
-  // });
+  Route.put('/:id', (ctx: HttpContextContract) => {
+    return new UsersController().update(ctx);
+  });
   Route.delete('/:id', (ctx: HttpContextContract) => {
     return new UsersController().destroy(ctx);
   });
@@ -22,8 +22,11 @@ Route.group(async () => {
   Route.get('/:id', (ctx: HttpContextContract) => {
     return new UsersController().get(ctx);
   });
-  Route.get('/status/:id', (ctx: HttpContextContract) => {
+  Route.put('/status/:id', (ctx: HttpContextContract) => {
     return new UsersController().updateUserStatus(ctx);
+  });
+  Route.put('/profile/:id', (ctx: HttpContextContract) => {
+    return new UsersController().profileUpdate(ctx);
   });
 })
   .middleware(['auth:api'])

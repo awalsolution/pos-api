@@ -109,51 +109,68 @@ export default class UsersController extends BaseController {
   }
 
   // update user
-  // public async update({ auth, request, response }: HttpContextContract) {
-  //   const payload = await request.validate(UpdateUserValidator);
-  //   const exists = await this.MODEL.findBy('id', request.param('id'));
-  //   if (!exists) {
-  //     return response.status(HttpCodes.NOT_FOUND).send({
-  //       code: HttpCodes.NOT_FOUND,
-  //       result: { message: 'User not found' },
-  //     });
-  //   }
+  public async update({ request, response }: HttpContextContract) {
+    const user = await this.MODEL.findBy('id', request.param('id'));
+    if (!user) {
+      return response.notFound({
+        code: HttpCodes.NOT_FOUND,
+        message: 'User Not Found',
+      });
+    }
+    user.email = request.body().email;
+    user.related('permissions').sync(request.body().permissions);
+    user.related('roles').sync(request.body().roles);
 
-  //   // check to see if a user is eligible to update
-  //   const user = auth.user;
-  //   if (
-  //     !(this.isSuperAdmin(user) || this.isAdmin(user) || user?.id === exists.id)
-  //   ) {
-  //     return response.status(HttpCodes.FORBIDDEN).forbidden({
-  //       code: HttpCodes.NOT_FOUND,
-  //       result: { message: ResponseMessages.FORBIDDEN },
-  //     });
-  //   }
-  //   await exists.merge(payload).save();
-  //   if (payload.roles) {
-  //     const roles: Role[] = await Role.query().whereIn('name', payload.roles);
-  //     exists.related('roles').sync(roles.map((role) => role.id));
-  //   }
-  //   delete exists.$attributes.password;
-  //   return response.status(HttpCodes.SUCCESS).send({
-  //     code: HttpCodes.SUCCESS,
-  //     message: 'User Status Update successfully',
-  //     result: exists,
-  //   });
-  // }
+    delete user.$attributes.password;
+    return response.ok({
+      code: HttpCodes.SUCCESS,
+      message: 'User Update successfully.',
+      result: user,
+    });
+  }
+  // update user profile
+  public async profileUpdate({ request, response }: HttpContextContract) {
+    const user = await this.MODEL.findBy('id', request.param('id'));
+    if (!user) {
+      return response.notFound({
+        code: HttpCodes.NOT_FOUND,
+        message: 'User Not Found',
+      });
+    }
+
+    user.related('profile').updateOrCreate(
+      {},
+      {
+        first_name: request.body().first_name,
+        last_name: request.body().last_name,
+        phone_number: request.body().phone_number,
+        address: request.body().address,
+        city: request.body().city,
+        state: request.body().state,
+        country: request.body().country,
+      }
+    );
+
+    delete user.$attributes.password;
+    return response.ok({
+      code: HttpCodes.SUCCESS,
+      message: 'User Profile Update successfully.',
+      result: user,
+    });
+  }
 
   //update user status
   public async updateUserStatus({ request, response }: HttpContextContract) {
     const data = await this.MODEL.findBy('id', request.param('id'));
     if (!data) {
-      return response.status(HttpCodes.NOT_FOUND).send({
+      return response.notFound({
         code: HttpCodes.NOT_FOUND,
         message: 'User not found',
       });
     }
     data.status = request.body().status;
     await data.save();
-    return response.status(HttpCodes.SUCCESS).send({
+    return response.ok({
       code: HttpCodes.SUCCESS,
       message: 'User Status Update successfully',
       result: data,
