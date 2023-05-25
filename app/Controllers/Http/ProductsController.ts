@@ -14,12 +14,12 @@ export default class ProductsController extends BaseController {
   public async find({ request, response }: HttpContextContract) {
     let data = this.MODEL.query();
     if (!data) {
-      return response.status(HttpCodes.NOT_FOUND).send({
+      return response.notFound({
         code: HttpCodes.NOT_FOUND,
         message: 'Products Data is Empty',
       });
     }
-    return response.status(HttpCodes.SUCCESS).send({
+    return response.ok({
       code: HttpCodes.SUCCESS,
       result: await data.paginate(
         request.input(Pagination.PAGE_KEY, Pagination.PAGE),
@@ -31,17 +31,20 @@ export default class ProductsController extends BaseController {
   // find Product using id
   public async get({ request, response }: HttpContextContract) {
     try {
-      const data = await this.MODEL.query().where('id', request.param('id'));
+      const data = await this.MODEL.query()
+        .where('id', request.param('id'))
+        .first();
 
-      return response.status(HttpCodes.SUCCESS).send({
+      return response.ok({
         code: HttpCodes.SUCCESS,
         message: 'Product find Successfully',
         result: data,
       });
     } catch (e) {
-      return response
-        .status(HttpCodes.SERVER_ERROR)
-        .send({ code: HttpCodes.SERVER_ERROR, message: e.toString() });
+      return response.internalServerError({
+        code: HttpCodes.SERVER_ERROR,
+        message: e.toString(),
+      });
     }
   }
   // create new product
@@ -52,9 +55,10 @@ export default class ProductsController extends BaseController {
         request.body().product_sku
       );
       if (dataExists) {
-        return response
-          .status(HttpCodes.CONFLICTS)
-          .send({ message: 'Product already exists!' });
+        return response.conflict({
+          code: HttpCodes.CONFLICTS,
+          message: 'Product already exists!',
+        });
       }
       const product = new this.MODEL();
       product.shopId = auth.user?.shop.id;
@@ -68,16 +72,17 @@ export default class ProductsController extends BaseController {
       product.product_images = request.body().product_images;
 
       const data = await product.save();
-      return response.status(HttpCodes.SUCCESS).send({
+      return response.ok({
         code: HttpCodes.SUCCESS,
         message: 'Product Created Successfully!',
         result: data,
       });
     } catch (e) {
       console.log(e);
-      return response
-        .status(HttpCodes.SERVER_ERROR)
-        .send({ code: HttpCodes.SERVER_ERROR, message: e.toString() });
+      return response.internalServerError({
+        code: HttpCodes.SERVER_ERROR,
+        message: e.toString(),
+      });
     }
   }
 
@@ -86,19 +91,19 @@ export default class ProductsController extends BaseController {
     try {
       const product = await this.MODEL.findBy('id', request.param('id'));
       if (!product) {
-        return response.status(HttpCodes.NOT_FOUND).send({
+        return response.notFound({
           code: HttpCodes.NOT_FOUND,
           message: 'Product does not exists!',
         });
       }
-      const productTypeExist = await this.MODEL.query()
-        .where('name', 'like', request.body().name)
+      const productExist = await this.MODEL.query()
+        .where('title', 'like', request.body().title)
         .whereNot('id', request.param('id'))
         .first();
-      if (productTypeExist) {
-        return response.status(HttpCodes.CONFLICTS).send({
+      if (productExist) {
+        return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: `${request.body().name} Product type already exist!`,
+          message: `Product: ${request.body().title} already exist!`,
         });
       }
       product.product_sku = request.body().product_sku;
@@ -111,30 +116,31 @@ export default class ProductsController extends BaseController {
       product.product_images = request.body().product_images;
 
       await product.save();
-      return response.status(HttpCodes.SUCCESS).send({
+      return response.ok({
         code: HttpCodes.SUCCESS,
         message: 'Product updated Successfully!',
         result: product,
       });
     } catch (e) {
       console.log(e);
-      return response
-        .status(HttpCodes.SERVER_ERROR)
-        .send({ code: HttpCodes.SERVER_ERROR, message: e.message });
+      return response.internalServerError({
+        code: HttpCodes.SERVER_ERROR,
+        message: e.message,
+      });
     }
   }
   //update product status
   public async updateProductStatus({ request, response }: HttpContextContract) {
     const data = await this.MODEL.findBy('id', request.param('id'));
     if (!data) {
-      return response.status(HttpCodes.NOT_FOUND).send({
+      return response.notFound({
         code: HttpCodes.NOT_FOUND,
         message: 'Product not found',
       });
     }
     data.is_active = request.body().is_active;
     await data.save();
-    return response.status(HttpCodes.SUCCESS).send({
+    return response.ok({
       code: HttpCodes.SUCCESS,
       result: { message: 'Product Status Update successfully' },
     });
@@ -144,13 +150,13 @@ export default class ProductsController extends BaseController {
   public async destroy({ request, response }: HttpContextContract) {
     const data = await this.MODEL.findBy('id', request.param('id'));
     if (!data) {
-      return response.status(HttpCodes.NOT_FOUND).send({
+      return response.notFound({
         code: HttpCodes.NOT_FOUND,
         message: 'Product not found',
       });
     }
     await data.delete();
-    return response.status(HttpCodes.SUCCESS).send({
+    return response.ok({
       code: HttpCodes.SUCCESS,
       result: { message: 'Product deleted successfully' },
     });

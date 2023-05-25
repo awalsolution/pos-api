@@ -9,11 +9,11 @@ export default class extends BaseSchema {
       table
         .integer('shop_id')
         .unsigned()
-        .nullable()
+        .notNullable()
         .references('shops.id')
         .onUpdate('CASCADE')
         .onDelete('CASCADE');
-      table.string('product_sku').nullable().unique();
+      table.string('product_sku').notNullable().unique();
       table.string('title').notNullable();
       table.string('slug').notNullable();
       table.double('price').nullable().defaultTo(10);
