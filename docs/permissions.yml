@@ -57,7 +57,7 @@
                 },
             },
         },
-      '/api/v1/permissions/{permissionId}':
+      '/api/v1/permissions/{id}':
         {
           'get':
             {
@@ -67,7 +67,7 @@
                 [
                   {
                     'in': 'path',
-                    'name': 'permissionId',
+                    'name': 'id',
                     'schema': { 'type': 'integer' },
                     'required': true,
                     'description': 'Numeric ID of the permission to get',
@@ -91,7 +91,7 @@
                 [
                   {
                     'in': 'path',
-                    'name': 'permissionId',
+                    'name': 'id',
                     'schema': { 'type': 'integer' },
                     'required': true,
                     'description': 'Numeric ID of the permission to get',
@@ -117,7 +117,7 @@
                 [
                   {
                     'in': 'path',
-                    'name': 'permissionId',
+                    'name': 'id',
                     'schema': { 'type': 'integer' },
                     'required': true,
                     'description': 'Numeric ID of the permission to get',

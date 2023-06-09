@@ -15,7 +15,7 @@ export default class extends BaseSchema {
         .onDelete('CASCADE');
       table.string('title').notNullable();
       table.string('slug').notNullable();
-      table.string('type').notNullable();
+      // table.string('type').notNullable();
       table.string('status').notNullable().defaultTo('publish');
       table.boolean('featured').notNullable().defaultTo(false);
       table.string('description').nullable();

@@ -1,6 +1,6 @@
 import Route from '@ioc:Adonis/Core/Route';
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
-import ProductsController from 'App/Controllers/Http/ProductsController';
+import ProductsController from 'App/Controllers/Http/product/ProductsController';
 
 Route.group(async () => {
   Route.post('/', (ctx: HttpContextContract) => {
@@ -19,9 +19,9 @@ Route.group(async () => {
   Route.get('/:id', (ctx: HttpContextContract) => {
     return new ProductsController().get(ctx);
   });
-  Route.put('/status/:id', (ctx: HttpContextContract) => {
-    return new ProductsController().updateProductStatus(ctx);
-  });
+  // Route.put('/status/:id', (ctx: HttpContextContract) => {
+  //   return new ProductsController().updateProductStatus(ctx);
+  // });
 })
   .middleware(['auth:api'])
   .prefix('/api/v1/products');

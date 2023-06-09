@@ -1,5 +1,5 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
-import Product from 'App/Models/Product';
+import Product from 'App/Models/product/Product';
 import { BaseController } from 'App/Controllers/BaseController';
 import HttpCodes from 'App/Enums/HttpCodes';
 import Pagination from 'App/Enums/Pagination';
@@ -68,7 +68,6 @@ export default class ProductsController extends BaseController {
       product.price = request.body().price;
       product.sale_price = request.body().sale_price;
       product.description = request.body().description;
-      product.short_description = request.body().short_description;
       product.product_images = request.body().product_images;
 
       const data = await product.save();
@@ -112,7 +111,6 @@ export default class ProductsController extends BaseController {
       product.price = request.body().price;
       product.sale_price = request.body().sale_price;
       product.description = request.body().description;
-      product.short_description = request.body().short_description;
       product.product_images = request.body().product_images;
 
       await product.save();
@@ -130,21 +128,21 @@ export default class ProductsController extends BaseController {
     }
   }
   //update product status
-  public async updateProductStatus({ request, response }: HttpContextContract) {
-    const data = await this.MODEL.findBy('id', request.param('id'));
-    if (!data) {
-      return response.notFound({
-        code: HttpCodes.NOT_FOUND,
-        message: 'Product not found',
-      });
-    }
-    data.is_active = request.body().is_active;
-    await data.save();
-    return response.ok({
-      code: HttpCodes.SUCCESS,
-      result: { message: 'Product Status Update successfully' },
-    });
-  }
+  // public async updateProductStatus({ request, response }: HttpContextContract) {
+  //   const data = await this.MODEL.findBy('id', request.param('id'));
+  //   if (!data) {
+  //     return response.notFound({
+  //       code: HttpCodes.NOT_FOUND,
+  //       message: 'Product not found',
+  //     });
+  //   }
+  //   data.is_active = request.body().is_active;
+  //   await data.save();
+  //   return response.ok({
+  //     code: HttpCodes.SUCCESS,
+  //     result: { message: 'Product Status Update successfully' },
+  //   });
+  // }
 
   // delete shop using id
   public async destroy({ request, response }: HttpContextContract) {

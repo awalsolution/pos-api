@@ -1,5 +1,5 @@
 import BaseSeeder from '@ioc:Adonis/Lucid/Seeder';
-import Product from 'App/Models/Product';
+import Product from 'App/Models/product/Product';
 
 export default class extends BaseSeeder {
   public async run() {
@@ -11,9 +11,7 @@ export default class extends BaseSeeder {
         slug: 'product-01',
         price: 200,
         sale_price: 190,
-        is_active: true,
         description: 'this is shop 01 product 01 long description',
-        short_description: 'this is shop 01 product 01 short description',
         product_images: null,
       },
       {
@@ -23,9 +21,7 @@ export default class extends BaseSeeder {
         slug: 'product-02',
         price: 300,
         sale_price: 290,
-        is_active: true,
         description: 'this is shop 01 product 02 long description',
-        short_description: 'this is shop 01 product 02 short description',
         product_images: null,
       },
       {
@@ -35,9 +31,7 @@ export default class extends BaseSeeder {
         slug: 'product-03',
         price: 400,
         sale_price: 390,
-        is_active: true,
         description: 'this is shop 01 product 03 long description',
-        short_description: 'this is shop 01 product 03 short description',
         product_images: null,
       },
       {
@@ -47,9 +41,7 @@ export default class extends BaseSeeder {
         slug: 'product-01',
         price: 200,
         sale_price: 190,
-        is_active: true,
         description: 'this is shop 02 product 01 long description',
-        short_description: 'this is shop 01 product 01 short description',
         product_images: null,
       },
       {
@@ -59,9 +51,7 @@ export default class extends BaseSeeder {
         slug: 'product-02',
         price: 300,
         sale_price: 290,
-        is_active: true,
         description: 'this is shop 02 product 02 long description',
-        short_description: 'this is shop 01 product 02 short description',
         product_images: null,
       },
       {
@@ -71,9 +61,7 @@ export default class extends BaseSeeder {
         slug: 'product-03',
         price: 400,
         sale_price: 390,
-        is_active: true,
         description: 'this is shop 02 product 03 long description',
-        short_description: 'this is shop 01 product 03 short description',
         product_images: null,
       },
       {
@@ -83,9 +71,7 @@ export default class extends BaseSeeder {
         slug: 'product-01',
         price: 200,
         sale_price: 190,
-        is_active: true,
         description: 'this is shop 03 product 01 long description',
-        short_description: 'this is shop 01 product 01 short description',
         product_images: null,
       },
       {
@@ -95,9 +81,7 @@ export default class extends BaseSeeder {
         slug: 'product-02',
         price: 300,
         sale_price: 290,
-        is_active: true,
         description: 'this is shop 02 product 02 long description',
-        short_description: 'this is shop 01 product 02 short description',
         product_images: null,
       },
       {
@@ -107,9 +91,7 @@ export default class extends BaseSeeder {
         slug: 'product-03',
         price: 400,
         sale_price: 390,
-        is_active: true,
         description: 'this is shop 02 product 03 long description',
-        short_description: 'this is shop 01 product 03 short description',
         product_images: null,
       },
     ]);

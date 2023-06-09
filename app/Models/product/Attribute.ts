@@ -1,38 +1,16 @@
 import { DateTime } from 'luxon';
-import { column, BaseModel, hasMany, HasMany } from '@ioc:Adonis/Lucid/Orm';
+import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm';
 import { STANDARD_DATE_TIME_FORMAT } from 'App/Helpers/utils';
-import Product from 'App/Models/product/Product';
 
-export default class Shop extends BaseModel {
+export default class Attribute extends BaseModel {
   @column({ isPrimary: true })
   public id: number;
 
   @column()
-  public userId: number | undefined;
-
-  @column()
-  public shop_name: string;
-
-  @column()
-  public shop_phone: string | null;
+  public name: string;
 
   @column()
   public status: boolean;
-
-  @column()
-  public address: string | null;
-
-  @column()
-  public city: string | null;
-
-  @column()
-  public state: string | null;
-
-  @column()
-  public country: string | null;
-
-  @column()
-  public shop_logo: string | null;
 
   @column.dateTime({
     autoCreate: true,
@@ -50,7 +28,4 @@ export default class Shop extends BaseModel {
     },
   })
   public updatedAt: DateTime;
-
-  @hasMany(() => Product)
-  public products: HasMany<typeof Product>;
 }

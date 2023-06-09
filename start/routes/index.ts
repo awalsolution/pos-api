@@ -32,7 +32,8 @@ Route.get('/', async () => {
 
 import './api/user';
 import './api/shop';
-import './api/product';
+import './api/product/product';
+import './api/product/attribute';
 import './api/auth';
 import './api/acl/roles';
 import './api/acl/permissions';
