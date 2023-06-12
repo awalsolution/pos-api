@@ -1,15 +1,15 @@
 {
   'paths':
     {
-      '/api/v1/attributes':
+      '/api/v1/categories':
         {
           'post':
             {
-              'summary': 'Add a new attribute',
-              'tags': ['product attributes'],
+              'summary': 'Add a new categorie',
+              'tags': ['product categories'],
               'security': [{ 'bearerAuth': [] }],
               'requestBody':
-                { '$ref': '#/components/requestBodies/attributeBody' },
+                { '$ref': '#/components/requestBodies/categorieBody' },
               'produces': ['application/json'],
               'responses':
                 {
@@ -19,8 +19,8 @@
             },
           'get':
             {
-              'summary': 'Get total attributes',
-              'tags': ['product attributes'],
+              'summary': 'Get total categories',
+              'tags': ['product categories'],
               'parameters':
                 [
                   {
@@ -51,12 +51,12 @@
                 },
             },
         },
-      '/api/v1/attributes/{id}':
+      '/api/v1/categories/{id}':
         {
           'get':
             {
-              'summary': 'Get a attribute by ID',
-              'tags': ['product attributes'],
+              'summary': 'Get a categorie by ID',
+              'tags': ['product categories'],
               'parameters':
                 [
                   {
@@ -64,7 +64,7 @@
                     'name': 'id',
                     'schema': { 'type': 'integer' },
                     'required': true,
-                    'description': 'Numeric ID of the attribute to get',
+                    'description': 'Numeric ID of the categorie to get',
                   },
                 ],
               'responses':
@@ -75,8 +75,8 @@
             },
           'put':
             {
-              'summary': 'Update a attribute',
-              'tags': ['product attributes'],
+              'summary': 'Update a categorie',
+              'tags': ['product categories'],
               'parameters':
                 [
                   {
@@ -84,11 +84,11 @@
                     'name': 'id',
                     'schema': { 'type': 'integer' },
                     'required': true,
-                    'description': 'Numeric ID of the attribute to get',
+                    'description': 'Numeric ID of the categorie to get',
                   },
                 ],
               'requestBody':
-                { '$ref': '#/components/requestBodies/attributeBody' },
+                { '$ref': '#/components/requestBodies/categorieBody' },
               'responses':
                 {
                   '200': { 'description': 'OK' },
@@ -97,8 +97,8 @@
             },
           'delete':
             {
-              'summary': 'Delete a attribute',
-              'tags': ['product attributes'],
+              'summary': 'Delete a categorie',
+              'tags': ['product categories'],
               'parameters':
                 [
                   {
@@ -106,11 +106,11 @@
                     'name': 'id',
                     'schema': { 'type': 'integer' },
                     'required': true,
-                    'description': 'Numeric ID of the attribute to get',
+                    'description': 'Numeric ID of the categorie to get',
                   },
                 ],
               'requestBody':
-                { '$ref': '#/components/requestBodies/attributeBody' },
+                { '$ref': '#/components/requestBodies/categorieBody' },
               'responses':
                 {
                   '200': { 'description': 'OK' },
@@ -123,22 +123,22 @@
     {
       'requestBodies':
         {
-          'attributeBody':
+          'categorieBody':
             {
-              'description': 'A JSON object containing attribute information',
+              'description': 'A JSON object containing categorie information',
               'required': true,
               'content':
                 {
                   'application/json':
-                    { 'schema': { '$ref': '#/components/schemas/attribute' } },
+                    { 'schema': { '$ref': '#/components/schemas/categorie' } },
                 },
             },
         },
       'schemas':
         {
-          'attribute':
+          'categorie':
             {
-              'title': 'attribute Schemas Information',
+              'title': 'categorie Schemas Information',
               'type': 'object',
               'properties':
                 {
@@ -146,7 +146,7 @@
                     {
                       'type': 'string',
                       'example': 'Color',
-                      'description': 'add attribute name',
+                      'description': 'add categorie name',
                     },
                 },
             },
