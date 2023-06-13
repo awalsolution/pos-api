@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon';
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm';
+import { BaseModel, HasMany, column, hasMany } from '@ioc:Adonis/Lucid/Orm';
 import { STANDARD_DATE_TIME_FORMAT } from 'App/Helpers/utils';
+import Variation from './Variation';
 
 export default class Attribute extends BaseModel {
   @column({ isPrimary: true })
@@ -28,4 +29,7 @@ export default class Attribute extends BaseModel {
     },
   })
   public updatedAt: DateTime;
+
+  @hasMany(() => Variation)
+  public variations: HasMany<typeof Variation>;
 }

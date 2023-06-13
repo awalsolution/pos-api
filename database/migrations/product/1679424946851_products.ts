@@ -13,11 +13,6 @@ export default class extends BaseSchema {
         .references('shops.id')
         .onUpdate('CASCADE')
         .onDelete('CASCADE');
-      table.string('title').notNullable();
-      table.string('description').nullable();
-      table.string('slug').notNullable();
-      table.string('status').notNullable().defaultTo('publish');
-      // table.boolean('featured').notNullable().defaultTo(false);
       table
         .integer('category_id')
         .unsigned()
@@ -25,7 +20,11 @@ export default class extends BaseSchema {
         .references('categories.id')
         .onUpdate('CASCADE')
         .onDelete('CASCADE');
-      // table.string('default_attributes').nullable();
+      table.string('title').notNullable();
+      table.string('slug').notNullable();
+      table.string('status').notNullable().defaultTo('publish');
+      table.string('description').nullable();
+      // table.boolean('featured').notNullable().defaultTo(false);
 
       table.unique(['shop_id', 'title']);
       table.unique(['shop_id', 'slug']);

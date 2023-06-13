@@ -62,13 +62,12 @@ export default class ProductsController extends BaseController {
       }
       const product = new this.MODEL();
       product.shopId = auth.user?.shop.id;
-      product.product_sku = request.body().product_sku;
       product.title = request.body().title;
-      product.slug = request.body().slug;
-      product.price = request.body().price;
-      product.sale_price = request.body().sale_price;
       product.description = request.body().description;
-      product.product_images = request.body().product_images;
+      // product.product_sku = request.body().product_sku;
+      // product.price = request.body().price;
+      // product.sale_price = request.body().sale_price;
+      // product.product_images = request.body().product_images;
 
       const data = await product.save();
       return response.ok({
@@ -105,13 +104,12 @@ export default class ProductsController extends BaseController {
           message: `Product: ${request.body().title} already exist!`,
         });
       }
-      product.product_sku = request.body().product_sku;
       product.title = request.body().title;
-      product.slug = request.body().slug;
-      product.price = request.body().price;
-      product.sale_price = request.body().sale_price;
       product.description = request.body().description;
-      product.product_images = request.body().product_images;
+      // product.product_sku = request.body().product_sku;
+      // product.price = request.body().price;
+      // product.sale_price = request.body().sale_price;
+      // product.product_images = request.body().product_images;
 
       await product.save();
       return response.ok({
