@@ -17,11 +17,9 @@ export default class extends BaseSchema {
         .integer('attribute_id')
         .unsigned()
         .notNullable()
-        .unique()
         .references('attributes.id')
         .onUpdate('CASCADE')
         .onDelete('CASCADE');
-      table.string('product_sku').notNullable().unique();
       table.double('price').nullable();
       table.double('regular_price').nullable();
       table.double('sale_price').nullable();
@@ -31,6 +29,7 @@ export default class extends BaseSchema {
       table.integer('total_sales').nullable();
       table.string('stock_status').notNullable().defaultTo('instock');
       table.string('rating').nullable();
+      table.string('product_images').nullable();
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

@@ -15,6 +15,9 @@ export default class Product extends BaseModel {
   public categoryId: number | undefined;
 
   @column()
+  public product_sku: string;
+
+  @column()
   public title: string;
 
   @column()

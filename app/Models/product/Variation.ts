@@ -13,9 +13,6 @@ export default class Variation extends BaseModel {
   public attributeId: number | undefined;
 
   @column()
-  public product_sku: string;
-
-  @column()
   public price: number;
 
   @column()

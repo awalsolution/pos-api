@@ -21,10 +21,12 @@ export default class ProductsController extends BaseController {
     }
     return response.ok({
       code: HttpCodes.SUCCESS,
-      result: await data.paginate(
-        request.input(Pagination.PAGE_KEY, Pagination.PAGE),
-        request.input(Pagination.PER_PAGE_KEY, Pagination.PER_PAGE)
-      ),
+      result: await data
+        .preload('variations')
+        .paginate(
+          request.input(Pagination.PAGE_KEY, Pagination.PAGE),
+          request.input(Pagination.PER_PAGE_KEY, Pagination.PER_PAGE)
+        ),
       message: 'Products find Successfully',
     });
   }
@@ -33,6 +35,7 @@ export default class ProductsController extends BaseController {
     try {
       const data = await this.MODEL.query()
         .where('id', request.param('id'))
+        .preload('variations')
         .first();
 
       return response.ok({
@@ -49,6 +52,7 @@ export default class ProductsController extends BaseController {
   }
   // create new product
   public async create({ auth, request, response }: HttpContextContract) {
+    console.log('request body', request.body());
     try {
       const dataExists = await this.MODEL.findBy(
         'product_sku',
@@ -62,14 +66,14 @@ export default class ProductsController extends BaseController {
       }
       const product = new this.MODEL();
       product.shopId = auth.user?.shop.id;
+      product.categoryId = request.body().category_id;
+      product.product_sku = request.body().product_sku;
       product.title = request.body().title;
       product.description = request.body().description;
-      // product.product_sku = request.body().product_sku;
-      // product.price = request.body().price;
-      // product.sale_price = request.body().sale_price;
-      // product.product_images = request.body().product_images;
-
+      product.status = request.body().status;
       const data = await product.save();
+      await product.related('variations').createMany(request.body().variations);
+
       return response.ok({
         code: HttpCodes.SUCCESS,
         message: 'Product Created Successfully!',
@@ -84,7 +88,7 @@ export default class ProductsController extends BaseController {
     }
   }
 
-  // update Role using id
+  // update product using id
   public async update({ request, response }: HttpContextContract) {
     try {
       const product = await this.MODEL.findBy('id', request.param('id'));
@@ -105,13 +109,13 @@ export default class ProductsController extends BaseController {
         });
       }
       product.title = request.body().title;
+      product.categoryId = request.body().category_id;
+      product.product_sku = request.body().product_sku;
       product.description = request.body().description;
-      // product.product_sku = request.body().product_sku;
-      // product.price = request.body().price;
-      // product.sale_price = request.body().sale_price;
-      // product.product_images = request.body().product_images;
-
-      await product.save();
+      product.status = request.body().status;
+      await product
+        .related('variations')
+        .updateOrCreateMany(request.body().variations);
       return response.ok({
         code: HttpCodes.SUCCESS,
         message: 'Product updated Successfully!',
