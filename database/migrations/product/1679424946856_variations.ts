@@ -20,6 +20,7 @@ export default class extends BaseSchema {
         .references('attributes.id')
         .onUpdate('CASCADE')
         .onDelete('CASCADE');
+      table.string('attribute_value').nullable();
       table.double('price').nullable();
       table.double('regular_price').nullable();
       table.double('sale_price').nullable();

@@ -52,7 +52,6 @@ export default class ProductsController extends BaseController {
   }
   // create new product
   public async create({ auth, request, response }: HttpContextContract) {
-    console.log('request body', request.body());
     try {
       const dataExists = await this.MODEL.findBy(
         'product_sku',
@@ -71,13 +70,13 @@ export default class ProductsController extends BaseController {
       product.title = request.body().title;
       product.description = request.body().description;
       product.status = request.body().status;
-      const data = await product.save();
+      await product.save();
       await product.related('variations').createMany(request.body().variations);
 
       return response.ok({
         code: HttpCodes.SUCCESS,
         message: 'Product Created Successfully!',
-        result: data,
+        result: product,
       });
     } catch (e) {
       console.log(e);
