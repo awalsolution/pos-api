@@ -1,25 +1,31 @@
 import { DateTime } from 'luxon';
-import { column, BaseModel, hasMany, HasMany } from '@ioc:Adonis/Lucid/Orm';
+import { column, BaseModel } from '@ioc:Adonis/Lucid/Orm';
 import { STANDARD_DATE_TIME_FORMAT } from 'App/Helpers/utils';
-import Product from 'App/Models/product/Product';
-import User from 'App/Models/User';
-import Customer from 'App/Models/customer/Customer';
 
-export default class Shop extends BaseModel {
+export default class CustomerAddress extends BaseModel {
   @column({ isPrimary: true })
   public id: number;
 
   @column()
-  public shop_name: string;
+  public customerId: number | undefined;
 
   @column()
-  public shop_phone: string | null;
+  public addressType: string | null;
 
   @column()
-  public status: boolean;
+  public phoneNumber: string | null;
 
   @column()
-  public address: string | null;
+  public firstName: string | null;
+
+  @column()
+  public lastName: string | null;
+
+  @column()
+  public address_1: string | null;
+
+  @column()
+  public address_2: string | null;
 
   @column()
   public city: string | null;
@@ -29,9 +35,6 @@ export default class Shop extends BaseModel {
 
   @column()
   public country: string | null;
-
-  @column()
-  public shop_logo: string | null;
 
   @column.dateTime({
     autoCreate: true,
@@ -49,13 +52,4 @@ export default class Shop extends BaseModel {
     },
   })
   public updatedAt: DateTime;
-
-  @hasMany(() => Product)
-  public products: HasMany<typeof Product>;
-
-  @hasMany(() => User)
-  public users: HasMany<typeof User>;
-
-  @hasMany(() => Customer)
-  public customers: HasMany<typeof Customer>;
 }

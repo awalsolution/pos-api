@@ -24,12 +24,7 @@ Route.get('/', async () => {
   return { hello: 'world' };
 });
 
-// import "./auth.routes";
-// import "./users.routes";
-// import "./roles.routes";
-// import "./permissions.routes";
-// import "./products.routes";
-
+import './api/customer';
 import './api/user';
 import './api/shop';
 import './api/product/product';

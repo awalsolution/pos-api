@@ -15,7 +15,7 @@ import {
 import Permission from 'App/Models/Acl/Permission';
 import Role from 'App/Models/Acl/Role';
 import Profile from 'App/Models/Profile';
-import Shop from 'App/Models/Shop';
+// import Shop from 'App/Models/Shop';
 import { STANDARD_DATE_TIME_FORMAT } from 'App/Helpers/utils';
 
 type UserQuery = ModelQueryBuilderContract<typeof User>;
@@ -24,6 +24,9 @@ type RoleQuery = ModelQueryBuilderContract<typeof Role>;
 export default class User extends BaseModel {
   @column({ isPrimary: true })
   public id: number;
+
+  @column()
+  public shopId: number | undefined;
 
   @column()
   public email: string;
@@ -44,7 +47,7 @@ export default class User extends BaseModel {
   public isEmailVerified: boolean;
 
   @column()
-  public rememberMeToken: string | null;
+  public rememberToken: boolean;
 
   @column.dateTime({
     autoCreate: true,
@@ -92,8 +95,8 @@ export default class User extends BaseModel {
   @hasOne(() => Profile)
   public profile: HasOne<typeof Profile>;
 
-  @hasOne(() => Shop)
-  public shop: HasOne<typeof Shop>;
+  // @hasOne(() => Shop)
+  // public shop: HasOne<typeof Shop>;
 
   //Hooks
   @beforeFind()
@@ -103,8 +106,8 @@ export default class User extends BaseModel {
       .preload('roles', (rolesQuery: RoleQuery) => {
         rolesQuery.preload('permissions');
       })
-      .preload('profile')
-      .preload('shop');
+      .preload('profile');
+    // .preload('shop');
   }
   // delete password for fetched user
   @afterFetch()

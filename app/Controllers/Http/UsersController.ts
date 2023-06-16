@@ -71,7 +71,7 @@ export default class UsersController extends BaseController {
           rolesQuery.preload('permissions');
         })
         .preload('profile')
-        .preload('shop')
+        // .preload('shop')
         .paginate(
           request.input(Pagination.PAGE_KEY, Pagination.PAGE),
           request.input(Pagination.PER_PAGE_KEY, Pagination.PER_PAGE)
@@ -90,7 +90,7 @@ export default class UsersController extends BaseController {
           rolesQuery.preload('permissions');
         })
         .preload('profile')
-        .preload('shop')
+        // .preload('shop')
         .first();
       // const data = await this.MODEL.findBy('id', request.param('id'));
       if (data) {
