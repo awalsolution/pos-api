@@ -1,6 +1,8 @@
 import { DateTime } from 'luxon';
-import { column, BaseModel } from '@ioc:Adonis/Lucid/Orm';
+import { column, BaseModel, hasMany, HasMany } from '@ioc:Adonis/Lucid/Orm';
 import { STANDARD_DATE_TIME_FORMAT } from 'App/Helpers/utils';
+import { slugify } from '@ioc:Adonis/Addons/LucidSlugify';
+import Variation from 'App/Models/product/Variation';
 
 export default class Product extends BaseModel {
   @column({ isPrimary: true })
@@ -10,31 +12,30 @@ export default class Product extends BaseModel {
   public shopId: number | undefined;
 
   @column()
+  public categoryId: number | undefined;
+
+  @column()
   public product_sku: string;
 
   @column()
   public title: string;
 
   @column()
+  @slugify({
+    strategy: 'dbIncrement',
+    fields: ['title'],
+    allowUpdates: true,
+  })
   public slug: string;
 
   @column()
-  public short_description: string;
+  status: string;
+
+  // @column()
+  // featured: Boolean;
 
   @column()
-  public description: string;
-
-  @column()
-  public product_images: string | null;
-
-  @column()
-  public price: number;
-
-  @column()
-  public sale_price: number | null;
-
-  @column()
-  public is_active: boolean | null;
+  public description: string | null;
 
   @column.dateTime({
     autoCreate: true,
@@ -52,4 +53,7 @@ export default class Product extends BaseModel {
     },
   })
   public updatedAt: DateTime;
+
+  @hasMany(() => Variation)
+  public variations: HasMany<typeof Variation>;
 }

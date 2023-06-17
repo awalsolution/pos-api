@@ -96,7 +96,7 @@
                 },
             },
         },
-      '/api/v1/users/{userId}':
+      '/api/v1/users/{id}':
         {
           'get':
             {
@@ -106,7 +106,7 @@
                 [
                   {
                     'in': 'path',
-                    'name': 'userId',
+                    'name': 'id',
                     'schema': { 'type': 'integer' },
                     'required': true,
                     'description': 'Numeric ID of the user to get',
@@ -130,7 +130,7 @@
                 [
                   {
                     'in': 'path',
-                    'name': 'userId',
+                    'name': 'id',
                     'schema': { 'type': 'integer' },
                     'required': true,
                     'description': 'Numeric ID of the user to get',
@@ -155,7 +155,7 @@
                 [
                   {
                     'in': 'path',
-                    'name': 'userId',
+                    'name': 'id',
                     'schema': { 'type': 'integer' },
                     'required': true,
                     'description': 'Numeric ID of the user to get',

@@ -56,7 +56,7 @@
                 },
             },
         },
-      '/api/v1/shops/{shopId}':
+      '/api/v1/shops/{id}':
         {
           'get':
             {
@@ -66,7 +66,7 @@
                 [
                   {
                     'in': 'path',
-                    'name': 'shopId',
+                    'name': 'id',
                     'schema': { 'type': 'integer' },
                     'required': true,
                     'description': 'Numeric ID of the shop to get',
@@ -90,7 +90,7 @@
                 [
                   {
                     'in': 'path',
-                    'name': 'shopId',
+                    'name': 'id',
                     'schema': { 'type': 'integer' },
                     'required': true,
                     'description': 'Numeric ID of the shop to get',
@@ -115,7 +115,7 @@
                 [
                   {
                     'in': 'path',
-                    'name': 'shopId',
+                    'name': 'id',
                     'schema': { 'type': 'integer' },
                     'required': true,
                     'description': 'Numeric ID of the shop to get',

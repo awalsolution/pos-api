@@ -1,23 +1,24 @@
 import Route from '@ioc:Adonis/Core/Route';
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
-import PermissionsController from 'App/Controllers/Http/Acl/PermissionsController';
+import AttributesController from 'App/Controllers/Http/product/AttributesController';
 
 Route.group(async () => {
   Route.post('/', (ctx: HttpContextContract) => {
-    return new PermissionsController().create(ctx);
+    return new AttributesController().create(ctx);
   });
   Route.put('/:id', (ctx: HttpContextContract) => {
-    return new PermissionsController().update(ctx);
+    return new AttributesController().update(ctx);
   });
   Route.delete('/:id', (ctx: HttpContextContract) => {
-    return new PermissionsController().destroy(ctx);
+    return new AttributesController().destroy(ctx);
   });
+
   Route.get('/', (ctx: HttpContextContract) => {
-    return new PermissionsController().find(ctx);
+    return new AttributesController().find(ctx);
   });
   Route.get('/:id', (ctx: HttpContextContract) => {
-    return new PermissionsController().get(ctx);
+    return new AttributesController().get(ctx);
   });
 })
   .middleware(['auth:api'])
-  .prefix('/api/v1/permissions');
+  .prefix('/api/v1/attributes');

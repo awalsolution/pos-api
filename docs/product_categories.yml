@@ -1,27 +1,26 @@
 {
   'paths':
     {
-      '/api/v1/roles':
+      '/api/v1/categories':
         {
           'post':
             {
-              'summary': 'Add a new role',
-              'tags': ['roles'],
-              'requestBody': { '$ref': '#/components/requestBodies/roleBody' },
+              'summary': 'Add a new categorie',
+              'tags': ['product categories'],
+              'security': [{ 'bearerAuth': [] }],
+              'requestBody':
+                { '$ref': '#/components/requestBodies/categorieBody' },
+              'produces': ['application/json'],
               'responses':
                 {
                   '200': { 'description': 'OK' },
                   '400': { 'description': 'Bad request.' },
-                  '401':
-                    {
-                      'description': 'Authorization information is missing or invalid.',
-                    },
                 },
             },
           'get':
             {
-              'summary': 'Get total roles',
-              'tags': ['roles'],
+              'summary': 'Get total categories',
+              'tags': ['product categories'],
               'parameters':
                 [
                   {
@@ -49,19 +48,15 @@
                 {
                   '200': { 'description': 'OK' },
                   '400': { 'description': 'Bad request.' },
-                  '401':
-                    {
-                      'description': 'Authorization information is missing or invalid.',
-                    },
                 },
             },
         },
-      '/api/v1/roles/{id}':
+      '/api/v1/categories/{id}':
         {
           'get':
             {
-              'summary': 'Get a role by ID',
-              'tags': ['roles'],
+              'summary': 'Get a categorie by ID',
+              'tags': ['product categories'],
               'parameters':
                 [
                   {
@@ -69,23 +64,19 @@
                     'name': 'id',
                     'schema': { 'type': 'integer' },
                     'required': true,
-                    'description': 'Numeric ID of the role to get',
+                    'description': 'Numeric ID of the categorie to get',
                   },
                 ],
               'responses':
                 {
                   '200': { 'description': 'OK' },
                   '400': { 'description': 'Bad request.' },
-                  '401':
-                    {
-                      'description': 'Authorization information is missing or invalid.',
-                    },
                 },
             },
           'put':
             {
-              'summary': 'Update a role',
-              'tags': ['roles'],
+              'summary': 'Update a categorie',
+              'tags': ['product categories'],
               'parameters':
                 [
                   {
@@ -93,24 +84,21 @@
                     'name': 'id',
                     'schema': { 'type': 'integer' },
                     'required': true,
-                    'description': 'Numeric ID of the role to get',
+                    'description': 'Numeric ID of the categorie to get',
                   },
                 ],
-              'requestBody': { '$ref': '#/components/requestBodies/roleBody' },
+              'requestBody':
+                { '$ref': '#/components/requestBodies/categorieBody' },
               'responses':
                 {
                   '200': { 'description': 'OK' },
                   '400': { 'description': 'Bad request.' },
-                  '401':
-                    {
-                      'description': 'Authorization information is missing or invalid.',
-                    },
                 },
             },
           'delete':
             {
-              'summary': 'Delete a role',
-              'tags': ['roles'],
+              'summary': 'Delete a categorie',
+              'tags': ['product categories'],
               'parameters':
                 [
                   {
@@ -118,18 +106,15 @@
                     'name': 'id',
                     'schema': { 'type': 'integer' },
                     'required': true,
-                    'description': 'Numeric ID of the role to get',
+                    'description': 'Numeric ID of the categorie to get',
                   },
                 ],
-              'requestBody': { '$ref': '#/components/requestBodies/roleBody' },
+              'requestBody':
+                { '$ref': '#/components/requestBodies/categorieBody' },
               'responses':
                 {
                   '200': { 'description': 'OK' },
                   '400': { 'description': 'Bad request.' },
-                  '401':
-                    {
-                      'description': 'Authorization information is missing or invalid.',
-                    },
                 },
             },
         },
@@ -138,36 +123,30 @@
     {
       'requestBodies':
         {
-          'roleBody':
+          'categorieBody':
             {
-              'description': 'A JSON object containing role information',
+              'description': 'A JSON object containing categorie information',
               'required': true,
               'content':
                 {
                   'application/json':
-                    { 'schema': { '$ref': '#/components/schemas/role' } },
+                    { 'schema': { '$ref': '#/components/schemas/categorie' } },
                 },
             },
         },
       'schemas':
         {
-          'role':
+          'categorie':
             {
-              'title': 'Role Schemas Information',
+              'title': 'categorie Schemas Information',
               'type': 'object',
               'properties':
                 {
                   'name':
                     {
                       'type': 'string',
-                      'example': 'admin',
-                      'description': 'add Role name',
-                    },
-                  'description':
-                    {
-                      'type': 'string',
-                      'example': 'this is super admin rule',
-                      'description': 'add Role description',
+                      'example': 'Color',
+                      'description': 'add categorie name',
                     },
                 },
             },

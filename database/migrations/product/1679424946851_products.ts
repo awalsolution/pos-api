@@ -13,18 +13,20 @@ export default class extends BaseSchema {
         .references('shops.id')
         .onUpdate('CASCADE')
         .onDelete('CASCADE');
+      table
+        .integer('category_id')
+        .unsigned()
+        .notNullable()
+        .references('categories.id')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE');
       table.string('product_sku').notNullable().unique();
-      table.string('title').notNullable();
-      table.string('slug').notNullable();
-      table.double('price').nullable().defaultTo(10);
-      table.double('sale_price').nullable().defaultTo(9);
-      table.boolean('is_active').defaultTo(true);
+      table.string('title').notNullable().unique();
+      table.string('slug').notNullable().unique();
+      table.string('status').notNullable().defaultTo('active');
       table.string('description').nullable();
-      table.string('short_description').nullable();
-      table.string('product_images').nullable();
+      // table.boolean('featured').notNullable().defaultTo(false);
 
-      table.unique(['shop_id', 'title']);
-      table.unique(['shop_id', 'slug']);
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */

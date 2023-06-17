@@ -1,23 +1,24 @@
 import Route from '@ioc:Adonis/Core/Route';
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
-import PermissionsController from 'App/Controllers/Http/Acl/PermissionsController';
+import CategoriesController from 'App/Controllers/Http/product/CategoriesController';
 
 Route.group(async () => {
   Route.post('/', (ctx: HttpContextContract) => {
-    return new PermissionsController().create(ctx);
+    return new CategoriesController().create(ctx);
   });
   Route.put('/:id', (ctx: HttpContextContract) => {
-    return new PermissionsController().update(ctx);
+    return new CategoriesController().update(ctx);
   });
   Route.delete('/:id', (ctx: HttpContextContract) => {
-    return new PermissionsController().destroy(ctx);
+    return new CategoriesController().destroy(ctx);
   });
+
   Route.get('/', (ctx: HttpContextContract) => {
-    return new PermissionsController().find(ctx);
+    return new CategoriesController().find(ctx);
   });
   Route.get('/:id', (ctx: HttpContextContract) => {
-    return new PermissionsController().get(ctx);
+    return new CategoriesController().get(ctx);
   });
 })
   .middleware(['auth:api'])
-  .prefix('/api/v1/permissions');
+  .prefix('/api/v1/categories');

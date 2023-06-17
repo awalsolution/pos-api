@@ -1,27 +1,26 @@
 {
   'paths':
     {
-      '/api/v1/roles':
+      '/api/v1/attributes':
         {
           'post':
             {
-              'summary': 'Add a new role',
-              'tags': ['roles'],
-              'requestBody': { '$ref': '#/components/requestBodies/roleBody' },
+              'summary': 'Add a new attribute',
+              'tags': ['product attributes'],
+              'security': [{ 'bearerAuth': [] }],
+              'requestBody':
+                { '$ref': '#/components/requestBodies/attributeBody' },
+              'produces': ['application/json'],
               'responses':
                 {
                   '200': { 'description': 'OK' },
                   '400': { 'description': 'Bad request.' },
-                  '401':
-                    {
-                      'description': 'Authorization information is missing or invalid.',
-                    },
                 },
             },
           'get':
             {
-              'summary': 'Get total roles',
-              'tags': ['roles'],
+              'summary': 'Get total attributes',
+              'tags': ['product attributes'],
               'parameters':
                 [
                   {
@@ -49,19 +48,15 @@
                 {
                   '200': { 'description': 'OK' },
                   '400': { 'description': 'Bad request.' },
-                  '401':
-                    {
-                      'description': 'Authorization information is missing or invalid.',
-                    },
                 },
             },
         },
-      '/api/v1/roles/{id}':
+      '/api/v1/attributes/{id}':
         {
           'get':
             {
-              'summary': 'Get a role by ID',
-              'tags': ['roles'],
+              'summary': 'Get a attribute by ID',
+              'tags': ['product attributes'],
               'parameters':
                 [
                   {
@@ -69,23 +64,19 @@
                     'name': 'id',
                     'schema': { 'type': 'integer' },
                     'required': true,
-                    'description': 'Numeric ID of the role to get',
+                    'description': 'Numeric ID of the attribute to get',
                   },
                 ],
               'responses':
                 {
                   '200': { 'description': 'OK' },
                   '400': { 'description': 'Bad request.' },
-                  '401':
-                    {
-                      'description': 'Authorization information is missing or invalid.',
-                    },
                 },
             },
           'put':
             {
-              'summary': 'Update a role',
-              'tags': ['roles'],
+              'summary': 'Update a attribute',
+              'tags': ['product attributes'],
               'parameters':
                 [
                   {
@@ -93,24 +84,21 @@
                     'name': 'id',
                     'schema': { 'type': 'integer' },
                     'required': true,
-                    'description': 'Numeric ID of the role to get',
+                    'description': 'Numeric ID of the attribute to get',
                   },
                 ],
-              'requestBody': { '$ref': '#/components/requestBodies/roleBody' },
+              'requestBody':
+                { '$ref': '#/components/requestBodies/attributeBody' },
               'responses':
                 {
                   '200': { 'description': 'OK' },
                   '400': { 'description': 'Bad request.' },
-                  '401':
-                    {
-                      'description': 'Authorization information is missing or invalid.',
-                    },
                 },
             },
           'delete':
             {
-              'summary': 'Delete a role',
-              'tags': ['roles'],
+              'summary': 'Delete a attribute',
+              'tags': ['product attributes'],
               'parameters':
                 [
                   {
@@ -118,18 +106,15 @@
                     'name': 'id',
                     'schema': { 'type': 'integer' },
                     'required': true,
-                    'description': 'Numeric ID of the role to get',
+                    'description': 'Numeric ID of the attribute to get',
                   },
                 ],
-              'requestBody': { '$ref': '#/components/requestBodies/roleBody' },
+              'requestBody':
+                { '$ref': '#/components/requestBodies/attributeBody' },
               'responses':
                 {
                   '200': { 'description': 'OK' },
                   '400': { 'description': 'Bad request.' },
-                  '401':
-                    {
-                      'description': 'Authorization information is missing or invalid.',
-                    },
                 },
             },
         },
@@ -138,36 +123,30 @@
     {
       'requestBodies':
         {
-          'roleBody':
+          'attributeBody':
             {
-              'description': 'A JSON object containing role information',
+              'description': 'A JSON object containing attribute information',
               'required': true,
               'content':
                 {
                   'application/json':
-                    { 'schema': { '$ref': '#/components/schemas/role' } },
+                    { 'schema': { '$ref': '#/components/schemas/attribute' } },
                 },
             },
         },
       'schemas':
         {
-          'role':
+          'attribute':
             {
-              'title': 'Role Schemas Information',
+              'title': 'attribute Schemas Information',
               'type': 'object',
               'properties':
                 {
                   'name':
                     {
                       'type': 'string',
-                      'example': 'admin',
-                      'description': 'add Role name',
-                    },
-                  'description':
-                    {
-                      'type': 'string',
-                      'example': 'this is super admin rule',
-                      'description': 'add Role description',
+                      'example': 'Color',
+                      'description': 'add attribute name',
                     },
                 },
             },
