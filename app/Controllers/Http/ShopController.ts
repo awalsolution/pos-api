@@ -48,7 +48,7 @@ export default class ShopController extends BaseController {
     }
   }
   // create new shop
-  public async create({ auth, request, response }: HttpContextContract) {
+  public async create({ request, response }: HttpContextContract) {
     try {
       const shopExists = await this.MODEL.findBy(
         'shop_name',
@@ -62,7 +62,6 @@ export default class ShopController extends BaseController {
         });
       }
       const shop = new this.MODEL();
-      shop.userId = auth.user?.id;
       shop.shop_name = request.body().shop_name;
       shop.shop_phone = request.body().shop_phone;
       shop.address = request.body().address;

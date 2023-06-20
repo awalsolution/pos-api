@@ -21,12 +21,13 @@ export default class extends BaseSchema {
         .onUpdate('CASCADE')
         .onDelete('CASCADE');
       table.string('product_sku').notNullable().unique();
-      table.string('title').notNullable().unique();
-      table.string('slug').notNullable().unique();
+      table.string('title').notNullable();
+      table.string('slug').notNullable();
       table.string('status').notNullable().defaultTo('active');
       table.string('description').nullable();
       // table.boolean('featured').notNullable().defaultTo(false);
 
+      table.unique(['shop_id', 'title', 'slug']);
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */
