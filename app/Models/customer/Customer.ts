@@ -1,7 +1,15 @@
 import { DateTime } from 'luxon';
-import { column, BaseModel, hasMany, HasMany } from '@ioc:Adonis/Lucid/Orm';
+import {
+  column,
+  BaseModel,
+  hasMany,
+  HasMany,
+  belongsTo,
+  BelongsTo,
+} from '@ioc:Adonis/Lucid/Orm';
 import { STANDARD_DATE_TIME_FORMAT } from 'App/Helpers/utils';
 import CustomerAddress from 'App/Models/customer/CustomerAddress';
+import Shop from 'App/Models/Shop';
 
 export default class Customer extends BaseModel {
   @column({ isPrimary: true })
@@ -59,6 +67,9 @@ export default class Customer extends BaseModel {
     },
   })
   public updatedAt: DateTime;
+
+  @belongsTo(() => Shop)
+  public shop: BelongsTo<typeof Shop>;
 
   @hasMany(() => CustomerAddress)
   public customer_addresses: HasMany<typeof CustomerAddress>;

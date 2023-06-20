@@ -11,11 +11,13 @@ import {
   beforeFind,
   afterFetch,
   ModelQueryBuilderContract,
+  belongsTo,
+  BelongsTo,
 } from '@ioc:Adonis/Lucid/Orm';
 import Permission from 'App/Models/Acl/Permission';
 import Role from 'App/Models/Acl/Role';
 import Profile from 'App/Models/Profile';
-// import Shop from 'App/Models/Shop';
+import Shop from 'App/Models/Shop';
 import { STANDARD_DATE_TIME_FORMAT } from 'App/Helpers/utils';
 
 type UserQuery = ModelQueryBuilderContract<typeof User>;
@@ -26,7 +28,7 @@ export default class User extends BaseModel {
   public id: number;
 
   @column()
-  public shopId: number | undefined;
+  public shopId: number;
 
   @column()
   public email: string;
@@ -95,8 +97,8 @@ export default class User extends BaseModel {
   @hasOne(() => Profile)
   public profile: HasOne<typeof Profile>;
 
-  // @hasOne(() => Shop)
-  // public shop: HasOne<typeof Shop>;
+  @belongsTo(() => Shop)
+  public shop: BelongsTo<typeof Shop>;
 
   //Hooks
   @beforeFind()
@@ -106,8 +108,8 @@ export default class User extends BaseModel {
       .preload('roles', (rolesQuery: RoleQuery) => {
         rolesQuery.preload('permissions');
       })
-      .preload('profile');
-    // .preload('shop');
+      .preload('profile')
+      .preload('shop');
   }
   // delete password for fetched user
   @afterFetch()

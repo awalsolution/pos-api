@@ -1,12 +1,12 @@
 import BaseSeeder from '@ioc:Adonis/Lucid/Seeder';
-import CustomerAddress from 'App/Models/CustomerAddress';
+import CustomerAddress from 'App/Models/customer/CustomerAddress';
 
 export default class extends BaseSeeder {
   public async run() {
     await CustomerAddress.createMany([
       {
         customerId: 1,
-        address_type: 'shipping',
+        addressType: 'shipping',
         phoneNumber: '123456789',
         firstName: 'customer',
         lastName: '1',
@@ -18,7 +18,7 @@ export default class extends BaseSeeder {
       },
       {
         customerId: 2,
-        address_type: 'shipping',
+        addressType: 'shipping',
         phoneNumber: '123456789',
         firstName: 'customer',
         lastName: '1',
@@ -30,7 +30,7 @@ export default class extends BaseSeeder {
       },
       {
         customerId: 1,
-        address_type: 'billing',
+        addressType: 'billing',
         phoneNumber: '123456789',
         firstName: 'customer',
         lastName: '1',
@@ -42,7 +42,7 @@ export default class extends BaseSeeder {
       },
       {
         customerId: 2,
-        address_type: 'billing',
+        addressType: 'billing',
         phoneNumber: '123456789',
         firstName: 'customer',
         lastName: '1',

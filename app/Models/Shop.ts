@@ -1,9 +1,8 @@
 import { DateTime } from 'luxon';
-import { column, BaseModel, hasMany, HasMany } from '@ioc:Adonis/Lucid/Orm';
+import { column, BaseModel } from '@ioc:Adonis/Lucid/Orm';
 import { STANDARD_DATE_TIME_FORMAT } from 'App/Helpers/utils';
-import Product from 'App/Models/product/Product';
-import User from 'App/Models/User';
-import Customer from 'App/Models/customer/Customer';
+// import Product from 'App/Models/product/Product';
+// import Customer from 'App/Models/customer/Customer';
 
 export default class Shop extends BaseModel {
   @column({ isPrimary: true })
@@ -50,12 +49,9 @@ export default class Shop extends BaseModel {
   })
   public updatedAt: DateTime;
 
-  @hasMany(() => Product)
-  public products: HasMany<typeof Product>;
+  // @hasMany(() => Product)
+  // public products: HasMany<typeof Product>;
 
-  @hasMany(() => User)
-  public users: HasMany<typeof User>;
-
-  @hasMany(() => Customer)
-  public customers: HasMany<typeof Customer>;
+  // @hasMany(() => Customer)
+  // public customers: HasMany<typeof Customer>;
 }

@@ -1,5 +1,5 @@
 import BaseSeeder from '@ioc:Adonis/Lucid/Seeder';
-import Customer from 'App/Models/Customer';
+import Customer from 'App/Models/customer/Customer';
 
 export default class extends BaseSeeder {
   public async run() {
@@ -11,7 +11,6 @@ export default class extends BaseSeeder {
         firstName: 'customer',
         lastName: '1',
         password: '123456',
-        userType: 'customer',
       },
       {
         shopId: 1,
@@ -20,7 +19,6 @@ export default class extends BaseSeeder {
         firstName: 'customer',
         lastName: '2',
         password: '123456',
-        userType: 'customer',
       },
     ]);
   }

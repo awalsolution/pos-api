@@ -71,7 +71,7 @@ export default class UsersController extends BaseController {
           rolesQuery.preload('permissions');
         })
         .preload('profile')
-        // .preload('shop')
+        .preload('shop')
         .paginate(
           request.input(Pagination.PAGE_KEY, Pagination.PAGE),
           request.input(Pagination.PER_PAGE_KEY, Pagination.PER_PAGE)
@@ -87,12 +87,13 @@ export default class UsersController extends BaseController {
         .where('id', request.param('id'))
         .preload('permissions')
         .preload('roles', (rolesQuery) => {
-          rolesQuery.preload('permissions');
+          rolesQuery
+            .where('name', '!=', 'super admin') // Exclude the "super admin" role
+            .preload('permissions');
         })
         .preload('profile')
-        // .preload('shop')
+        .preload('shop')
         .first();
-      // const data = await this.MODEL.findBy('id', request.param('id'));
       if (data) {
         delete data.$attributes.password;
       }
