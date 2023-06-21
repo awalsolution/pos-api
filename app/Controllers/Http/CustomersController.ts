@@ -13,7 +13,7 @@ export default class CustomersController extends BaseController {
     this.MODEL = Customer;
   }
   // create new customer
-  public async create({ request, response }: HttpContextContract) {
+  public async create({ auth, request, response }: HttpContextContract) {
     try {
       let exists = await this.MODEL.findBy('email', request.body().email);
       if (exists && !exists.isEmailVerified) {
@@ -26,16 +26,20 @@ export default class CustomersController extends BaseController {
       }
 
       const customer = new this.MODEL();
+      customer.shopId = auth.user?.shopId;
       customer.email = request.body().email;
-      customer.phone = request.body().phone;
+      customer.phoneNumber = request.body().phone_number;
+      customer.firstName = request.body().first_name;
+      customer.lastName = request.body().last_name;
       customer.password = request.body().password;
-      customer.userType = request.body().user_type;
 
       await customer.save();
-
-      customer
-        .related('customer_addresses')
-        .createMany(request.body().addresses);
+      await customer
+        .related('billing_address')
+        .create(request.body().billing_address);
+      await customer
+        .related('shipping_address')
+        .create(request.body().shipping_address);
 
       delete customer.$attributes.password;
 
@@ -53,14 +57,16 @@ export default class CustomersController extends BaseController {
     }
   }
 
-  // find all users  list
+  // find all customers  list
   public async find({ request, response }: HttpContextContract) {
     let data = this.MODEL.query();
 
     return response.status(HttpCodes.SUCCESS).send({
       code: HttpCodes.SUCCESS,
       result: await data
-        .preload('customer_addresses')
+        .preload('billing_address')
+        .preload('shipping_address')
+        .preload('shop')
         .paginate(
           request.input(Pagination.PAGE_KEY, Pagination.PAGE),
           request.input(Pagination.PER_PAGE_KEY, Pagination.PER_PAGE)
@@ -74,7 +80,8 @@ export default class CustomersController extends BaseController {
     try {
       const data = await this.MODEL.query()
         .where('id', request.param('id'))
-        .preload('customer_addresses')
+        .preload('billing_address')
+        .preload('shipping_address')
         .first();
 
       if (data) {
@@ -101,14 +108,17 @@ export default class CustomersController extends BaseController {
         message: 'User Not Found',
       });
     }
-    customer.phone = request.body().phone;
+    customer.phoneNumber = request.body().phone_number;
     customer.firstName = request.body().first_name;
     customer.lastName = request.body().last_name;
     customer.profilePicture = request.body().profilePicture;
 
-    customer
-      .related('customer_addresses')
-      .updateOrCreateMany(request.body().addresses);
+    await customer
+      .related('billing_address')
+      .updateOrCreate({}, request.body().billing_address);
+    await customer
+      .related('shipping_address')
+      .updateOrCreate({}, request.body().shipping_address);
     delete customer.$attributes.password;
 
     return response.ok({

@@ -1,7 +1,7 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema';
 
 export default class extends BaseSchema {
-  protected tableName = 'customer_addresses';
+  protected tableName = 'shipping_addresses';
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
@@ -9,16 +9,14 @@ export default class extends BaseSchema {
       table
         .integer('customer_id')
         .unsigned()
-        .nullable()
         .references('customers.id')
         .onUpdate('CASCADE')
         .onDelete('CASCADE');
-      table.string('address_type').nullable();
+      table.string('address_type').notNullable().defaultTo('shipping');
       table.string('phone_number').nullable();
       table.string('first_name').nullable();
       table.string('last_name').nullable();
-      table.string('address_1').nullable();
-      table.string('address_2').nullable();
+      table.string('street').nullable();
       table.string('city').nullable();
       table.string('state').nullable();
       table.string('country').nullable();
