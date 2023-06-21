@@ -1,21 +1,25 @@
 import { DateTime } from 'luxon';
 import { column, BaseModel } from '@ioc:Adonis/Lucid/Orm';
 import { STANDARD_DATE_TIME_FORMAT } from 'App/Helpers/utils';
-export default class Shop extends BaseModel {
+
+export default class ShippingAddress extends BaseModel {
   @column({ isPrimary: true })
   public id: number;
 
   @column()
-  public shop_name: string;
+  public customerId: number;
 
   @column()
-  public shop_phone: string | null;
+  public phoneNumber: string | null;
 
   @column()
-  public status: boolean;
+  public firstName: string | null;
 
   @column()
-  public address: string | null;
+  public lastName: string | null;
+
+  @column()
+  public street: string | null;
 
   @column()
   public city: string | null;
@@ -25,9 +29,6 @@ export default class Shop extends BaseModel {
 
   @column()
   public country: string | null;
-
-  @column()
-  public shop_logo: string | null;
 
   @column.dateTime({
     autoCreate: true,

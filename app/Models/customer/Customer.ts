@@ -2,15 +2,15 @@ import { DateTime } from 'luxon';
 import {
   column,
   BaseModel,
-  hasMany,
-  HasMany,
   belongsTo,
   BelongsTo,
+  hasOne,
+  HasOne,
 } from '@ioc:Adonis/Lucid/Orm';
 import { STANDARD_DATE_TIME_FORMAT } from 'App/Helpers/utils';
-import CustomerAddress from 'App/Models/customer/CustomerAddress';
 import Shop from 'App/Models/Shop';
-
+import ShippingAddress from 'App/Models/customer/ShippingAddress';
+import BillingAddress from 'App/Models/customer/BillingAddress';
 export default class Customer extends BaseModel {
   @column({ isPrimary: true })
   public id: number;
@@ -22,7 +22,7 @@ export default class Customer extends BaseModel {
   public email: string;
 
   @column()
-  public phone: string;
+  public phoneNumber: string;
 
   @column()
   public status: boolean;
@@ -35,9 +35,6 @@ export default class Customer extends BaseModel {
 
   @column({ serializeAs: null })
   public password: string;
-
-  @column()
-  public userType: string;
 
   @column()
   public rememberToken: boolean;
@@ -71,6 +68,9 @@ export default class Customer extends BaseModel {
   @belongsTo(() => Shop)
   public shop: BelongsTo<typeof Shop>;
 
-  @hasMany(() => CustomerAddress)
-  public customer_addresses: HasMany<typeof CustomerAddress>;
+  @hasOne(() => ShippingAddress)
+  public shipping_address: HasOne<typeof ShippingAddress>;
+
+  @hasOne(() => BillingAddress)
+  public billing_address: HasOne<typeof BillingAddress>;
 }

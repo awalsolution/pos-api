@@ -13,17 +13,18 @@ export default class extends BaseSchema {
         .onUpdate('CASCADE')
         .onDelete('CASCADE');
       table.string('email').notNullable().unique().index();
-      table.string('phone').notNullable();
+      table.string('phone_number').notNullable();
       table.boolean('status').defaultTo(false).index();
-      table.string('first_name').notNullable();
+      table.string('first_name').nullable();
       table.string('last_name').nullable();
-      table.string('password').notNullable();
+      table.string('password').nullable();
       table.boolean('remember_token').notNullable().defaultTo(false);
       table.boolean('is_email_verified').notNullable().defaultTo(false);
       table.timestamp('email_verified_time').nullable();
       table.boolean('is_phone_verified').notNullable().defaultTo(false);
       table.timestamp('phone_verified_time').nullable();
       table.string('profile_picture').nullable();
+
       /**
        * Uses timestampz for PostgreSQL and DATETIME2 for MSSQL
        */
