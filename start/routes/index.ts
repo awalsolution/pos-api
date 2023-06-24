@@ -19,6 +19,23 @@
 */
 
 import Route from '@ioc:Adonis/Core/Route';
+import Application from '@ioc:Adonis/Core/Application';
+import Drive from '@ioc:Adonis/Core/Drive';
+
+Route.post('/api/v1/upload', async ({ request, response }) => {
+  const image = request.file('profile_picture');
+
+  if (image) {
+    await image.move(Application.tmpPath('uploads'));
+  }
+  const url = await Drive.getUrl(image?.fileName ? image.fileName : '');
+
+  response.ok({
+    code: 200,
+    message: 'Image uploaded successfully.',
+    data: url,
+  });
+});
 
 Route.get('/', async () => {
   return { hello: 'world' };
