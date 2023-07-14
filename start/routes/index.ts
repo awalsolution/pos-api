@@ -23,7 +23,7 @@ import Application from '@ioc:Adonis/Core/Application';
 import Drive from '@ioc:Adonis/Core/Drive';
 
 Route.post('/api/v1/upload', async ({ request, response }) => {
-  const image = request.file('profile_picture');
+  const image = request.file('images');
 
   if (image) {
     await image.move(Application.tmpPath('uploads'));
