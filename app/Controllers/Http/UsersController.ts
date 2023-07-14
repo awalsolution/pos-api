@@ -5,7 +5,6 @@ import User from 'App/Models/User';
 import HttpCodes from 'App/Enums/HttpCodes';
 import ResponseMessages from 'App/Enums/ResponseMessages';
 import Pagination from 'App/Enums/Pagination';
-// import { imageUpload } from "App/Helpers/MainHelpers";
 
 export default class UsersController extends BaseController {
   public MODEL: typeof User;
@@ -138,7 +137,6 @@ export default class UsersController extends BaseController {
         message: 'User Not Found',
       });
     }
-
     user.related('profile').updateOrCreate(
       {},
       {
@@ -149,6 +147,7 @@ export default class UsersController extends BaseController {
         city: request.body().city,
         state: request.body().state,
         country: request.body().country,
+        profile_picture: request.body().profile_picture,
       }
     );
 
