@@ -111,6 +111,7 @@ export default class User extends BaseModel {
       .preload('profile')
       .preload('shop');
   }
+  // 'name', '!=', 'super admin').preload('permissions'
   // delete password for fetched user
   @afterFetch()
   public static deletePasswordList(users: User[]) {
