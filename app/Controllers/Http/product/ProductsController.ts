@@ -112,9 +112,27 @@ export default class ProductsController extends BaseController {
       product.product_sku = request.body().product_sku;
       product.description = request.body().description;
       product.status = request.body().status;
-      await product
-        .related('variations')
-        .updateOrCreateMany(request.body().variations);
+
+      const variations = request.body().variations;
+      for (const variation of variations) {
+        if (variation.id) {
+          const existingVariation = await product
+            .related('variations')
+            .query()
+            .where('id', variation.id)
+            .first();
+
+          if (existingVariation) {
+            // Update existing variation
+            existingVariation.merge(variation);
+            await existingVariation.save();
+          }
+        } else {
+          // Create new variation
+          await product.related('variations').create(variation);
+        }
+      }
+
       return response.ok({
         code: HttpCodes.SUCCESS,
         message: 'Product updated Successfully!',
