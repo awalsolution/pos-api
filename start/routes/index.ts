@@ -23,11 +23,19 @@ import Application from '@ioc:Adonis/Core/Application';
 import Drive from '@ioc:Adonis/Core/Drive';
 
 Route.post('/api/v1/upload', async ({ request, response }) => {
-  const image = request.file('images');
+  let image: any;
 
-  if (image) {
+  if (request.file('categoriesImages')) {
+    image = request.file('categoriesImages');
+    await image.move(Application.tmpPath('uploads/categories'));
+  } else if (request.file('productImages')) {
+    image = request.file('productImages');
+    await image.move(Application.tmpPath('uploads/products'));
+  } else {
+    image = request.file('images');
     await image.move(Application.tmpPath('uploads'));
   }
+
   const url = await Drive.getUrl(image?.fileName ? image.fileName : '');
 
   response.ok({
@@ -38,7 +46,7 @@ Route.post('/api/v1/upload', async ({ request, response }) => {
 });
 
 Route.get('/', async () => {
-  return { hello: 'world' };
+  return "InSync CRM API's is Started.";
 });
 
 import './api/customer';

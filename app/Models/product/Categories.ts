@@ -10,6 +10,9 @@ export default class Categories extends BaseModel {
   @column()
   public name: string;
 
+  @column()
+  public image: string;
+
   @column.dateTime({
     autoCreate: true,
     serialize(value: DateTime) {
