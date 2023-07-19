@@ -22,7 +22,10 @@ export default class ProductsController extends BaseController {
     return response.ok({
       code: HttpCodes.SUCCESS,
       result: await data
-        .preload('variations')
+        .preload('variations', (sub_relation) => {
+          sub_relation.preload('attributes');
+        })
+        .preload('shop')
         .paginate(
           request.input(Pagination.PAGE_KEY, Pagination.PAGE),
           request.input(Pagination.PER_PAGE_KEY, Pagination.PER_PAGE)
@@ -35,7 +38,10 @@ export default class ProductsController extends BaseController {
     try {
       const data = await this.MODEL.query()
         .where('id', request.param('id'))
-        .preload('variations')
+        .preload('variations', (sub_relation) => {
+          sub_relation.preload('attributes');
+        })
+        .preload('shop')
         .first();
 
       return response.ok({
@@ -70,6 +76,12 @@ export default class ProductsController extends BaseController {
       product.title = request.body().title;
       product.description = request.body().description;
       product.status = request.body().status;
+      product.price = request.body().price;
+      product.regular_price = request.body().regular_price;
+      product.stock_quantity = request.body().stock_quantity;
+      product.stock_status = request.body().stock_status;
+      product.product_images = request.body().product_images;
+
       await product.save();
       await product.related('variations').createMany(request.body().variations);
 
@@ -97,22 +109,19 @@ export default class ProductsController extends BaseController {
           message: 'Product does not exists!',
         });
       }
-      const productExist = await this.MODEL.query()
-        .where('title', 'like', request.body().title)
-        .whereNot('id', request.param('id'))
-        .first();
-      if (productExist) {
-        return response.conflict({
-          code: HttpCodes.CONFLICTS,
-          message: `Product: ${request.body().title} already exist!`,
-        });
-      }
+
       product.title = request.body().title;
       product.categoryId = request.body().category_id;
       product.product_sku = request.body().product_sku;
       product.description = request.body().description;
       product.status = request.body().status;
+      product.price = request.body().price;
+      product.regular_price = request.body().regular_price;
+      product.stock_quantity = request.body().stock_quantity;
+      product.stock_status = request.body().stock_status;
+      product.product_images = request.body().product_images;
 
+      await product.save();
       const variations = request.body().variations;
       for (const variation of variations) {
         if (variation.id) {

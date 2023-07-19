@@ -45,6 +45,39 @@ export default class Product extends BaseModel {
   @column()
   public description: string | null;
 
+  @column()
+  public price: number;
+
+  @column()
+  public regular_price: number | null;
+
+  @column()
+  public sale_price: number | null;
+
+  @column()
+  public date_on_sale_from: DateTime | null;
+
+  @column()
+  public date_on_sale_to: DateTime | null;
+
+  @column()
+  public on_sale: Boolean;
+
+  @column()
+  public total_sales: number | null;
+
+  @column()
+  public stock_quantity: number | null;
+
+  @column()
+  public stock_status: string;
+
+  @column()
+  public rating: string | null;
+
+  @column()
+  public product_images: string | null;
+
   @column.dateTime({
     autoCreate: true,
     serialize(value: DateTime) {

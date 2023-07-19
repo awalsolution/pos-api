@@ -25,6 +25,17 @@ export default class extends BaseSchema {
       table.string('slug').notNullable();
       table.string('status').notNullable().defaultTo('active');
       table.string('description').nullable();
+      table.double('price').notNullable();
+      table.double('regular_price').nullable();
+      table.double('sale_price').nullable();
+      table.dateTime('date_on_sale_from').nullable();
+      table.dateTime('date_on_sale_to').nullable();
+      table.boolean('on_sale').notNullable().defaultTo(false);
+      table.integer('total_sales').nullable();
+      table.integer('stock_quantity').nullable();
+      table.string('stock_status').notNullable().defaultTo('instock');
+      table.string('rating').nullable();
+      table.string('product_images').nullable();
       // table.boolean('featured').notNullable().defaultTo(false);
 
       table.unique(['shop_id', 'title', 'slug']);

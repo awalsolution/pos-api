@@ -60,6 +60,7 @@ export default class CategoriesController extends BaseController {
       }
       const category = new this.MODEL();
       category.name = request.body().name;
+      category.image = request.body().image;
 
       const data = await category.save();
       return response.ok({
@@ -98,6 +99,7 @@ export default class CategoriesController extends BaseController {
         });
       }
       category.name = request.body().name;
+      category.image = request.body().image;
 
       await category.save();
       return response.ok({

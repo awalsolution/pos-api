@@ -24,19 +24,37 @@ import Drive from '@ioc:Adonis/Core/Drive';
 
 Route.post('/api/v1/upload', async ({ request, response }) => {
   let image: any;
-
+  let url: any;
   if (request.file('categoriesImages')) {
     image = request.file('categoriesImages');
     await image.move(Application.tmpPath('uploads/categories'));
+    url = await Drive.getUrl(
+      image?.fileName ? `/categories/${image.fileName}` : ''
+    );
   } else if (request.file('productImages')) {
     image = request.file('productImages');
     await image.move(Application.tmpPath('uploads/products'));
+    url = await Drive.getUrl(
+      image?.fileName ? `/products/${image.fileName}` : ''
+    );
+  } else if (request.file('shop_images')) {
+    image = request.file('shop_images');
+    await image.move(Application.tmpPath('uploads/shop_logo'));
+    url = await Drive.getUrl(
+      image?.fileName ? `/shop_logo/${image.fileName}` : ''
+    );
+  } else if (request.file('profile_image')) {
+    image = request.file('profile_image');
+    await image.move(Application.tmpPath('uploads/profile_pictures'));
+    url = await Drive.getUrl(
+      image?.fileName ? `/profile_pictures/${image.fileName}` : ''
+    );
   } else {
     image = request.file('images');
     await image.move(Application.tmpPath('uploads'));
+    url = await Drive.getUrl(image?.fileName ? image.fileName : '');
   }
-
-  const url = await Drive.getUrl(image?.fileName ? image.fileName : '');
+  console.log(url);
 
   response.ok({
     code: 200,

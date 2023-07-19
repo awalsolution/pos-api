@@ -14,13 +14,16 @@ export default class Variation extends BaseModel {
   public attributeId: number | undefined;
 
   @column()
+  public varient_sku: string;
+
+  @column()
   public attribute_value: string;
 
   @column()
   public price: number;
 
   @column()
-  public regular_price: number;
+  public regular_price: number | null;
 
   @column()
   public sale_price: number | null;
@@ -35,7 +38,7 @@ export default class Variation extends BaseModel {
   public on_sale: Boolean;
 
   @column()
-  public total_sales: number | null;
+  public stock_quantity: number | null;
 
   @column()
   public stock_status: string;
@@ -64,5 +67,5 @@ export default class Variation extends BaseModel {
   public updatedAt: DateTime;
 
   @belongsTo(() => Attribute)
-  public variations: BelongsTo<typeof Attribute>;
+  public attributes: BelongsTo<typeof Attribute>;
 }

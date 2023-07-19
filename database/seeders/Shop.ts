@@ -11,7 +11,7 @@ export default class extends BaseSeeder {
         city: 'Lahore',
         state: 'Punjab',
         country: 'Pakistan',
-        shop_logo: null,
+        shop_logo: '/uploads/shop_logo/shop_logo.png',
       },
       {
         shop_name: 'admin shop',
@@ -20,7 +20,7 @@ export default class extends BaseSeeder {
         city: 'Lahore',
         state: 'Punjab',
         country: 'Pakistan',
-        shop_logo: null,
+        shop_logo: '/uploads/shop_logo/shop_logo.png',
       },
       {
         shop_name: 'vendor shop',
@@ -29,7 +29,7 @@ export default class extends BaseSeeder {
         city: 'Lahore',
         state: 'Punjab',
         country: 'Pakistan',
-        shop_logo: null,
+        shop_logo: '/uploads/shop_logo/shop_logo.png',
       },
     ]);
   }
