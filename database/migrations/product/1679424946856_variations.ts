@@ -20,7 +20,7 @@ export default class extends BaseSchema {
         .references('attributes.id')
         .onUpdate('CASCADE')
         .onDelete('CASCADE');
-      table.string('varient_sku').notNullable().unique();
+      table.string('sku_id').notNullable().unique();
       table.string('attribute_value').nullable();
       table.double('price').nullable();
       table.double('regular_price').nullable();
@@ -28,11 +28,9 @@ export default class extends BaseSchema {
       table.dateTime('date_on_sale_from').nullable();
       table.dateTime('date_on_sale_to').nullable();
       table.boolean('on_sale').notNullable().defaultTo(false);
-      table.integer('total_sales').nullable();
       table.integer('stock_quantity').nullable();
       table.string('stock_status').notNullable().defaultTo('instock');
-      table.string('rating').nullable();
-      table.string('product_images').nullable();
+      table.integer('rating').nullable();
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

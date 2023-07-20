@@ -37,6 +37,7 @@ Route.post('/api/v1/upload', async ({ request, response }) => {
     url = await Drive.getUrl(
       image?.fileName ? `/products/${image.fileName}` : ''
     );
+    console.log(url);
   } else if (request.file('shop_images')) {
     image = request.file('shop_images');
     await image.move(Application.tmpPath('uploads/shop_logo'));
@@ -54,7 +55,6 @@ Route.post('/api/v1/upload', async ({ request, response }) => {
     await image.move(Application.tmpPath('uploads'));
     url = await Drive.getUrl(image?.fileName ? image.fileName : '');
   }
-  console.log(url);
 
   response.ok({
     code: 200,

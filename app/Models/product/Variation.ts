@@ -2,6 +2,7 @@ import { DateTime } from 'luxon';
 import { column, BaseModel, belongsTo, BelongsTo } from '@ioc:Adonis/Lucid/Orm';
 import { STANDARD_DATE_TIME_FORMAT } from 'App/Helpers/utils';
 import Attribute from 'App/Models/product/Attribute';
+import VariationImage from 'App/Models/product/VariationImage';
 
 export default class Variation extends BaseModel {
   @column({ isPrimary: true })
@@ -14,7 +15,7 @@ export default class Variation extends BaseModel {
   public attributeId: number | undefined;
 
   @column()
-  public varient_sku: string;
+  public sku_id: string;
 
   @column()
   public attribute_value: string;
@@ -44,10 +45,7 @@ export default class Variation extends BaseModel {
   public stock_status: string;
 
   @column()
-  public rating: string | null;
-
-  @column()
-  public product_images: string | null;
+  public rating: number | null;
 
   @column.dateTime({
     autoCreate: true,
@@ -68,4 +66,7 @@ export default class Variation extends BaseModel {
 
   @belongsTo(() => Attribute)
   public attributes: BelongsTo<typeof Attribute>;
+
+  @belongsTo(() => VariationImage)
+  public variation_images: BelongsTo<typeof VariationImage>;
 }

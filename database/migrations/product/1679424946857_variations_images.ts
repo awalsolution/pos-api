@@ -1,23 +1,20 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema';
 
 export default class extends BaseSchema {
-  protected tableName = 'uploads';
+  protected tableName = 'variations_images';
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id');
       table
-        .integer('user_id')
+        .integer('variation_id')
         .unsigned()
-        .unique()
-        .references('id')
-        .inTable('users')
+        .notNullable()
+        .references('variations.id')
+        .onUpdate('CASCADE')
         .onDelete('CASCADE');
-      table.string('name').nullable();
-      table.string('url').nullable();
-      table.string('previewUrl').nullable();
-      table.string('extension').nullable();
-      table.json('formats').nullable();
+      table.string('product_image').nullable();
+
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */
