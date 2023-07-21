@@ -37,6 +37,10 @@ export default class extends BaseSeeder {
       { name: 'can view category create' },
       { name: 'can view category update' },
       { name: 'can view category delete' },
+      { name: 'can view variants' },
+      { name: 'can view variant create' },
+      { name: 'can view variant update' },
+      { name: 'can view variant delete' },
     ]);
   }
 }

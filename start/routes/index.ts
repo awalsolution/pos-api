@@ -23,37 +23,32 @@ import Application from '@ioc:Adonis/Core/Application';
 import Drive from '@ioc:Adonis/Core/Drive';
 
 Route.post('/api/v1/upload', async ({ request, response }) => {
-  let image: any;
-  let url: any;
-  if (request.file('categoriesImages')) {
-    image = request.file('categoriesImages');
-    await image.move(Application.tmpPath('uploads/categories'));
-    url = await Drive.getUrl(
-      image?.fileName ? `/categories/${image.fileName}` : ''
-    );
-  } else if (request.file('productImages')) {
-    image = request.file('productImages');
-    await image.move(Application.tmpPath('uploads/products'));
-    url = await Drive.getUrl(
-      image?.fileName ? `/products/${image.fileName}` : ''
-    );
-    console.log(url);
+  let images: any = '';
+  let url: any = '';
+  // let urls: any = [];
+  if (request.file('categories')) {
+    images = request.file('categories');
+    await images.move(Application.tmpPath('uploads/categories'));
+    url = await Drive.getUrl(`/categories/${images.fileName}`);
+  } else if (request.files('productImages')) {
+    images = request.file('productImages');
+    await images.move(Application.tmpPath('uploads/products'));
+    url = await Drive.getUrl(`/products/${images.fileName}`);
+    // for (let image of images) {
+    //   // urls.push(url);
+    // }
   } else if (request.file('shop_images')) {
-    image = request.file('shop_images');
-    await image.move(Application.tmpPath('uploads/shop_logo'));
-    url = await Drive.getUrl(
-      image?.fileName ? `/shop_logo/${image.fileName}` : ''
-    );
+    images = request.file('shop_images');
+    await images.move(Application.tmpPath('uploads/shop_logo'));
+    url = await Drive.getUrl(`/shop_logo/${images.fileName}`);
   } else if (request.file('profile_image')) {
-    image = request.file('profile_image');
-    await image.move(Application.tmpPath('uploads/profile_pictures'));
-    url = await Drive.getUrl(
-      image?.fileName ? `/profile_pictures/${image.fileName}` : ''
-    );
+    images = request.file('profile_image');
+    await images.move(Application.tmpPath('uploads/profile_pictures'));
+    url = await Drive.getUrl(`/profile_pictures/${images.fileName}`);
   } else {
-    image = request.file('images');
-    await image.move(Application.tmpPath('uploads'));
-    url = await Drive.getUrl(image?.fileName ? image.fileName : '');
+    images = request.file('images');
+    await images.move(Application.tmpPath('uploads'));
+    url = await Drive.getUrl(images.fileName);
   }
 
   response.ok({
@@ -73,6 +68,7 @@ import './api/shop';
 import './api/product/product';
 import './api/product/categories';
 import './api/product/attribute';
+import './api/product/variant';
 import './api/auth';
 import './api/acl/roles';
 import './api/acl/permissions';

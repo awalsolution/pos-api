@@ -1,19 +1,19 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema';
 
 export default class extends BaseSchema {
-  protected tableName = 'variations_images';
+  protected tableName = 'variant_images';
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id');
       table
-        .integer('variation_id')
+        .integer('variant_id')
         .unsigned()
         .notNullable()
-        .references('variations.id')
+        .references('variants.id')
         .onUpdate('CASCADE')
         .onDelete('CASCADE');
-      table.string('product_image').nullable();
+      table.string('images').nullable();
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

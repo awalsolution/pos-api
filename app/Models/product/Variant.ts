@@ -1,10 +1,18 @@
 import { DateTime } from 'luxon';
-import { column, BaseModel, belongsTo, BelongsTo } from '@ioc:Adonis/Lucid/Orm';
+import {
+  column,
+  BaseModel,
+  belongsTo,
+  BelongsTo,
+  hasMany,
+  HasMany,
+} from '@ioc:Adonis/Lucid/Orm';
 import { STANDARD_DATE_TIME_FORMAT } from 'App/Helpers/utils';
+import Product from 'App/Models/product/Product';
 import Attribute from 'App/Models/product/Attribute';
-import VariationImage from 'App/Models/product/VariationImage';
+import VariantImage from 'App/Models/product/VariantImage';
 
-export default class Variation extends BaseModel {
+export default class Variant extends BaseModel {
   @column({ isPrimary: true })
   public id: number;
 
@@ -25,6 +33,9 @@ export default class Variation extends BaseModel {
 
   @column()
   public regular_price: number | null;
+
+  @column()
+  public status: string;
 
   @column()
   public sale_price: number | null;
@@ -67,6 +78,9 @@ export default class Variation extends BaseModel {
   @belongsTo(() => Attribute)
   public attributes: BelongsTo<typeof Attribute>;
 
-  @belongsTo(() => VariationImage)
-  public variation_images: BelongsTo<typeof VariationImage>;
+  @belongsTo(() => Product)
+  public products: BelongsTo<typeof Product>;
+
+  @hasMany(() => VariantImage)
+  public images: HasMany<typeof VariantImage>;
 }

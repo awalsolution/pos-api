@@ -1,8 +1,8 @@
 import BaseSeeder from '@ioc:Adonis/Lucid/Seeder';
-import Variation from 'App/Models/product/Variation';
+import Variant from 'App/Models/product/Variant';
 export default class extends BaseSeeder {
   public async run() {
-    await Variation.createMany([
+    await Variant.createMany([
       {
         productId: 1,
         attributeId: 1,

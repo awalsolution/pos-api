@@ -16,7 +16,7 @@ export default class extends BaseSchema {
       table.string('email').notNullable().unique().index();
       table.string('password').notNullable();
       table.string('user_type').nullable();
-      table.boolean('status').notNullable().defaultTo(false);
+      table.boolean('is_active').notNullable().defaultTo(true);
       table.boolean('remember_token').notNullable().defaultTo(false);
       table.boolean('is_email_verified').notNullable().defaultTo(false);
       table.timestamp('email_verified_time').nullable();

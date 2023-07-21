@@ -15,7 +15,8 @@ export default class IndexSeeder extends BaseSeeder {
     await this.runSeeder(await import('../products/Category'));
     await this.runSeeder(await import('../products/Attribute'));
     await this.runSeeder(await import('../products/Product'));
-    await this.runSeeder(await import('../products/Variations'));
+    await this.runSeeder(await import('../products/Variants'));
+    await this.runSeeder(await import('../products/VariantsImages'));
     await this.runSeeder(await import('../Profile'));
     await this.runSeeder(await import('../customer/Customer'));
     await this.runSeeder(await import('../customer/ShippingAddress'));

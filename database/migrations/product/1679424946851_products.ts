@@ -25,7 +25,7 @@ export default class extends BaseSchema {
       table.string('slug').notNullable();
       table.string('status').notNullable().defaultTo('active');
       table.string('description').nullable();
-      table.string('product_images').nullable();
+      table.string('product_image').nullable();
 
       table.unique(['shop_id', 'title', 'slug']);
       /**
