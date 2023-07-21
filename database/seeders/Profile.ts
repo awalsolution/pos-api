@@ -14,7 +14,7 @@ export default class extends BaseSeeder {
         city: 'Lahore',
         state: 'Punjab',
         country: 'Pakistan',
-        profile_picture: null,
+        profile_picture: '/uploads/profile_pictures/user-profile.jpeg',
       },
       {
         userId: 2,
@@ -25,7 +25,7 @@ export default class extends BaseSeeder {
         city: 'Lahore',
         state: 'Punjab',
         country: 'Pakistan',
-        profile_picture: null,
+        profile_picture: '/uploads/profile_pictures/user-profile.jpeg',
       },
       {
         userId: 3,
@@ -36,7 +36,7 @@ export default class extends BaseSeeder {
         city: 'Lahore',
         state: 'Punjab',
         country: 'Pakistan',
-        profile_picture: null,
+        profile_picture: '/uploads/profile_pictures/user-profile.jpeg',
       },
     ]);
   }

@@ -2,14 +2,14 @@ import { DateTime } from 'luxon';
 import {
   column,
   BaseModel,
-  hasMany,
-  HasMany,
+  // hasMany,
+  // HasMany,
   belongsTo,
   BelongsTo,
 } from '@ioc:Adonis/Lucid/Orm';
 import { STANDARD_DATE_TIME_FORMAT } from 'App/Helpers/utils';
 import { slugify } from '@ioc:Adonis/Addons/LucidSlugify';
-import Variation from 'App/Models/product/Variation';
+// import Variation from 'App/Models/product/Variation';
 import Shop from 'App/Models/Shop';
 
 export default class Product extends BaseModel {
@@ -23,7 +23,7 @@ export default class Product extends BaseModel {
   public categoryId: number | undefined;
 
   @column()
-  public product_sku: string;
+  public product_code: string;
 
   @column()
   public title: string;
@@ -37,13 +37,13 @@ export default class Product extends BaseModel {
   public slug: string;
 
   @column()
-  status: string;
-
-  // @column()
-  // featured: Boolean;
+  public status: string;
 
   @column()
   public description: string | null;
+
+  @column()
+  public product_image: string | null;
 
   @column.dateTime({
     autoCreate: true,
@@ -62,8 +62,8 @@ export default class Product extends BaseModel {
   })
   public updatedAt: DateTime;
 
-  @hasMany(() => Variation)
-  public variations: HasMany<typeof Variation>;
+  // @hasMany(() => Variation)
+  // public variations: HasMany<typeof Variation>;
 
   @belongsTo(() => Shop)
   public shop: BelongsTo<typeof Shop>;

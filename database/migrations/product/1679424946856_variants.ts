@@ -1,7 +1,7 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema';
 
 export default class extends BaseSchema {
-  protected tableName = 'variations';
+  protected tableName = 'variants';
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
@@ -20,17 +20,18 @@ export default class extends BaseSchema {
         .references('attributes.id')
         .onUpdate('CASCADE')
         .onDelete('CASCADE');
+      table.string('sku_id').notNullable().unique();
       table.string('attribute_value').nullable();
       table.double('price').nullable();
       table.double('regular_price').nullable();
+      table.string('status').notNullable().defaultTo('active');
       table.double('sale_price').nullable();
       table.dateTime('date_on_sale_from').nullable();
       table.dateTime('date_on_sale_to').nullable();
       table.boolean('on_sale').notNullable().defaultTo(false);
-      table.integer('total_sales').nullable();
+      table.integer('stock_quantity').nullable();
       table.string('stock_status').notNullable().defaultTo('instock');
-      table.string('rating').nullable();
-      table.string('product_images').nullable();
+      table.integer('rating').nullable();
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

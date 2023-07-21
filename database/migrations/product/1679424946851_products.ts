@@ -20,12 +20,12 @@ export default class extends BaseSchema {
         .references('categories.id')
         .onUpdate('CASCADE')
         .onDelete('CASCADE');
-      table.string('product_sku').notNullable().unique();
+      table.string('product_code').notNullable().unique();
       table.string('title').notNullable();
       table.string('slug').notNullable();
       table.string('status').notNullable().defaultTo('active');
       table.string('description').nullable();
-      // table.boolean('featured').notNullable().defaultTo(false);
+      table.string('product_image').nullable();
 
       table.unique(['shop_id', 'title', 'slug']);
       /**

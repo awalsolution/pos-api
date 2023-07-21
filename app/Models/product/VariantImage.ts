@@ -1,16 +1,16 @@
 import { DateTime } from 'luxon';
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm';
+import { column, BaseModel } from '@ioc:Adonis/Lucid/Orm';
 import { STANDARD_DATE_TIME_FORMAT } from 'App/Helpers/utils';
 
-export default class Attribute extends BaseModel {
+export default class VariantImage extends BaseModel {
   @column({ isPrimary: true })
   public id: number;
 
   @column()
-  public name: string;
+  public variantId: number;
 
   @column()
-  public status: boolean;
+  public images: string;
 
   @column.dateTime({
     autoCreate: true,

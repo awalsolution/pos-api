@@ -6,12 +6,15 @@ export default class extends BaseSeeder {
     await Categories.createMany([
       {
         name: 'cloths',
+        image: '/uploads/categories/category-01.jpeg',
       },
       {
         name: 'shoes',
+        image: '/uploads/categories/category-02.png',
       },
       {
         name: 'laptops',
+        image: '/uploads/categories/category-03.jpeg',
       },
     ]);
   }
