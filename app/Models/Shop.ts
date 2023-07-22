@@ -12,7 +12,7 @@ export default class Shop extends BaseModel {
   public shop_phone: string | null;
 
   @column()
-  public status: boolean;
+  public status: string;
 
   @column()
   public address: string | null;

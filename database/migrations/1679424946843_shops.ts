@@ -8,7 +8,7 @@ export default class extends BaseSchema {
       table.increments('id').primary();
       table.string('shop_name').notNullable().index();
       table.string('shop_phone').nullable();
-      table.boolean('is_active').notNullable().defaultTo(true);
+      table.string('status').notNullable().defaultTo('active');
       table.string('address').nullable();
       table.string('city').nullable();
       table.string('state').nullable();

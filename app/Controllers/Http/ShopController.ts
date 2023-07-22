@@ -64,6 +64,7 @@ export default class ShopController extends BaseController {
       const shop = new this.MODEL();
       shop.shop_name = request.body().shop_name;
       shop.shop_phone = request.body().shop_phone;
+      shop.status = request.body().status;
       shop.address = request.body().address;
       shop.city = request.body().city;
       shop.state = request.body().state;

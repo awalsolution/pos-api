@@ -29,6 +29,7 @@ export default class UsersController extends BaseController {
 
       const user = new this.MODEL();
       user.email = request.body().email;
+      user.status = request.body().status;
       user.password = request.body().password;
       user.userType = request.body().user_type;
 
@@ -117,7 +118,10 @@ export default class UsersController extends BaseController {
         message: 'User Not Found',
       });
     }
-    user.email = request.body().email;
+
+    user.status = request.body().status;
+
+    await user.save();
     user.related('permissions').sync(request.body().permissions);
     user.related('roles').sync(request.body().roles);
 
@@ -145,7 +149,6 @@ export default class UsersController extends BaseController {
         phone_number: request.body().phone_number,
         address: request.body().address,
         city: request.body().city,
-        state: request.body().state,
         country: request.body().country,
         profile_picture: request.body().profile_picture,
       }
@@ -156,24 +159,6 @@ export default class UsersController extends BaseController {
       code: HttpCodes.SUCCESS,
       message: 'User Profile Update successfully.',
       result: user,
-    });
-  }
-
-  //update user status
-  public async updateUserStatus({ request, response }: HttpContextContract) {
-    const data = await this.MODEL.findBy('id', request.param('id'));
-    if (!data) {
-      return response.notFound({
-        code: HttpCodes.NOT_FOUND,
-        message: 'User not found',
-      });
-    }
-    data.status = request.body().status;
-    await data.save();
-    return response.ok({
-      code: HttpCodes.SUCCESS,
-      message: 'User Status Update successfully',
-      result: data,
     });
   }
 
