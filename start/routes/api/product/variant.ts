@@ -3,7 +3,7 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import VariantsController from 'App/Controllers/Http/product/VariantsController';
 
 Route.group(async () => {
-  Route.post('/', (ctx: HttpContextContract) => {
+  Route.post('/:id', (ctx: HttpContextContract) => {
     return new VariantsController().create(ctx);
   });
   Route.put('/:id', (ctx: HttpContextContract) => {
@@ -12,7 +12,6 @@ Route.group(async () => {
   Route.delete('/:id', (ctx: HttpContextContract) => {
     return new VariantsController().destroy(ctx);
   });
-
   Route.get('/', (ctx: HttpContextContract) => {
     return new VariantsController().find(ctx);
   });

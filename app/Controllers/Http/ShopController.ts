@@ -64,6 +64,7 @@ export default class ShopController extends BaseController {
       const shop = new this.MODEL();
       shop.shop_name = request.body().shop_name;
       shop.shop_phone = request.body().shop_phone;
+      shop.status = request.body().status;
       shop.address = request.body().address;
       shop.city = request.body().city;
       shop.state = request.body().state;
@@ -128,22 +129,6 @@ export default class ShopController extends BaseController {
         message: e.toString(),
       });
     }
-  }
-  //update shop status
-  public async updateShopStatus({ request, response }: HttpContextContract) {
-    const data = await this.MODEL.findBy('id', request.param('id'));
-    if (!data) {
-      return response.notFound({
-        code: HttpCodes.NOT_FOUND,
-        message: 'Shop not found',
-      });
-    }
-    data.status = request.body().status;
-    await data.save();
-    return response.ok({
-      code: HttpCodes.SUCCESS,
-      result: { message: 'Shop Status Update successfully' },
-    });
   }
 
   // delete shop using id

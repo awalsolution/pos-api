@@ -14,7 +14,7 @@ export default class extends BaseSchema {
         .onDelete('CASCADE');
       table.string('email').notNullable().unique().index();
       table.string('phone_number').notNullable();
-      table.boolean('status').defaultTo(false).index();
+      table.string('status').notNullable().defaultTo('active');
       table.string('first_name').nullable();
       table.string('last_name').nullable();
       table.string('password').nullable();

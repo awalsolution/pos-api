@@ -19,9 +19,6 @@ Route.group(async () => {
   Route.get('/:id', (ctx: HttpContextContract) => {
     return new ShopController().get(ctx);
   });
-  Route.get('/status/:id', (ctx: HttpContextContract) => {
-    return new ShopController().updateShopStatus(ctx);
-  });
 })
   .middleware(['auth:api'])
   .prefix('/api/v1/shops');

@@ -12,16 +12,12 @@ Route.group(async () => {
   Route.delete('/:id', (ctx: HttpContextContract) => {
     return new ProductsController().destroy(ctx);
   });
-
   Route.get('/', (ctx: HttpContextContract) => {
     return new ProductsController().find(ctx);
   });
   Route.get('/:id', (ctx: HttpContextContract) => {
     return new ProductsController().get(ctx);
   });
-  // Route.put('/status/:id', (ctx: HttpContextContract) => {
-  //   return new ProductsController().updateProductStatus(ctx);
-  // });
 })
   .middleware(['auth:api'])
   .prefix('/api/v1/products');

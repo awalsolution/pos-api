@@ -23,32 +23,28 @@ import Application from '@ioc:Adonis/Core/Application';
 import Drive from '@ioc:Adonis/Core/Drive';
 
 Route.post('/api/v1/upload', async ({ request, response }) => {
-  let images: any = '';
+  let image: any = '';
   let url: any = '';
-  // let urls: any = [];
   if (request.file('categories')) {
-    images = request.file('categories');
-    await images.move(Application.tmpPath('uploads/categories'));
-    url = await Drive.getUrl(`/categories/${images.fileName}`);
-  } else if (request.files('productImages')) {
-    images = request.file('productImages');
-    await images.move(Application.tmpPath('uploads/products'));
-    url = await Drive.getUrl(`/products/${images.fileName}`);
-    // for (let image of images) {
-    //   // urls.push(url);
-    // }
+    image = request.file('categories');
+    await image.move(Application.tmpPath('uploads/categories'));
+    url = await Drive.getUrl(`/categories/${image.fileName}`);
+  } else if (request.file('productImages')) {
+    image = request.file('productImages');
+    await image.move(Application.tmpPath('uploads/products'));
+    url = await Drive.getUrl(`/products/${image.fileName}`);
   } else if (request.file('shop_images')) {
-    images = request.file('shop_images');
-    await images.move(Application.tmpPath('uploads/shop_logo'));
-    url = await Drive.getUrl(`/shop_logo/${images.fileName}`);
+    image = request.file('shop_images');
+    await image.move(Application.tmpPath('uploads/shop_logo'));
+    url = await Drive.getUrl(`/shop_logo/${image.fileName}`);
   } else if (request.file('profile_image')) {
-    images = request.file('profile_image');
-    await images.move(Application.tmpPath('uploads/profile_pictures'));
-    url = await Drive.getUrl(`/profile_pictures/${images.fileName}`);
+    image = request.file('profile_image');
+    await image.move(Application.tmpPath('uploads/profile_pictures'));
+    url = await Drive.getUrl(`/profile_pictures/${image.fileName}`);
   } else {
-    images = request.file('images');
-    await images.move(Application.tmpPath('uploads'));
-    url = await Drive.getUrl(images.fileName);
+    image = request.file('images');
+    await image.move(Application.tmpPath('uploads'));
+    url = await Drive.getUrl(image.fileName);
   }
 
   response.ok({
