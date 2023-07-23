@@ -68,7 +68,8 @@ export default class VariantsController extends BaseController {
         });
       }
       const variant = new this.MODEL();
-      variant.productId = request.body().product_id;
+      variant.productId = request.param('id');
+      variant.attributeId = request.body().attribute_id;
       variant.sku_id = request.body().sku_id;
       variant.attribute_value = request.body().attribute_value;
       variant.price = request.body().price;
@@ -79,25 +80,9 @@ export default class VariantsController extends BaseController {
       variant.rating = request.body().rating;
 
       await variant.save();
-      // await variant.related('images').createMany(request.body().images);
       const images = request.body().images;
       for (const image of images) {
-        if (image.id) {
-          const existImg = await variant
-            .related('images')
-            .query()
-            .where('id', image.id)
-            .first();
-
-          if (existImg) {
-            // update image
-            existImg.merge(image);
-            await existImg.save();
-          }
-        } else {
-          // Create new image
-          await variant.related('images').create(image);
-        }
+        await variant.related('images').create(image);
       }
 
       return response.ok({
@@ -145,7 +130,6 @@ export default class VariantsController extends BaseController {
           if (existImg) {
             // update image
             existImg.merge(image);
-            await existImg.save();
           }
         } else {
           // Create new image
