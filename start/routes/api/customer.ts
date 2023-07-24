@@ -1,6 +1,6 @@
 import Route from '@ioc:Adonis/Core/Route';
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
-import CustomersController from 'App/Controllers/Http/CustomersController';
+import CustomersController from 'App/Controllers/Http/customer/CustomerController';
 
 Route.group(async () => {
   Route.post('/', (ctx: HttpContextContract) => {
@@ -19,8 +19,8 @@ Route.group(async () => {
   Route.get('/:id', (ctx: HttpContextContract) => {
     return new CustomersController().get(ctx);
   });
-  Route.put('/status/:id', (ctx: HttpContextContract) => {
-    return new CustomersController().updateCustomerStatus(ctx);
+  Route.put('/profile/:id', (ctx: HttpContextContract) => {
+    return new CustomersController().profileUpdate(ctx);
   });
 })
   .middleware(['auth:api'])

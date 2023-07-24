@@ -11,6 +11,8 @@ import { STANDARD_DATE_TIME_FORMAT } from 'App/Helpers/utils';
 import Shop from 'App/Models/Shop';
 import ShippingAddress from 'App/Models/customer/ShippingAddress';
 import BillingAddress from 'App/Models/customer/BillingAddress';
+import CustomerProfile from 'App/Models/customer/CustomerProfile';
+
 export default class Customer extends BaseModel {
   @column({ isPrimary: true })
   public id: number;
@@ -22,16 +24,7 @@ export default class Customer extends BaseModel {
   public email: string;
 
   @column()
-  public phoneNumber: string;
-
-  @column()
   public status: boolean;
-
-  @column()
-  public firstName: string;
-
-  @column()
-  public lastName: string | null;
 
   @column({ serializeAs: null })
   public password: string;
@@ -44,9 +37,6 @@ export default class Customer extends BaseModel {
 
   @column()
   public isPhoneVerified: boolean;
-
-  @column()
-  public profilePicture: string | null;
 
   @column.dateTime({
     autoCreate: true,
@@ -73,4 +63,7 @@ export default class Customer extends BaseModel {
 
   @hasOne(() => BillingAddress)
   public billing_address: HasOne<typeof BillingAddress>;
+
+  @hasOne(() => CustomerProfile)
+  public profile: HasOne<typeof CustomerProfile>;
 }

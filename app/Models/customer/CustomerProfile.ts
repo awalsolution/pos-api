@@ -2,15 +2,15 @@ import { DateTime } from 'luxon';
 import { column, BaseModel } from '@ioc:Adonis/Lucid/Orm';
 import { STANDARD_DATE_TIME_FORMAT } from 'App/Helpers/utils';
 
-export default class ShippingAddress extends BaseModel {
+export default class CustomerProfile extends BaseModel {
   @column({ isPrimary: true })
   public id: number;
 
   @column()
-  public customerId: number;
+  customerId: number;
 
   @column()
-  public first_name: string | null;
+  public first_name: string;
 
   @column()
   public last_name: string | null;
@@ -29,6 +29,9 @@ export default class ShippingAddress extends BaseModel {
 
   @column()
   public country: string | null;
+
+  @column()
+  public profile_picture: string | null;
 
   @column.dateTime({
     autoCreate: true,

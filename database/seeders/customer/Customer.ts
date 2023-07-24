@@ -7,17 +7,11 @@ export default class extends BaseSeeder {
       {
         shopId: 1,
         email: 'customer1@gmail.com',
-        phoneNumber: '123456789',
-        firstName: 'customer',
-        lastName: '1',
         password: '123456',
       },
       {
         shopId: 1,
         email: 'customer2@gmail.com',
-        phoneNumber: '123456789',
-        firstName: 'customer',
-        lastName: '2',
         password: '123456',
       },
     ]);

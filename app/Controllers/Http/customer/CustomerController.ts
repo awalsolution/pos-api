@@ -3,9 +3,8 @@ import { BaseController } from 'App/Controllers/BaseController';
 import Customer from 'App/Models/customer/Customer';
 import HttpCodes from 'App/Enums/HttpCodes';
 import Pagination from 'App/Enums/Pagination';
-// import { imageUpload } from "App/Helpers/MainHelpers";
 
-export default class CustomersController extends BaseController {
+export default class CustomerController extends BaseController {
   public MODEL: typeof Customer;
 
   constructor() {
@@ -28,18 +27,10 @@ export default class CustomersController extends BaseController {
       const customer = new this.MODEL();
       customer.shopId = auth.user?.shopId;
       customer.email = request.body().email;
-      customer.phoneNumber = request.body().phone_number;
-      customer.firstName = request.body().first_name;
-      customer.lastName = request.body().last_name;
       customer.password = request.body().password;
 
       await customer.save();
-      await customer
-        .related('billing_address')
-        .create(request.body().billing_address);
-      await customer
-        .related('shipping_address')
-        .create(request.body().shipping_address);
+      await customer.related('profile').create(request.body().profile);
 
       delete customer.$attributes.password;
 
@@ -66,6 +57,7 @@ export default class CustomersController extends BaseController {
       result: await data
         .preload('billing_address')
         .preload('shipping_address')
+        .preload('profile')
         .preload('shop')
         .paginate(
           request.input(Pagination.PAGE_KEY, Pagination.PAGE),
@@ -82,6 +74,7 @@ export default class CustomersController extends BaseController {
         .where('id', request.param('id'))
         .preload('billing_address')
         .preload('shipping_address')
+        .preload('profile')
         .first();
 
       if (data) {
@@ -108,10 +101,6 @@ export default class CustomersController extends BaseController {
         message: 'User Not Found',
       });
     }
-    customer.phoneNumber = request.body().phone_number;
-    customer.firstName = request.body().first_name;
-    customer.lastName = request.body().last_name;
-    customer.profilePicture = request.body().profilePicture;
 
     await customer
       .related('billing_address')
@@ -119,33 +108,44 @@ export default class CustomersController extends BaseController {
     await customer
       .related('shipping_address')
       .updateOrCreate({}, request.body().shipping_address);
+
     delete customer.$attributes.password;
 
     return response.ok({
       code: HttpCodes.SUCCESS,
-      message: 'Profile Update successfully.',
+      message: 'Address Update successfully.',
       result: customer,
     });
   }
 
-  //update user status
-  public async updateCustomerStatus({
-    request,
-    response,
-  }: HttpContextContract) {
-    const data = await this.MODEL.findBy('id', request.param('id'));
-    if (!data) {
+  // update user profile
+  public async profileUpdate({ request, response }: HttpContextContract) {
+    const user = await this.MODEL.findBy('id', request.param('id'));
+    if (!user) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Customer not found',
+        message: 'User Not Found',
       });
     }
-    data.status = request.body().status;
-    await data.save();
+    user.related('profile').updateOrCreate(
+      {},
+      {
+        first_name: request.body().first_name,
+        last_name: request.body().last_name,
+        phone_number: request.body().phone_number,
+        street: request.body().street,
+        city: request.body().city,
+        state: request.body().state,
+        country: request.body().country,
+        profile_picture: request.body().profile_picture,
+      }
+    );
+
+    delete user.$attributes.password;
     return response.ok({
       code: HttpCodes.SUCCESS,
-      message: 'Status Update successfully',
-      result: data,
+      message: 'User Profile Update successfully.',
+      result: user,
     });
   }
 

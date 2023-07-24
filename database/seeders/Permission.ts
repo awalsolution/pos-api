@@ -10,7 +10,7 @@ export default class extends BaseSeeder {
       { name: 'can view user create' },
       { name: 'can view user update' },
       { name: 'can view user delete' },
-      { name: 'can view profile' },
+      { name: 'can view user profile' },
       { name: 'can view roles' },
       { name: 'can view role create' },
       { name: 'can view role update' },
@@ -41,6 +41,11 @@ export default class extends BaseSeeder {
       { name: 'can view variant create' },
       { name: 'can view variant update' },
       { name: 'can view variant delete' },
+      { name: 'can view customers' },
+      { name: 'can view customer create' },
+      { name: 'can view customer update' },
+      { name: 'can view customer delete' },
+      { name: 'can view customer profile' },
     ]);
   }
 }

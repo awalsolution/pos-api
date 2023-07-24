@@ -6,9 +6,9 @@ export default class extends BaseSeeder {
     await BillingAddress.createMany([
       {
         customerId: 1,
-        phoneNumber: '123456789',
-        firstName: 'customer',
-        lastName: '1',
+        first_name: 'customer',
+        last_name: '1',
+        phone_number: '123456789',
         street: 'street 1',
         city: 'Lahore',
         state: 'Punjab',
@@ -16,9 +16,9 @@ export default class extends BaseSeeder {
       },
       {
         customerId: 2,
-        phoneNumber: '123456789',
-        firstName: 'customer',
-        lastName: '2',
+        first_name: 'customer',
+        last_name: '2',
+        phone_number: '123456789',
         street: 'street 2',
         city: 'Lahore',
         state: 'Punjab',

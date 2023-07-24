@@ -10,13 +10,13 @@ export default class BillingAddress extends BaseModel {
   public customerId: number;
 
   @column()
-  public phoneNumber: string | null;
+  public first_name: string | null;
 
   @column()
-  public firstName: string | null;
+  public last_name: string | null;
 
   @column()
-  public lastName: string | null;
+  public phone_number: string | null;
 
   @column()
   public street: string | null;

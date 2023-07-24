@@ -1,9 +1,9 @@
 import BaseSeeder from '@ioc:Adonis/Lucid/Seeder';
-import ShippingAddress from 'App/Models/customer/ShippingAddress';
+import CustomerProfile from 'App/Models/customer/CustomerProfile';
 
 export default class extends BaseSeeder {
   public async run() {
-    await ShippingAddress.createMany([
+    await CustomerProfile.createMany([
       {
         customerId: 1,
         first_name: 'customer',
@@ -13,6 +13,7 @@ export default class extends BaseSeeder {
         city: 'Lahore',
         state: 'Punjab',
         country: 'Pakistan',
+        profile_picture: '/uploads/customer_profile/user-profile.jpeg',
       },
       {
         customerId: 2,
@@ -23,6 +24,7 @@ export default class extends BaseSeeder {
         city: 'Lahore',
         state: 'Punjab',
         country: 'Pakistan',
+        profile_picture: '/uploads/customer_profile/user-profile.jpeg',
       },
     ]);
   }
