@@ -58,7 +58,6 @@ Route.get('/', async () => {
   return "InSync CRM API's is Started.";
 });
 
-import './api/customer';
 import './api/user';
 import './api/shop';
 import './api/product/product';
