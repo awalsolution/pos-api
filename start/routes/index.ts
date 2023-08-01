@@ -41,10 +41,6 @@ Route.post('/api/v1/upload', async ({ request, response }) => {
     image = request.file('profile_image');
     await image.move(Application.tmpPath('uploads/profile_pictures'));
     url = await Drive.getUrl(`/profile_pictures/${image.fileName}`);
-  } else if (request.file('customerProfile')) {
-    image = request.file('customerProfile');
-    await image.move(Application.tmpPath('uploads/customer_profile'));
-    url = await Drive.getUrl(`/customer_profile/${image.fileName}`);
   } else {
     image = request.file('images');
     await image.move(Application.tmpPath('uploads'));
@@ -62,7 +58,6 @@ Route.get('/', async () => {
   return "InSync CRM API's is Started.";
 });
 
-import './api/customer';
 import './api/user';
 import './api/shop';
 import './api/product/product';
