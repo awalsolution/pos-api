@@ -18,6 +18,9 @@ Route.group(async () => {
   Route.get('/:id', (ctx: HttpContextContract) => {
     return new VariantsController().get(ctx);
   });
+  Route.get('/getVariantsByProduct/:id', (ctx: HttpContextContract) => {
+    return new VariantsController().getVariantsByProduct(ctx);
+  });
 })
   .middleware(['auth:api'])
   .prefix('/api/v1/variants');

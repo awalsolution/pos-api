@@ -54,6 +54,30 @@ export default class VariantsController extends BaseController {
       });
     }
   }
+
+  public async getVariantsByProduct({
+    request,
+    response,
+  }: HttpContextContract) {
+    try {
+      const data = await this.MODEL.query()
+        .where('product_id', request.param('id'))
+        .preload('attributes')
+        .preload('images');
+
+      return response.ok({
+        code: HttpCodes.SUCCESS,
+        message: 'Product Variants find Successfully',
+        result: data,
+      });
+    } catch (e) {
+      return response.internalServerError({
+        code: HttpCodes.SERVER_ERROR,
+        message: e.toString(),
+      });
+    }
+  }
+
   // create new variant
   public async create({ request, response }: HttpContextContract) {
     try {
