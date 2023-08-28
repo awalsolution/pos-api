@@ -120,6 +120,7 @@ export default class UsersController extends BaseController {
     }
 
     user.status = request.body().status;
+    user.userType = request.body().user_type;
 
     await user.save();
     user.related('permissions').sync(request.body().permissions);
