@@ -27,6 +27,10 @@ export class BaseController {
     return this.checkRole(user, 'admin');
   }
 
+  public isVendor(user?: User) {
+    return this.checkRole(user, 'vendor');
+  }
+
   public isSuperAdmin(user?: User) {
     return this.checkRole(user, 'super admin');
   }

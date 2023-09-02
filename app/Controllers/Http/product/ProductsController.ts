@@ -11,14 +11,22 @@ export default class ProductsController extends BaseController {
     this.MODEL = Product;
   }
   // find Product list
-  public async find({ request, response }: HttpContextContract) {
+  public async find({ auth, request, response }: HttpContextContract) {
+    const user = auth.user!;
     let data = this.MODEL.query();
+
+    // fetched products with related shops
+    if (this.isVendor(user)) {
+      data = data.where('shop_id', user.shopId);
+    }
+
     if (!data) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
         message: 'Products Data is Empty',
       });
     }
+
     return response.ok({
       code: HttpCodes.SUCCESS,
       result: await data

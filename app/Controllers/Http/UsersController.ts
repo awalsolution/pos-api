@@ -118,7 +118,7 @@ export default class UsersController extends BaseController {
         message: 'User Not Found',
       });
     }
-
+    user.email = request.body().email;
     user.status = request.body().status;
     user.userType = request.body().user_type;
 
