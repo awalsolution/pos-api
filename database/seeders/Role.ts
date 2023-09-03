@@ -13,6 +13,30 @@ export default class extends BaseSeeder {
       {
         name: 'vendor',
       },
+      {
+        name: 'admin',
+        shopId: 1,
+      },
+      {
+        name: 'manager',
+        shopId: 1,
+      },
+      {
+        name: 'admin',
+        shopId: 2,
+      },
+      {
+        name: 'manager',
+        shopId: 2,
+      },
+      {
+        name: 'admin',
+        shopId: 3,
+      },
+      {
+        name: 'manager',
+        shopId: 3,
+      },
     ]);
   }
 }

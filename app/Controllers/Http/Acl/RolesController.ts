@@ -54,7 +54,10 @@ export default class RolesController extends BaseController {
     // fetched products with related shops
     if (!this.isSuperAdmin(currentUser)) {
       data = data.where('shop_id', currentUser.shopId!);
+    } else {
+      data = data.whereNull('shop_id');
     }
+
     return response.send({
       code: HttpCodes.SUCCESS,
       result: await data

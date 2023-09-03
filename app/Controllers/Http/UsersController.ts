@@ -1,6 +1,6 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import { BaseController } from 'App/Controllers/BaseController';
-import Role from 'App/Models/Acl/Role';
+// import Role from 'App/Models/Acl/Role';
 import User from 'App/Models/User';
 import HttpCodes from 'App/Enums/HttpCodes';
 import ResponseMessages from 'App/Enums/ResponseMessages';
@@ -26,7 +26,6 @@ export default class UsersController extends BaseController {
           message: `Provided Email: ' ${request.body().email} ' Already exists`,
         });
       }
-      const userRole = await Role.findBy('id', request.body().role_id);
 
       const user = new this.MODEL();
       if (this.isSuperAdmin(currentUser)) {
@@ -37,19 +36,15 @@ export default class UsersController extends BaseController {
       user.email = request.body().email;
       user.status = request.body().status;
       user.password = request.body().password;
-      user.userType = request.body().user_type;
 
       await user.save();
-
+      user.related('roles').sync(request.body().roles);
       user.related('profile').create({
         first_name: request.body().first_name,
         last_name: request.body().last_name,
         phone_number: request.body().phone_number,
       });
-      // assign role to user
-      if (userRole) {
-        user.related('roles').sync([userRole.id]);
-      }
+
       delete user.$attributes.password;
       return response.ok({
         code: HttpCodes.SUCCESS,
@@ -139,7 +134,6 @@ export default class UsersController extends BaseController {
 
     user.email = request.body().email;
     user.status = request.body().status;
-    user.userType = request.body().user_type;
 
     await user.save();
     user.related('permissions').sync(request.body().permissions);
