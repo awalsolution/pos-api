@@ -5,7 +5,7 @@ export default class extends BaseSeeder {
   public async run() {
     await Shop.createMany([
       {
-        shop_name: 'owner shop',
+        shop_name: 'vendor 1',
         shop_phone: '123456789',
         address: 'DHA Phase 5',
         city: 'Lahore',
@@ -14,7 +14,7 @@ export default class extends BaseSeeder {
         shop_logo: '/uploads/shop_logo/shop_logo.jpg',
       },
       {
-        shop_name: 'admin shop',
+        shop_name: 'vendor 2',
         shop_phone: '123456789',
         address: 'DHA Phase 5',
         city: 'Lahore',
@@ -23,7 +23,7 @@ export default class extends BaseSeeder {
         shop_logo: '/uploads/shop_logo/shop_logo.jpg',
       },
       {
-        shop_name: 'vendor shop',
+        shop_name: 'vendor 3',
         shop_phone: '123456789',
         address: 'DHA Phase 5',
         city: 'Lahore',

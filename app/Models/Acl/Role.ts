@@ -4,14 +4,20 @@ import {
   BaseModel,
   manyToMany,
   ManyToMany,
+  belongsTo,
+  BelongsTo,
 } from '@ioc:Adonis/Lucid/Orm';
 import User from 'App/Models/User';
 import Permission from 'App/Models/Acl/Permission';
 import { STANDARD_DATE_TIME_FORMAT } from 'App/Helpers/utils';
+import Shop from 'App/Models/Shop';
 
 export default class Role extends BaseModel {
   @column({ isPrimary: true })
   public id: number;
+
+  @column()
+  shopId: number | undefined;
 
   @column()
   public name: string;
@@ -51,4 +57,7 @@ export default class Role extends BaseModel {
     pivotRelatedForeignKey: 'permission_id',
   })
   public permissions: ManyToMany<typeof Permission>;
+
+  @belongsTo(() => Shop)
+  public shop: BelongsTo<typeof Shop>;
 }

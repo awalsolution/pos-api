@@ -15,6 +15,9 @@ export default class Permission extends BaseModel {
   @column()
   public name: string;
 
+  @column()
+  public type: string;
+
   @column.dateTime({
     autoCreate: true,
     serialize(value: DateTime) {

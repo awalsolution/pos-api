@@ -12,7 +12,8 @@ export default class RolesController extends BaseController {
     this.MODEL = Role;
   }
   // create new Role
-  public async create({ request, response }: HttpContextContract) {
+  public async create({ auth, request, response }: HttpContextContract) {
+    const currentUser = auth.user!;
     try {
       const roleExist = await this.MODEL.findBy('name', request.body().name);
       if (roleExist) {
@@ -21,6 +22,11 @@ export default class RolesController extends BaseController {
           .send({ message: 'Role already exists!' });
       }
       const role = new this.MODEL();
+      if (this.isSuperAdmin(currentUser)) {
+        role.shopId = request.body().shop_id;
+      } else {
+        role.shopId = currentUser.shopId;
+      }
       role.name = request.input('name');
       const data = await role.save();
       await role.related('permissions').sync(request.body().permissions);
@@ -37,13 +43,22 @@ export default class RolesController extends BaseController {
     }
   }
   // find all Roles  list
-  public async find({ request, response }: HttpContextContract) {
-    let data = this.MODEL.query();
+  public async find({ auth, request, response }: HttpContextContract) {
+    const currentUser = auth.user!;
+    let data = this.MODEL.query().whereNot('name', 'super admin');
 
+    if (request.input('name')) {
+      data = data.whereILike('name', request.input('name') + '%');
+    }
+
+    // fetched products with related shops
+    if (!this.isSuperAdmin(currentUser)) {
+      data = data.where('shop_id', currentUser.shopId!);
+    }
     return response.send({
       code: HttpCodes.SUCCESS,
       result: await data
-        .preload('users')
+        // .preload('users')
         .preload('permissions')
         .paginate(
           request.input(Pagination.PAGE_KEY, Pagination.PAGE),
@@ -53,7 +68,8 @@ export default class RolesController extends BaseController {
     });
   }
   // update Role using id
-  public async update({ request, response }: HttpContextContract) {
+  public async update({ auth, request, response }: HttpContextContract) {
+    const currentUser = auth.user!;
     try {
       const role = await this.MODEL.findBy('id', request.param('id'));
       if (!role) {
@@ -71,6 +87,11 @@ export default class RolesController extends BaseController {
           code: HttpCodes.NOT_FOUND,
           message: `${request.body().name} Role type already exist!`,
         });
+      }
+      if (this.isSuperAdmin(currentUser)) {
+        role.shopId = request.body().shop_id;
+      } else {
+        role.shopId = currentUser.shopId;
       }
       role.name = request.body().name;
       await role.related('permissions').sync(request.body().permissions);

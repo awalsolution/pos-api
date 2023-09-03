@@ -14,7 +14,8 @@ export default class UsersController extends BaseController {
     this.MODEL = User;
   }
   // create new user
-  public async create({ request, response }: HttpContextContract) {
+  public async create({ auth, request, response }: HttpContextContract) {
+    const currentUser = auth.user!;
     try {
       let userExists = await this.MODEL.findBy('email', request.body().email);
       if (userExists && !userExists.isEmailVerified) {
@@ -25,9 +26,14 @@ export default class UsersController extends BaseController {
           message: `Provided Email: ' ${request.body().email} ' Already exists`,
         });
       }
-      const userRole = await Role.findBy('name', request.body().user_type);
+      const userRole = await Role.findBy('id', request.body().role_id);
 
       const user = new this.MODEL();
+      if (this.isSuperAdmin(currentUser)) {
+        user.shopId = request.body().shop_id;
+      } else {
+        user.shopId = currentUser.shopId;
+      }
       user.email = request.body().email;
       user.status = request.body().status;
       user.password = request.body().password;
@@ -60,8 +66,13 @@ export default class UsersController extends BaseController {
   }
 
   // find all users  list
-  public async find({ request, response }: HttpContextContract) {
-    let data = this.MODEL.query();
+  public async find({ auth, request, response }: HttpContextContract) {
+    const user = auth.user!;
+    let data = this.MODEL.query().whereNot('id', user.id);
+
+    if (!this.isSuperAdmin(user)) {
+      data = data.where('shop_id', user.shopId!);
+    }
 
     return response.status(HttpCodes.SUCCESS).send({
       code: HttpCodes.SUCCESS,
@@ -110,7 +121,8 @@ export default class UsersController extends BaseController {
   }
 
   // update user
-  public async update({ request, response }: HttpContextContract) {
+  public async update({ auth, request, response }: HttpContextContract) {
+    const currentUser = auth.user!;
     const user = await this.MODEL.findBy('id', request.param('id'));
     if (!user) {
       return response.notFound({
@@ -118,6 +130,13 @@ export default class UsersController extends BaseController {
         message: 'User Not Found',
       });
     }
+
+    if (this.isSuperAdmin(currentUser)) {
+      user.shopId = request.body().shop_id;
+    } else {
+      user.shopId = currentUser.shopId;
+    }
+
     user.email = request.body().email;
     user.status = request.body().status;
     user.userType = request.body().user_type;

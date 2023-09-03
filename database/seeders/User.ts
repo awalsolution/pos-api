@@ -5,22 +5,44 @@ export default class extends BaseSeeder {
   public async run() {
     await User.createMany([
       {
-        shopId: 1,
+        shopId: undefined,
         email: 'iqbal@gmail.com',
         password: '123456',
-        userType: 'super admin',
+      },
+      {
+        shopId: undefined,
+        email: 'admin@gmail.com',
+        password: '123456',
       },
       {
         shopId: 1,
-        email: 'admin@gmail.com',
+        email: 'shop1user1@gmail.com',
         password: '123456',
-        userType: 'admin',
+      },
+      {
+        shopId: 1,
+        email: 'shop1user2@gmail.com',
+        password: '123456',
+      },
+      {
+        shopId: 2,
+        email: 'shop2user1@gmail.com',
+        password: '123456',
+      },
+      {
+        shopId: 2,
+        email: 'shop2user2@gmail.com',
+        password: '123456',
       },
       {
         shopId: 3,
-        email: 'vendor@gmail.com',
+        email: 'shop3user1@gmail.com',
         password: '123456',
-        userType: 'vendor',
+      },
+      {
+        shopId: 3,
+        email: 'shop3user2@gmail.com',
+        password: '123456',
       },
     ]);
   }
