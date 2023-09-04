@@ -13,9 +13,11 @@ export default class PermissionsController extends BaseController {
   // find permissions list
   public async find({ request, response }: HttpContextContract) {
     let baseQuery = this.MODEL.query();
+    // name filter
     if (request.input('name')) {
       baseQuery.where('name', 'like', `${request.input('name')}%`);
     }
+
     return response.send({
       code: 200,
       result: await baseQuery.paginate(

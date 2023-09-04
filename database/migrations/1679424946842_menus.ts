@@ -12,6 +12,7 @@ export default class extends BaseSchema {
       table.string('menu_name').notNullable().unique();
       table.integer('menu_order').notNullable();
       table.string('menu_icon').nullable();
+      table.boolean('is_parent').nullable();
       table.string('status').notNullable().defaultTo('active');
 
       /**

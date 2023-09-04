@@ -25,6 +25,9 @@ export default class Menu extends BaseModel {
   public menu_icon: string | null;
 
   @column()
+  public is_parent: boolean | null;
+
+  @column()
   public status: string;
 
   @column.dateTime({

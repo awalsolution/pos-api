@@ -11,6 +11,7 @@ export default class extends BaseSeeder {
         menu_name: 'Dashbaord',
         menu_order: 1,
         menu_icon: 'DashboardOutlined',
+        is_parent: true,
       },
       {
         parent_id: null,
@@ -19,6 +20,7 @@ export default class extends BaseSeeder {
         menu_name: 'System Setting',
         menu_order: 2,
         menu_icon: 'SettingOutlined',
+        is_parent: true,
       },
       {
         parent_id: 2,
@@ -27,6 +29,7 @@ export default class extends BaseSeeder {
         menu_name: 'Users',
         menu_order: 1,
         menu_icon: 'UserOutlined',
+        is_parent: false,
       },
       {
         parent_id: 2,
@@ -35,6 +38,7 @@ export default class extends BaseSeeder {
         menu_name: 'Permissions',
         menu_order: 2,
         menu_icon: 'TagLock32Regular',
+        is_parent: false,
       },
       {
         parent_id: 2,
@@ -43,6 +47,7 @@ export default class extends BaseSeeder {
         menu_name: 'Roles',
         menu_order: 3,
         menu_icon: 'UnlockOutlined',
+        is_parent: false,
       },
       {
         parent_id: null,
@@ -51,6 +56,7 @@ export default class extends BaseSeeder {
         menu_name: 'Shops',
         menu_order: 3,
         menu_icon: 'BarChartOutlined',
+        is_parent: true,
       },
       {
         parent_id: null,
@@ -59,6 +65,7 @@ export default class extends BaseSeeder {
         menu_name: 'Products',
         menu_order: 4,
         menu_icon: 'DocumentSync24Regular',
+        is_parent: true,
       },
       {
         parent_id: 4,
@@ -67,6 +74,7 @@ export default class extends BaseSeeder {
         menu_name: 'List',
         menu_order: 1,
         menu_icon: 'FileSyncOutlined',
+        is_parent: false,
       },
       {
         parent_id: 4,
@@ -75,6 +83,7 @@ export default class extends BaseSeeder {
         menu_name: 'Add',
         menu_order: 2,
         menu_icon: 'DocumentArrowRight20Regular',
+        is_parent: false,
       },
       {
         parent_id: 4,
@@ -83,6 +92,7 @@ export default class extends BaseSeeder {
         menu_name: 'Attributes',
         menu_order: 3,
         menu_icon: 'DocumentArrowRight20Regular',
+        is_parent: false,
       },
       {
         parent_id: 4,
@@ -91,6 +101,7 @@ export default class extends BaseSeeder {
         menu_name: 'Categories',
         menu_order: 4,
         menu_icon: 'DocumentArrowRight20Regular',
+        is_parent: false,
       },
     ]);
   }

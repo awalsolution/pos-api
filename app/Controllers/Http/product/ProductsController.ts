@@ -15,6 +15,11 @@ export default class ProductsController extends BaseController {
     const currentUser = auth.user!;
     let data = this.MODEL.query();
 
+    // name filter
+    if (request.input('name')) {
+      data = data.whereILike('name', request.input('name') + '%');
+    }
+
     // fetched products with related shops
     if (!this.isSuperAdmin(currentUser)) {
       data = data.where('shop_id', currentUser.shopId!);

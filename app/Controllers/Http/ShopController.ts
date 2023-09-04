@@ -13,6 +13,11 @@ export default class ShopController extends BaseController {
   // find shop list
   public async find({ request, response }: HttpContextContract) {
     let data = this.MODEL.query();
+    // name filter
+    if (request.input('name')) {
+      data = data.whereILike('name', request.input('name') + '%');
+    }
+
     if (!data) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,

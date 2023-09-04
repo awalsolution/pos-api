@@ -64,6 +64,10 @@ export default class UsersController extends BaseController {
   public async find({ auth, request, response }: HttpContextContract) {
     const user = auth.user!;
     let data = this.MODEL.query().whereNot('id', user.id);
+    // name filter
+    if (request.input('name')) {
+      data = data.whereILike('name', request.input('name') + '%');
+    }
 
     if (!this.isSuperAdmin(user)) {
       data = data.where('shop_id', user.shopId!);
