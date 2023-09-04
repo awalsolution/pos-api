@@ -33,6 +33,30 @@ export default class MenuController extends BaseController {
       message: 'Menus find Successfully',
     });
   }
+
+  public async findParentMenus({ request, response }: HttpContextContract) {
+    let data = this.MODEL.query().where('is_parent', true);
+    // name filter
+    if (request.input('name')) {
+      data = data.whereILike('menu_name', request.input('name') + '%');
+    }
+
+    if (!data) {
+      return response.notFound({
+        code: HttpCodes.NOT_FOUND,
+        message: 'Menus Data is Empty',
+      });
+    }
+    return response.ok({
+      code: HttpCodes.SUCCESS,
+      result: await data.paginate(
+        request.input(Pagination.PAGE_KEY, Pagination.PAGE),
+        request.input(Pagination.PER_PAGE_KEY, Pagination.PER_PAGE)
+      ),
+      message: 'Menus find Successfully',
+    });
+  }
+
   // find Menu using id
   public async get({ request, response }: HttpContextContract) {
     try {
