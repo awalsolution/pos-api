@@ -6,6 +6,13 @@ export default class extends BaseSchema {
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id');
+      table
+        .integer('menu_id')
+        .unsigned()
+        .notNullable()
+        .references('menus.id')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE');
       table.string('name').notNullable().unique();
       table.string('type').notNullable();
 

@@ -13,6 +13,9 @@ export default class Permission extends BaseModel {
   public id: number;
 
   @column()
+  public menuId: number;
+
+  @column()
   public name: string;
 
   @column()
