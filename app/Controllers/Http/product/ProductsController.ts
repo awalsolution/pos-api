@@ -19,7 +19,7 @@ export default class ProductsController extends BaseController {
 
     // name filter
     if (request.input('name')) {
-      DQ = DQ.whereILike('name', request.input('name') + '%');
+      DQ = DQ.whereILike('title', request.input('name') + '%');
     }
 
     // fetched products with related shops
