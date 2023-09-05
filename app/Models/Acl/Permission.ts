@@ -1,19 +1,28 @@
 import { DateTime } from 'luxon';
 import {
   BaseModel,
+  BelongsTo,
+  belongsTo,
   column,
   manyToMany,
   ManyToMany,
 } from '@ioc:Adonis/Lucid/Orm';
 import Role from 'App/Models/Acl/Role';
 import { STANDARD_DATE_TIME_FORMAT } from 'App/Helpers/utils';
+import Menu from 'App/Models/Menu';
 
 export default class Permission extends BaseModel {
   @column({ isPrimary: true })
   public id: number;
 
   @column()
+  public menuId: number;
+
+  @column()
   public name: string;
+
+  @column()
+  public type: string;
 
   @column.dateTime({
     autoCreate: true,
@@ -41,4 +50,7 @@ export default class Permission extends BaseModel {
     pivotRelatedForeignKey: 'role_id',
   })
   public roles: ManyToMany<typeof Role>;
+
+  @belongsTo(() => Menu)
+  public menus: BelongsTo<typeof Menu>;
 }

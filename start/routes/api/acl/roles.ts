@@ -9,21 +9,19 @@ Route.group(async () => {
   Route.put('/:id', (ctx: HttpContextContract) => {
     return new RolesController().update(ctx);
   });
+  Route.put('/assign-permission/:id', (ctx: HttpContextContract) => {
+    return new RolesController().assignPermission(ctx);
+  });
   Route.delete('/:id', (ctx: HttpContextContract) => {
     return new RolesController().destroy(ctx);
   });
-
   Route.get('/', (ctx: HttpContextContract) => {
-    return new RolesController().find(ctx);
+    return new RolesController().findAllRecords(ctx);
   });
+
   Route.get('/:id', (ctx: HttpContextContract) => {
-    return new RolesController().get(ctx);
+    return new RolesController().findSingleRecord(ctx);
   });
-  Route.group(async () => {
-    Route.put('/:id', (ctx: HttpContextContract) => {
-      return new RolesController().get(ctx);
-    });
-  }).prefix('users');
 })
   .middleware(['auth:api'])
   .prefix('/api/v1/roles');

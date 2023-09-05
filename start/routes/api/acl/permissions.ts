@@ -13,10 +13,10 @@ Route.group(async () => {
     return new PermissionsController().destroy(ctx);
   });
   Route.get('/', (ctx: HttpContextContract) => {
-    return new PermissionsController().find(ctx);
+    return new PermissionsController().findAllRecords(ctx);
   });
   Route.get('/:id', (ctx: HttpContextContract) => {
-    return new PermissionsController().get(ctx);
+    return new PermissionsController().findSingleRecord(ctx);
   });
 })
   .middleware(['auth:api'])

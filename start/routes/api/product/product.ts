@@ -13,10 +13,10 @@ Route.group(async () => {
     return new ProductsController().destroy(ctx);
   });
   Route.get('/', (ctx: HttpContextContract) => {
-    return new ProductsController().find(ctx);
+    return new ProductsController().findAllRecords(ctx);
   });
   Route.get('/:id', (ctx: HttpContextContract) => {
-    return new ProductsController().get(ctx);
+    return new ProductsController().findSingleRecord(ctx);
   });
 })
   .middleware(['auth:api'])

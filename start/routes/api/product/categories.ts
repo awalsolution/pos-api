@@ -14,10 +14,10 @@ Route.group(async () => {
   });
 
   Route.get('/', (ctx: HttpContextContract) => {
-    return new CategoriesController().find(ctx);
+    return new CategoriesController().findAllRecords(ctx);
   });
   Route.get('/:id', (ctx: HttpContextContract) => {
-    return new CategoriesController().get(ctx);
+    return new CategoriesController().findSingleRecord(ctx);
   });
 })
   .middleware(['auth:api'])

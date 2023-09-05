@@ -65,5 +65,6 @@ import './api/product/categories';
 import './api/product/attribute';
 import './api/product/variant';
 import './api/auth';
+import './api/menu';
 import './api/acl/roles';
 import './api/acl/permissions';
