@@ -12,15 +12,18 @@ Route.group(async () => {
   Route.put('/:id', (ctx: HttpContextContract) => {
     return new UsersController().update(ctx);
   });
+  Route.put('/assign-permission/:id', (ctx: HttpContextContract) => {
+    return new UsersController().assignPermission(ctx);
+  });
   Route.delete('/:id', (ctx: HttpContextContract) => {
     return new UsersController().destroy(ctx);
   });
 
   Route.get('/', (ctx: HttpContextContract) => {
-    return new UsersController().find(ctx);
+    return new UsersController().findAllRecord(ctx);
   });
   Route.get('/:id', (ctx: HttpContextContract) => {
-    return new UsersController().get(ctx);
+    return new UsersController().findSingleRecord(ctx);
   });
   Route.put('/profile/:id', (ctx: HttpContextContract) => {
     return new UsersController().profileUpdate(ctx);

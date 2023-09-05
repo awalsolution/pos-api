@@ -26,16 +26,18 @@ export default class MenuController extends BaseController {
     }
     return response.ok({
       code: HttpCodes.SUCCESS,
-      result: await data.paginate(
-        request.input(Pagination.PAGE_KEY, Pagination.PAGE),
-        request.input(Pagination.PER_PAGE_KEY, Pagination.PER_PAGE)
-      ),
+      result: await data
+        .preload('permissions')
+        .paginate(
+          request.input(Pagination.PAGE_KEY, Pagination.PAGE),
+          request.input(Pagination.PER_PAGE_KEY, Pagination.PER_PAGE)
+        ),
       message: 'Menus find Successfully',
     });
   }
 
   public async findParentMenus({ request, response }: HttpContextContract) {
-    let data = this.MODEL.query().where('is_parent', true);
+    let data = this.MODEL.query();
     // name filter
     if (request.input('name')) {
       data = data.whereILike('menu_name', request.input('name') + '%');
@@ -49,10 +51,12 @@ export default class MenuController extends BaseController {
     }
     return response.ok({
       code: HttpCodes.SUCCESS,
-      result: await data.paginate(
-        request.input(Pagination.PAGE_KEY, Pagination.PAGE),
-        request.input(Pagination.PER_PAGE_KEY, Pagination.PER_PAGE)
-      ),
+      result: await data
+        .preload('permissions')
+        .paginate(
+          request.input(Pagination.PAGE_KEY, Pagination.PAGE),
+          request.input(Pagination.PER_PAGE_KEY, Pagination.PER_PAGE)
+        ),
       message: 'Menus find Successfully',
     });
   }
@@ -91,14 +95,7 @@ export default class MenuController extends BaseController {
         });
       }
       const menu = new this.MODEL();
-      menu.parent_id = request.body().parent_id;
-      menu.route_name = request.body().route_name;
-      menu.status = request.body().status;
-      menu.menu_url = request.body().menu_url;
       menu.menu_name = request.body().menu_name;
-      menu.menu_order = request.body().menu_order;
-      menu.menu_icon = request.body().menu_icon;
-      menu.status = request.body().status;
 
       const data = await menu.save();
       return response.ok({
@@ -137,14 +134,7 @@ export default class MenuController extends BaseController {
         });
       }
 
-      menu.parent_id = request.body().parent_id;
-      menu.route_name = request.body().route_name;
-      menu.status = request.body().status;
-      menu.menu_url = request.body().menu_url;
       menu.menu_name = request.body().menu_name;
-      menu.menu_order = request.body().menu_order;
-      menu.menu_icon = request.body().menu_icon;
-      menu.status = request.body().status;
 
       await menu.save();
       return response.ok({

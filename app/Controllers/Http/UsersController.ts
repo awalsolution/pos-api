@@ -1,6 +1,5 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import { BaseController } from 'App/Controllers/BaseController';
-// import Role from 'App/Models/Acl/Role';
 import User from 'App/Models/User';
 import HttpCodes from 'App/Enums/HttpCodes';
 import ResponseMessages from 'App/Enums/ResponseMessages';
@@ -61,7 +60,7 @@ export default class UsersController extends BaseController {
   }
 
   // find all users  list
-  public async find({ auth, request, response }: HttpContextContract) {
+  public async findAllRecord({ auth, request, response }: HttpContextContract) {
     const user = auth.user!;
     let data = this.MODEL.query().whereNot('id', user.id);
     // name filter
@@ -91,7 +90,7 @@ export default class UsersController extends BaseController {
   }
 
   // find single user by id
-  public async get({ request, response }: HttpContextContract) {
+  public async findSingleRecord({ request, response }: HttpContextContract) {
     try {
       const data = await this.MODEL.query()
         .where('id', request.param('id'))
@@ -150,6 +149,38 @@ export default class UsersController extends BaseController {
       result: user,
     });
   }
+
+  public async assignPermission({
+    auth,
+    request,
+    response,
+  }: HttpContextContract) {
+    const currentUser = auth.user!;
+    const user = await this.MODEL.findBy('id', request.param('id'));
+    if (!user) {
+      return response.notFound({
+        code: HttpCodes.NOT_FOUND,
+        message: 'User Not Found',
+      });
+    }
+
+    if (this.isSuperAdmin(currentUser)) {
+      user.shopId = request.body().shop_id;
+    } else {
+      user.shopId = currentUser.shopId;
+    }
+
+    await user.save();
+    user.related('permissions').sync(request.body().permissions);
+
+    delete user.$attributes.password;
+    return response.ok({
+      code: HttpCodes.SUCCESS,
+      message: 'Assigned Permissions successfully.',
+      result: user,
+    });
+  }
+
   // update user profile
   public async profileUpdate({ request, response }: HttpContextContract) {
     const user = await this.MODEL.findBy('id', request.param('id'));
