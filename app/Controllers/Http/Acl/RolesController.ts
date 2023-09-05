@@ -10,6 +10,7 @@ export default class RolesController extends BaseController {
     super();
     this.MODEL = Role;
   }
+
   // find all Roles  list
   public async findAllRecords({ auth, request, response }) {
     const currentUser = auth.user!;
@@ -27,11 +28,10 @@ export default class RolesController extends BaseController {
     } else {
       DQ = DQ.whereNull('shop_id');
     }
-
     if (pageSize) {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        result: await DQ.preload('permissions').paginate(page, pageSize),
+        result: await DQ.paginate(page, pageSize),
         message: 'Roles Found Successfully',
       });
     } else {
@@ -95,7 +95,6 @@ export default class RolesController extends BaseController {
       DM.name = request.input('name');
 
       const DQ = await DM.save();
-      await DM.related('permissions').sync(request.body().permissions);
       return response.ok({
         code: HttpCodes.SUCCESS,
         message: 'Role Created Successfully!',
@@ -141,7 +140,6 @@ export default class RolesController extends BaseController {
 
       DQ.name = request.body().name;
 
-      await DQ.related('permissions').sync(request.body().permissions);
       await DQ.save();
       return response.ok({
         code: HttpCodes.SUCCESS,
@@ -157,8 +155,35 @@ export default class RolesController extends BaseController {
     }
   }
 
+  // assign permission to role
+  public async assignPermission({ request, response }) {
+    try {
+      const DQ = await this.MODEL.findBy('id', request.param('id'));
+      if (!DQ) {
+        return response.notFound({
+          code: HttpCodes.NOT_FOUND,
+          message: 'Role does not exists!',
+        });
+      }
+
+      await DQ.related('permissions').sync(request.body().permissions);
+      await DQ.save();
+      return response.ok({
+        code: HttpCodes.SUCCESS,
+        message: 'Operation Successfully!',
+        result: DQ,
+      });
+    } catch (e) {
+      console.log(e);
+      return response.internalServerError({
+        code: HttpCodes.SERVER_ERROR,
+        message: e.message,
+      });
+    }
+  }
+
   // delete Role using id
-  public async destroy({ request, response }: HttpContextContract) {
+  public async destroy({ request, response }) {
     const DQ = await this.MODEL.findBy('id', request.param('id'));
     if (!DQ) {
       return response.notFound({
