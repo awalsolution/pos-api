@@ -11,26 +11,26 @@ export default class PermissionsController extends BaseController {
   }
   // find permissions list
   public async findAllRecords({ request, response }) {
-    let DQ = this.MODEL;
+    let DQ = this.MODEL.query();
 
     const page = request.input('page');
     const pageSize = request.input('pageSize');
 
     // name filter
     if (request.input('name')) {
-      DQ.query().where('name', 'like', `${request.input('name')}%`);
+      DQ = DQ.whereILike('name', request.input('name') + '%');
     }
 
     if (pageSize) {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        result: await DQ.query().preload('menus').paginate(page, pageSize),
+        result: await DQ.preload('menus').paginate(page, pageSize),
         message: 'Permissions Found Successfully',
       });
     } else {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        result: await DQ.all(),
+        result: await DQ.select('*'),
         message: 'Permissions Found Successfully',
       });
     }
