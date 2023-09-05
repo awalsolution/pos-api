@@ -20,7 +20,7 @@ Route.group(async () => {
   });
 
   Route.get('/', (ctx: HttpContextContract) => {
-    return new UsersController().findAllRecord(ctx);
+    return new UsersController().findAllRecords(ctx);
   });
   Route.get('/:id', (ctx: HttpContextContract) => {
     return new UsersController().findSingleRecord(ctx);

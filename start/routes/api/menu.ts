@@ -14,13 +14,11 @@ Route.group(async () => {
   });
 
   Route.get('/', (ctx: HttpContextContract) => {
-    return new MenuController().find(ctx);
+    return new MenuController().findAllRecords(ctx);
   });
-  Route.get('/parent', (ctx: HttpContextContract) => {
-    return new MenuController().findParentMenus(ctx);
-  });
+
   Route.get('/:id', (ctx: HttpContextContract) => {
-    return new MenuController().get(ctx);
+    return new MenuController().findSingleRecord(ctx);
   });
 })
   .middleware(['auth:api'])
