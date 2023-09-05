@@ -1,7 +1,5 @@
-import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import { BaseController } from 'App/Controllers/BaseController';
 import HttpCodes from 'App/Enums/HttpCodes';
-import Pagination from 'App/Enums/Pagination';
 import Variation from 'App/Models/product/Variant';
 
 export default class VariantsController extends BaseController {
@@ -10,48 +8,67 @@ export default class VariantsController extends BaseController {
     super();
     this.MODEL = Variation;
   }
+
   // find Variation list
-  public async find({ request, response }: HttpContextContract) {
-    let data = this.MODEL.query();
+  public async findAllRecords({ request, response }) {
+    let DQ = this.MODEL.query();
+
+    const page = request.input('page');
+    const pageSize = request.input('pageSize');
 
     // name filter
     if (request.input('name')) {
-      data = data.whereILike('name', request.input('name') + '%');
+      DQ = DQ.whereILike('name', request.input('name') + '%');
     }
 
-    if (!data) {
+    if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
         message: 'Variations Data is Empty',
       });
     }
-    return response.ok({
-      code: HttpCodes.SUCCESS,
-      result: await data
-        .preload('products')
-        .preload('attributes')
-        .preload('images')
-        .paginate(
-          request.input(Pagination.PAGE_KEY, Pagination.PAGE),
-          request.input(Pagination.PER_PAGE_KEY, Pagination.PER_PAGE)
-        ),
-      message: 'Variation find Successfully',
-    });
+
+    if (pageSize) {
+      return response.ok({
+        code: HttpCodes.SUCCESS,
+        result: await DQ.preload('products')
+          .preload('attributes')
+          .preload('images')
+          .paginate(page, pageSize),
+        message: 'Variation find Successfully',
+      });
+    } else {
+      return response.ok({
+        code: HttpCodes.SUCCESS,
+        result: await DQ.preload('products')
+          .preload('attributes')
+          .preload('images'),
+        message: 'Variation find Successfully',
+      });
+    }
   }
+
   // find variant using id
-  public async get({ request, response }: HttpContextContract) {
+  public async findSingleRecord({ request, response }) {
     try {
-      const data = await this.MODEL.query()
+      const DQ = await this.MODEL.query()
         .where('id', request.param('id'))
         .preload('products')
         .preload('attributes')
         .preload('images')
         .first();
 
+      if (!DQ) {
+        return response.notFound({
+          code: HttpCodes.NOT_FOUND,
+          message: 'Product Data is Empty',
+        });
+      }
+
       return response.ok({
         code: HttpCodes.SUCCESS,
         message: 'Variation find Successfully',
-        result: data,
+        result: DQ,
       });
     } catch (e) {
       return response.internalServerError({
@@ -61,12 +78,9 @@ export default class VariantsController extends BaseController {
     }
   }
 
-  public async getVariantsByProduct({
-    request,
-    response,
-  }: HttpContextContract) {
+  public async getVariantsByProduct({ request, response }) {
     try {
-      const data = await this.MODEL.query()
+      const DQ = await this.MODEL.query()
         .where('product_id', request.param('id'))
         .preload('attributes')
         .preload('images');
@@ -74,7 +88,7 @@ export default class VariantsController extends BaseController {
       return response.ok({
         code: HttpCodes.SUCCESS,
         message: 'Product Variants find Successfully',
-        result: data,
+        result: DQ,
       });
     } catch (e) {
       return response.internalServerError({
@@ -85,40 +99,39 @@ export default class VariantsController extends BaseController {
   }
 
   // create new variant
-  public async create({ request, response }: HttpContextContract) {
+  public async create({ request, response }) {
     try {
-      const dataExists = await this.MODEL.findBy(
-        'sku_id',
-        request.body().sku_id
-      );
-      if (dataExists) {
+      const DE = await this.MODEL.findBy('sku_id', request.body().sku_id);
+
+      if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
           message: 'Variation already exists!',
         });
       }
-      const variant = new this.MODEL();
-      variant.productId = request.param('id');
-      variant.attributeId = request.body().attribute_id;
-      variant.sku_id = request.body().sku_id;
-      variant.attribute_value = request.body().attribute_value;
-      variant.price = request.body().price;
-      variant.regular_price = request.body().regular_price;
-      variant.status = request.body().status;
-      variant.stock_quantity = request.body().stock_quantity;
-      variant.stock_status = request.body().stock_status;
-      variant.rating = request.body().rating;
 
-      await variant.save();
+      const DM = new this.MODEL();
+      DM.productId = request.param('id');
+      DM.attributeId = request.body().attribute_id;
+      DM.sku_id = request.body().sku_id;
+      DM.attribute_value = request.body().attribute_value;
+      DM.price = request.body().price;
+      DM.regular_price = request.body().regular_price;
+      DM.status = request.body().status;
+      DM.stock_quantity = request.body().stock_quantity;
+      DM.stock_status = request.body().stock_status;
+      DM.rating = request.body().rating;
+
+      await DM.save();
       const images = request.body().images;
       for (const image of images) {
-        await variant.related('images').create(image);
+        await DM.related('images').create(image);
       }
 
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Variation Created Successfully!',
-        result: variant,
+        message: 'Variant Created Successfully!',
+        result: DM,
       });
     } catch (e) {
       console.log(e);
@@ -130,29 +143,28 @@ export default class VariantsController extends BaseController {
   }
 
   // update product using id
-  public async update({ request, response }: HttpContextContract) {
+  public async update({ request, response }) {
     try {
-      const variant = await this.MODEL.findBy('id', request.param('id'));
-      if (!variant) {
+      const DQ = await this.MODEL.findBy('id', request.param('id'));
+      if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
           message: 'variant does not exists!',
         });
       }
-      variant.sku_id = request.body().sku_id;
-      variant.attribute_value = request.body().attribute_value;
-      variant.price = request.body().price;
-      variant.regular_price = request.body().regular_price;
-      variant.status = request.body().status;
-      variant.stock_quantity = request.body().stock_quantity;
-      variant.stock_status = request.body().stock_status;
-      variant.rating = request.body().rating;
-      await variant.save();
+      DQ.sku_id = request.body().sku_id;
+      DQ.attribute_value = request.body().attribute_value;
+      DQ.price = request.body().price;
+      DQ.regular_price = request.body().regular_price;
+      DQ.status = request.body().status;
+      DQ.stock_quantity = request.body().stock_quantity;
+      DQ.stock_status = request.body().stock_status;
+      DQ.rating = request.body().rating;
+      await DQ.save();
       const images = request.body().images;
       for (const image of images) {
         if (image.id) {
-          const existImg = await variant
-            .related('images')
+          const existImg = await DQ.related('images')
             .query()
             .where('id', image.id)
             .first();
@@ -163,13 +175,13 @@ export default class VariantsController extends BaseController {
           }
         } else {
           // Create new image
-          await variant.related('images').create(image);
+          await DQ.related('images').create(image);
         }
       }
       return response.ok({
         code: HttpCodes.SUCCESS,
         message: 'Variant updated successfully!',
-        result: variant,
+        result: DQ,
       });
     } catch (e) {
       console.log(e);
@@ -181,15 +193,15 @@ export default class VariantsController extends BaseController {
   }
 
   // delete variant using id
-  public async destroy({ request, response }: HttpContextContract) {
-    const data = await this.MODEL.findBy('id', request.param('id'));
-    if (!data) {
+  public async destroy({ request, response }) {
+    const DQ = await this.MODEL.findBy('id', request.param('id'));
+    if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
         message: 'Variant not found',
       });
     }
-    await data.delete();
+    await DQ.delete();
     return response.ok({
       code: HttpCodes.SUCCESS,
       result: { message: 'Variant deleted successfully' },

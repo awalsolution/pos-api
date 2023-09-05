@@ -13,10 +13,10 @@ Route.group(async () => {
     return new VariantsController().destroy(ctx);
   });
   Route.get('/', (ctx: HttpContextContract) => {
-    return new VariantsController().find(ctx);
+    return new VariantsController().findAllRecords(ctx);
   });
   Route.get('/:id', (ctx: HttpContextContract) => {
-    return new VariantsController().get(ctx);
+    return new VariantsController().findSingleRecord(ctx);
   });
   Route.get('/getVariantsByProduct/:id', (ctx: HttpContextContract) => {
     return new VariantsController().getVariantsByProduct(ctx);

@@ -1,8 +1,6 @@
-import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import Product from 'App/Models/product/Product';
 import { BaseController } from 'App/Controllers/BaseController';
 import HttpCodes from 'App/Enums/HttpCodes';
-import Pagination from 'App/Enums/Pagination';
 
 export default class ProductsController extends BaseController {
   public MODEL: typeof Product;
@@ -10,44 +8,59 @@ export default class ProductsController extends BaseController {
     super();
     this.MODEL = Product;
   }
+
   // find Product list
-  public async find({ auth, request, response }: HttpContextContract) {
+  public async findAllRecords({ auth, request, response }) {
     const currentUser = auth.user!;
-    let data = this.MODEL.query();
+    let DQ = this.MODEL.query();
+
+    const page = request.input('page');
+    const pageSize = request.input('pageSize');
 
     // name filter
     if (request.input('name')) {
-      data = data.whereILike('name', request.input('name') + '%');
+      DQ = DQ.whereILike('name', request.input('name') + '%');
     }
 
     // fetched products with related shops
     if (!this.isSuperAdmin(currentUser)) {
-      data = data.where('shop_id', currentUser.shopId!);
+      DQ = DQ.where('shop_id', currentUser.shopId!);
     }
 
-    return response.ok({
-      code: HttpCodes.SUCCESS,
-      result: await data
-        .preload('shop')
-        .paginate(
-          request.input(Pagination.PAGE_KEY, Pagination.PAGE),
-          request.input(Pagination.PER_PAGE_KEY, Pagination.PER_PAGE)
-        ),
-      message: 'Products find Successfully',
-    });
+    if (pageSize) {
+      return response.ok({
+        code: HttpCodes.SUCCESS,
+        message: 'Products find Successfully',
+        result: await DQ.preload('shop').paginate(page, pageSize),
+      });
+    } else {
+      return response.ok({
+        code: HttpCodes.SUCCESS,
+        message: 'Products find Successfully',
+        result: await DQ.preload('shop'),
+      });
+    }
   }
+
   // find Product using id
-  public async get({ request, response }: HttpContextContract) {
+  public async findSingleRecord({ request, response }) {
     try {
-      const data = await this.MODEL.query()
+      const DQ = await this.MODEL.query()
         .where('id', request.param('id'))
         .preload('shop')
         .first();
 
+      if (!DQ) {
+        return response.notFound({
+          code: HttpCodes.NOT_FOUND,
+          message: 'Product Data is Empty',
+        });
+      }
+
       return response.ok({
         code: HttpCodes.SUCCESS,
         message: 'Product find Successfully',
-        result: data,
+        result: DQ,
       });
     } catch (e) {
       return response.internalServerError({
@@ -56,34 +69,35 @@ export default class ProductsController extends BaseController {
       });
     }
   }
+
   // create new product
-  public async create({ auth, request, response }: HttpContextContract) {
+  public async create({ auth, request, response }) {
     try {
-      const dataExists = await this.MODEL.findBy(
+      const DE = await this.MODEL.findBy(
         'product_code',
         request.body().product_code
       );
-      if (dataExists) {
+      if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
           message: 'Product already exists!',
         });
       }
-      const product = new this.MODEL();
-      product.shopId = auth.user?.shop.id;
-      product.categoryId = request.body().category_id;
-      product.product_code = request.body().product_code;
-      product.title = request.body().title;
-      product.description = request.body().description;
-      product.status = request.body().status;
-      product.product_image = request.body().product_image;
+      const DM = new this.MODEL();
+      DM.shopId = auth.user?.shop.id;
+      DM.categoryId = request.body().category_id;
+      DM.product_code = request.body().product_code;
+      DM.title = request.body().title;
+      DM.description = request.body().description;
+      DM.status = request.body().status;
+      DM.product_image = request.body().product_image;
 
-      await product.save();
+      await DM.save();
 
       return response.ok({
         code: HttpCodes.SUCCESS,
         message: 'Product Created Successfully!',
-        result: product,
+        result: DM,
       });
     } catch (e) {
       console.log(e);
@@ -95,29 +109,30 @@ export default class ProductsController extends BaseController {
   }
 
   // update product using id
-  public async update({ request, response }: HttpContextContract) {
+  public async update({ request, response }) {
     try {
-      const product = await this.MODEL.findBy('id', request.param('id'));
-      if (!product) {
+      const DQ = await this.MODEL.findBy('id', request.param('id'));
+
+      if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
           message: 'Product does not exists!',
         });
       }
 
-      product.title = request.body().title;
-      product.categoryId = request.body().category_id;
-      product.product_code = request.body().product_code;
-      product.description = request.body().description;
-      product.status = request.body().status;
-      product.product_image = request.body().product_image;
+      DQ.title = request.body().title;
+      DQ.categoryId = request.body().category_id;
+      DQ.product_code = request.body().product_code;
+      DQ.description = request.body().description;
+      DQ.status = request.body().status;
+      DQ.product_image = request.body().product_image;
 
-      await product.save();
+      await DQ.save();
 
       return response.ok({
         code: HttpCodes.SUCCESS,
         message: 'Product updated successfully!',
-        result: product,
+        result: DQ,
       });
     } catch (e) {
       console.log(e);
@@ -129,15 +144,17 @@ export default class ProductsController extends BaseController {
   }
 
   // delete product using id
-  public async destroy({ request, response }: HttpContextContract) {
-    const data = await this.MODEL.findBy('id', request.param('id'));
-    if (!data) {
+  public async destroy({ request, response }) {
+    const DQ = await this.MODEL.findBy('id', request.param('id'));
+
+    if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
         message: 'Product not found',
       });
     }
-    await data.delete();
+
+    await DQ.delete();
     return response.ok({
       code: HttpCodes.SUCCESS,
       result: { message: 'Product deleted successfully' },

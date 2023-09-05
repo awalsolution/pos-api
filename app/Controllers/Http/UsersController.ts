@@ -2,7 +2,6 @@ import { BaseController } from 'App/Controllers/BaseController';
 import User from 'App/Models/User';
 import HttpCodes from 'App/Enums/HttpCodes';
 import ResponseMessages from 'App/Enums/ResponseMessages';
-import Pagination from 'App/Enums/Pagination';
 
 export default class UsersController extends BaseController {
   public MODEL: typeof User;
@@ -15,45 +14,43 @@ export default class UsersController extends BaseController {
   // find all users  list
   public async findAllRecords({ auth, request, response }) {
     const user = auth.user!;
-    let data = this.MODEL.query().whereNot('id', user.id);
+    let DQ = this.MODEL.query().whereNot('id', user.id);
+
+    const page = request.input('page');
+    const pageSize = request.input('pageSize');
 
     // name filter
     if (request.input('name')) {
-      data = data.whereILike('name', request.input('name') + '%');
+      DQ = DQ.whereILike('name', request.input('name') + '%');
     }
 
     if (!this.isSuperAdmin(user)) {
-      data = data.where('shop_id', user.shopId!);
+      DQ = DQ.where('shop_id', user.shopId!);
     }
 
-    if (!data) {
+    if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
         message: 'Users Not Found',
       });
     }
 
-    if (request.input('pageSize')) {
+    if (pageSize) {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        result: await data
-          .preload('permissions')
+        result: await DQ.preload('permissions')
           .preload('roles', (PQ) => {
             PQ.preload('permissions');
           })
           .preload('profile')
           .preload('shop')
-          .paginate(
-            request.input(Pagination.PAGE_KEY, Pagination.PAGE),
-            request.input(Pagination.PER_PAGE_KEY, Pagination.PER_PAGE)
-          ),
+          .paginate(page, pageSize),
         message: 'Users find Successfully',
       });
     } else {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        result: await data
-          .preload('permissions')
+        result: await DQ.preload('permissions')
           .preload('roles', (PQ) => {
             PQ.preload('permissions');
           })

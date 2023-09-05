@@ -8,6 +8,7 @@ export default class MenuController extends BaseController {
     super();
     this.MODEL = Menu;
   }
+
   // find Menu list
   public async findAllRecords({ request, response }) {
     let DQ = this.MODEL.query();
@@ -26,6 +27,7 @@ export default class MenuController extends BaseController {
         message: 'Menus Data is Empty',
       });
     }
+
     if (pageSize) {
       response.ok({
         code: HttpCodes.SUCCESS,

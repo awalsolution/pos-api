@@ -1,7 +1,5 @@
-import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import { BaseController } from 'App/Controllers/BaseController';
 import HttpCodes from 'App/Enums/HttpCodes';
-import Pagination from 'App/Enums/Pagination';
 import Attribute from 'App/Models/product/Attribute';
 
 export default class AttributesController extends BaseController {
@@ -10,41 +8,59 @@ export default class AttributesController extends BaseController {
     super();
     this.MODEL = Attribute;
   }
+
   // find attribute list
-  public async find({ request, response }: HttpContextContract) {
-    let data = this.MODEL.query();
+  public async findAllRecords({ request, response }) {
+    let DQ = this.MODEL;
+
+    const page = request.input('page');
+    const pageSize = request.input('pageSize');
 
     // name filter
     if (request.input('name')) {
-      data = data.whereILike('name', request.input('name') + '%');
+      DQ.query().whereILike('name', request.input('name') + '%');
     }
 
-    if (!data) {
+    if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
         message: 'Attributes Data is Empty',
       });
     }
-    return response.ok({
-      code: HttpCodes.SUCCESS,
-      result: await data.paginate(
-        request.input(Pagination.PAGE_KEY, Pagination.PAGE),
-        request.input(Pagination.PER_PAGE_KEY, Pagination.PER_PAGE)
-      ),
-      message: 'Attributes find Successfully',
-    });
+
+    if (pageSize) {
+      return response.ok({
+        code: HttpCodes.SUCCESS,
+        message: 'Attributes find Successfully',
+        result: await DQ.query().paginate(page, pageSize),
+      });
+    } else {
+      return response.ok({
+        code: HttpCodes.SUCCESS,
+        message: 'Attributes find Successfully',
+        result: await DQ.all(),
+      });
+    }
   }
+
   // find attribute using id
-  public async get({ request, response }: HttpContextContract) {
+  public async findSingleRecord({ request, response }) {
     try {
-      const data = await this.MODEL.query()
+      const DQ = await this.MODEL.query()
         .where('id', request.param('id'))
         .first();
+
+      if (!DQ) {
+        return response.notFound({
+          code: HttpCodes.NOT_FOUND,
+          message: 'Attribute Data is Empty',
+        });
+      }
 
       return response.ok({
         code: HttpCodes.SUCCESS,
         message: 'Attribute find successfully',
-        result: data,
+        result: DQ,
       });
     } catch (e) {
       return response.internalServerError({
@@ -53,25 +69,28 @@ export default class AttributesController extends BaseController {
       });
     }
   }
-  // create new attribute
-  public async create({ request, response }: HttpContextContract) {
-    try {
-      const exist = await this.MODEL.findBy('name', request.body().name);
 
-      if (exist) {
+  // create new attribute
+  public async create({ request, response }) {
+    try {
+      const DE = await this.MODEL.findBy('name', request.body().name);
+
+      if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
           message: `Attribute: "${request.body().name}" already exists!`,
         });
       }
-      const attribute = new this.MODEL();
-      attribute.name = request.body().name;
 
-      const data = await attribute.save();
+      const DM = new this.MODEL();
+
+      DM.name = request.body().name;
+
+      const DQ = await DM.save();
       return response.ok({
         code: HttpCodes.SUCCESS,
         message: `Attribute: "${request.body().name}" Created Successfully!`,
-        result: data,
+        result: DQ,
       });
     } catch (e) {
       console.log(e);
@@ -83,33 +102,36 @@ export default class AttributesController extends BaseController {
   }
 
   // update attribute using id
-  public async update({ request, response }: HttpContextContract) {
+  public async update({ request, response }) {
     try {
-      const attribute = await this.MODEL.findBy('id', request.param('id'));
-      if (!attribute) {
-        return response.status(HttpCodes.NOT_FOUND).send({
+      const DQ = await this.MODEL.findBy('id', request.param('id'));
+
+      if (!DQ) {
+        return response.notFound({
           code: HttpCodes.NOT_FOUND,
           message: 'Attribute does not exists!',
         });
       }
-      const exist = await this.MODEL.query()
+
+      const DE = await this.MODEL.query()
         .where('name', 'like', request.body().name)
         .whereNot('id', request.param('id'))
         .first();
 
-      if (exist) {
+      if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
           message: `Attribute: "${request.body().name}" already exists!`,
         });
       }
-      attribute.name = request.body().name;
 
-      await attribute.save();
+      DQ.name = request.body().name;
+
+      await DQ.save();
       return response.ok({
         code: HttpCodes.SUCCESS,
         message: `Attribute: "${request.body().name}" Update Successfully!`,
-        result: attribute,
+        result: DQ,
       });
     } catch (e) {
       console.log(e);
@@ -119,36 +141,19 @@ export default class AttributesController extends BaseController {
       });
     }
   }
-  //update attribute status
-  public async updateAttributeStatus({
-    request,
-    response,
-  }: HttpContextContract) {
-    const data = await this.MODEL.findBy('id', request.param('id'));
-    if (!data) {
-      return response.notFound({
-        code: HttpCodes.NOT_FOUND,
-        message: 'Attribute not found',
-      });
-    }
-    data.status = request.body().status;
-    await data.save();
-    return response.ok({
-      code: HttpCodes.SUCCESS,
-      result: { message: 'Attribute Status Update successfully' },
-    });
-  }
 
   // delete attribute using id
-  public async destroy({ request, response }: HttpContextContract) {
-    const data = await this.MODEL.findBy('id', request.param('id'));
-    if (!data) {
+  public async destroy({ request, response }) {
+    const DQ = await this.MODEL.findBy('id', request.param('id'));
+
+    if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
         message: 'Attribute not found',
       });
     }
-    await data.delete();
+
+    await DQ.delete();
     return response.ok({
       code: HttpCodes.SUCCESS,
       result: { message: 'Attribute deleted successfully!' },
