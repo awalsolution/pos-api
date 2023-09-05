@@ -21,7 +21,7 @@ export default class UsersController extends BaseController {
 
     // name filter
     if (request.input('name')) {
-      DQ = DQ.whereILike('name', request.input('name') + '%');
+      DQ = DQ.whereILike('email', request.input('name') + '%');
     }
 
     if (!this.isSuperAdmin(user)) {
