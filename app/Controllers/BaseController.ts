@@ -1,7 +1,4 @@
-// import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import { BaseModel } from '@ioc:Adonis/Lucid/Orm';
-// import HttpCodes from 'App/Enums/HttpCodes';
-// import Pagination from 'App/Enums/Pagination';
 import User from 'App/Models/User';
 import _ from 'lodash';
 
@@ -21,14 +18,6 @@ export class BaseController {
       return roles.length > 0;
     }
     return false;
-  }
-
-  public isAdmin(user?: User) {
-    return this.checkRole(user, 'admin');
-  }
-
-  public isVendor(user?: User) {
-    return this.checkRole(user, 'vendor');
   }
 
   public isSuperAdmin(user?: User) {
