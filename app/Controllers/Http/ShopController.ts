@@ -11,14 +11,14 @@ export default class ShopController extends BaseController {
 
   // find shop list
   public async findAllRecords({ request, response }) {
-    let DQ = this.MODEL;
+    let DQ = this.MODEL.query();
 
     const page = request.input('page');
     const pageSize = request.input('pageSize');
 
     // name filter
     if (request.input('name')) {
-      DQ.query().whereILike('name', request.input('name') + '%');
+      DQ = DQ.whereILike('shop_name', request.input('name') + '%');
     }
 
     if (!DQ) {
@@ -30,13 +30,13 @@ export default class ShopController extends BaseController {
     if (pageSize) {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        result: await DQ.query().paginate(page, pageSize),
+        result: await DQ.paginate(page, pageSize),
         message: 'Shops find Successfully',
       });
     } else {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        result: await DQ.all(),
+        result: await DQ.select('*'),
         message: 'Shops find Successfully',
       });
     }
