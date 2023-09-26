@@ -1,35 +1,20 @@
 import BaseSeeder from '@ioc:Adonis/Lucid/Seeder';
-import Shop from 'App/Models/Shop';
+import Merchant from 'App/Models/Merchant';
 
 export default class extends BaseSeeder {
   public async run() {
-    await Shop.createMany([
+    await Merchant.createMany([
       {
-        shop_name: 'vendor 1',
-        shop_phone: '123456789',
-        address: 'DHA Phase 5',
-        city: 'Lahore',
-        state: 'Punjab',
-        country: 'Pakistan',
-        shop_logo: '/uploads/shop_logo/shop_logo.jpg',
+        shopId: 1,
+        merchant_name: 'merchant 1',
       },
       {
-        shop_name: 'vendor 2',
-        shop_phone: '123456789',
-        address: 'DHA Phase 5',
-        city: 'Lahore',
-        state: 'Punjab',
-        country: 'Pakistan',
-        shop_logo: '/uploads/shop_logo/shop_logo.jpg',
+        shopId: 2,
+        merchant_name: 'merchant 2',
       },
       {
-        shop_name: 'vendor 3',
-        shop_phone: '123456789',
-        address: 'DHA Phase 5',
-        city: 'Lahore',
-        state: 'Punjab',
-        country: 'Pakistan',
-        shop_logo: '/uploads/shop_logo/shop_logo.jpg',
+        shopId: 3,
+        merchant_name: 'merchant 3',
       },
     ]);
   }

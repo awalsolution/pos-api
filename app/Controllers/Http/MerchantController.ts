@@ -31,13 +31,13 @@ export default class MerchantController extends BaseController {
     if (pageSize) {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        result: await DQ.paginate(page, pageSize),
+        result: await DQ.preload('shop').paginate(page, pageSize),
         message: 'Merchants find Successfully',
       });
     } else {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        result: await DQ.select('*'),
+        result: await DQ.preload('shop'),
         message: 'Merchants find Successfully',
       });
     }
@@ -71,8 +71,10 @@ export default class MerchantController extends BaseController {
   }
 
   // create new merchant
-  public async create({ request, response }) {
+  public async create({ auth, request, response }) {
     try {
+      const currentUser = auth.user;
+
       const DE = await this.MODEL.findBy(
         'merchant_name',
         request.body().merchant_name
@@ -81,10 +83,17 @@ export default class MerchantController extends BaseController {
       if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: `Shop: "${request.body().shop_name}" already exists!`,
+          message: 'Merchant already exists!',
         });
       }
       const DM = new this.MODEL();
+
+      if (this.isSuperAdmin(currentUser)) {
+        DM.shopId = request.body().shop_id;
+      } else {
+        DM.shopId = currentUser.shopId;
+      }
+
       DM.merchant_name = request.body().merchant_name;
       DM.status = request.body().status;
 

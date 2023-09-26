@@ -31,13 +31,13 @@ export default class SupplierController extends BaseController {
     if (pageSize) {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        result: await DQ.paginate(page, pageSize),
+        result: await DQ.preload('shop').paginate(page, pageSize),
         message: 'Supplier find Successfully',
       });
     } else {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        result: await DQ.select('*'),
+        result: await DQ.preload('shop'),
         message: 'Supplier find Successfully',
       });
     }
