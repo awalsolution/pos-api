@@ -22,6 +22,7 @@ export default class extends BaseSchema {
       table.string('state').nullable();
       table.string('country').nullable();
       table.string('profile_picture').nullable();
+
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */

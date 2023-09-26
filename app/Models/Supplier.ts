@@ -8,13 +8,13 @@ export default class Supplier extends BaseModel {
   public id: number;
 
   @column()
-  public shopId: string;
+  public shopId: number | undefined;
 
   @column()
-  public shop_name: string;
+  public supplier_name: string;
 
   @column()
-  public shop_phone: string | null;
+  public supplier_phone: string;
 
   @column()
   public status: string;
@@ -30,9 +30,6 @@ export default class Supplier extends BaseModel {
 
   @column()
   public country: string | null;
-
-  @column()
-  public shop_logo: string | null;
 
   @column.dateTime({
     autoCreate: true,

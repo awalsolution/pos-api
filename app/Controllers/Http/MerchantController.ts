@@ -18,13 +18,13 @@ export default class MerchantController extends BaseController {
 
     // name filter
     if (request.input('name')) {
-      DQ = DQ.whereILike('shop_name', request.input('name') + '%');
+      DQ = DQ.whereILike('merchant_name', request.input('name') + '%');
     }
 
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Shops Data is Empty',
+        message: 'Merchant Data is Empty',
       });
     }
 
@@ -32,13 +32,13 @@ export default class MerchantController extends BaseController {
       return response.ok({
         code: HttpCodes.SUCCESS,
         result: await DQ.paginate(page, pageSize),
-        message: 'Shops find Successfully',
+        message: 'Merchants find Successfully',
       });
     } else {
       return response.ok({
         code: HttpCodes.SUCCESS,
         result: await DQ.select('*'),
-        message: 'Shops find Successfully',
+        message: 'Merchants find Successfully',
       });
     }
   }
@@ -53,13 +53,13 @@ export default class MerchantController extends BaseController {
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'Shop Data is Empty',
+          message: 'Merchant Data is Empty',
         });
       }
 
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Shop find successfully',
+        message: 'Merchant find successfully',
         result: DQ,
       });
     } catch (e) {
@@ -73,7 +73,10 @@ export default class MerchantController extends BaseController {
   // create new merchant
   public async create({ request, response }) {
     try {
-      const DE = await this.MODEL.findBy('shop_name', request.body().shop_name);
+      const DE = await this.MODEL.findBy(
+        'merchant_name',
+        request.body().merchant_name
+      );
 
       if (DE) {
         return response.conflict({
@@ -82,19 +85,13 @@ export default class MerchantController extends BaseController {
         });
       }
       const DM = new this.MODEL();
-      DM.shop_name = request.body().shop_name;
-      DM.shop_phone = request.body().shop_phone;
+      DM.merchant_name = request.body().merchant_name;
       DM.status = request.body().status;
-      DM.address = request.body().address;
-      DM.city = request.body().city;
-      DM.state = request.body().state;
-      DM.country = request.body().country;
-      DM.shop_logo = request.body().shop_logo;
 
       const DQ = await DM.save();
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: `Shop: "${request.body().shop_name}" Created Successfully!`,
+        message: 'Merchant Created Successfully!',
         result: DQ,
       });
     } catch (e) {
@@ -113,33 +110,28 @@ export default class MerchantController extends BaseController {
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'Shop does not exists!',
+          message: 'Merchant does not exists!',
         });
       }
       const DE = await this.MODEL.query()
-        .where('shop_name', 'like', request.body().shop_name)
+        .where('merchant_name', 'like', request.body().merchant_name)
         .whereNot('id', request.param('id'))
         .first();
 
       if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: `Shop: "${request.body().shop_name}" already exists!`,
+          message: 'Merchant already exists!',
         });
       }
-      DQ.shop_name = request.body().shop_name;
-      DQ.shop_phone = request.body().shop_phone;
+
+      DQ.merchant_name = request.body().merchant_name;
       DQ.status = request.body().status;
-      DQ.address = request.body().address;
-      DQ.city = request.body().city;
-      DQ.state = request.body().state;
-      DQ.country = request.body().country;
-      DQ.shop_logo = request.body().shop_logo;
 
       await DQ.save();
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: `Shop: "${request.body().shop_name}" Update Successfully!`,
+        message: 'Merchant Update Successfully!',
         result: DQ,
       });
     } catch (e) {
@@ -157,13 +149,13 @@ export default class MerchantController extends BaseController {
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Shop not found',
+        message: 'Merchant not found',
       });
     }
     await DQ.delete();
     return response.ok({
       code: HttpCodes.SUCCESS,
-      result: { message: 'Shop deleted successfully' },
+      message: 'Merchant deleted successfully',
     });
   }
 }

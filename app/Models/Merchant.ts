@@ -8,28 +8,13 @@ export default class Merchant extends BaseModel {
   public id: number;
 
   @column()
-  public shop_name: string;
+  public shopId: number | undefined;
 
   @column()
-  public shop_phone: string | null;
+  public merchant_name: string;
 
   @column()
   public status: string;
-
-  @column()
-  public address: string | null;
-
-  @column()
-  public city: string | null;
-
-  @column()
-  public state: string | null;
-
-  @column()
-  public country: string | null;
-
-  @column()
-  public shop_logo: string | null;
 
   @column.dateTime({
     autoCreate: true,

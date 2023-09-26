@@ -13,7 +13,7 @@ export default class extends BaseSchema {
         .references('shops.id')
         .onUpdate('CASCADE')
         .onDelete('CASCADE');
-      table.string('email').notNullable().unique().index();
+      table.string('email').notNullable().index();
       table.string('password').notNullable();
       table.string('user_type').nullable();
       table.string('status').notNullable().defaultTo('active');
@@ -22,6 +22,8 @@ export default class extends BaseSchema {
       table.timestamp('email_verified_time').nullable();
       table.boolean('is_phone_verified').notNullable().defaultTo(false);
       table.timestamp('phone_verified_time').nullable();
+
+      table.unique(['shop_id', 'email']);
 
       /**
        * Uses timestampz for PostgreSQL and DATETIME2 for MSSQL

@@ -13,14 +13,10 @@ export default class extends BaseSchema {
         .references('shops.id')
         .onUpdate('CASCADE')
         .onDelete('CASCADE');
-      table.string('shop_name').notNullable().index();
-      table.string('shop_phone').nullable();
+      table.string('merchant_name').notNullable().index();
       table.string('status').notNullable().defaultTo('active');
-      table.string('address').nullable();
-      table.string('city').nullable();
-      table.string('state').nullable();
-      table.string('country').nullable();
-      table.string('shop_logo').nullable();
+
+      table.unique(['shop_id', 'merchant_name']);
 
       /**
        * Uses timestampz for PostgreSQL and DATETIME2 for MSSQL

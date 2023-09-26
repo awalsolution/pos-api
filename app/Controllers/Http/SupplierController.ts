@@ -18,13 +18,13 @@ export default class SupplierController extends BaseController {
 
     // name filter
     if (request.input('name')) {
-      DQ = DQ.whereILike('shop_name', request.input('name') + '%');
+      DQ = DQ.whereILike('supplier_name', request.input('name') + '%');
     }
 
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Shops Data is Empty',
+        message: 'Supplier Data is Empty',
       });
     }
 
@@ -32,13 +32,13 @@ export default class SupplierController extends BaseController {
       return response.ok({
         code: HttpCodes.SUCCESS,
         result: await DQ.paginate(page, pageSize),
-        message: 'Shops find Successfully',
+        message: 'Supplier find Successfully',
       });
     } else {
       return response.ok({
         code: HttpCodes.SUCCESS,
         result: await DQ.select('*'),
-        message: 'Shops find Successfully',
+        message: 'Supplier find Successfully',
       });
     }
   }
@@ -53,13 +53,13 @@ export default class SupplierController extends BaseController {
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'Shop Data is Empty',
+          message: 'Supplier Data is Empty',
         });
       }
 
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Shop find successfully',
+        message: 'Supplier find successfully',
         result: DQ,
       });
     } catch (e) {
@@ -73,28 +73,30 @@ export default class SupplierController extends BaseController {
   // create new supplier
   public async create({ request, response }) {
     try {
-      const DE = await this.MODEL.findBy('shop_name', request.body().shop_name);
+      const DE = await this.MODEL.findBy(
+        'supplier_name',
+        request.body().supplier_name
+      );
 
       if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: `Shop: "${request.body().shop_name}" already exists!`,
+          message: 'Supplier already exists!',
         });
       }
       const DM = new this.MODEL();
-      DM.shop_name = request.body().shop_name;
-      DM.shop_phone = request.body().shop_phone;
+      DM.supplier_name = request.body().supplier_name;
+      DM.supplier_phone = request.body().supplier_phone;
       DM.status = request.body().status;
       DM.address = request.body().address;
       DM.city = request.body().city;
       DM.state = request.body().state;
       DM.country = request.body().country;
-      DM.shop_logo = request.body().shop_logo;
 
       const DQ = await DM.save();
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: `Shop: "${request.body().shop_name}" Created Successfully!`,
+        message: 'Supplier Created Successfully!',
         result: DQ,
       });
     } catch (e) {
@@ -113,33 +115,32 @@ export default class SupplierController extends BaseController {
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'Shop does not exists!',
+          message: 'Supplier does not exists!',
         });
       }
       const DE = await this.MODEL.query()
-        .where('shop_name', 'like', request.body().shop_name)
+        .where('supplier_name', 'like', request.body().supplier_name)
         .whereNot('id', request.param('id'))
         .first();
 
       if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: `Shop: "${request.body().shop_name}" already exists!`,
+          message: 'supplier_name already exists!',
         });
       }
-      DQ.shop_name = request.body().shop_name;
-      DQ.shop_phone = request.body().shop_phone;
+      DQ.supplier_name = request.body().supplier_name;
+      DQ.supplier_phone = request.body().supplier_phone;
       DQ.status = request.body().status;
       DQ.address = request.body().address;
       DQ.city = request.body().city;
       DQ.state = request.body().state;
       DQ.country = request.body().country;
-      DQ.shop_logo = request.body().shop_logo;
 
       await DQ.save();
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: `Shop: "${request.body().shop_name}" Update Successfully!`,
+        message: 'Supplier Update Successfully!',
         result: DQ,
       });
     } catch (e) {
@@ -157,13 +158,13 @@ export default class SupplierController extends BaseController {
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Shop not found',
+        message: 'Supplier not found',
       });
     }
     await DQ.delete();
     return response.ok({
       code: HttpCodes.SUCCESS,
-      result: { message: 'Shop deleted successfully' },
+      message: 'Supplier deleted successfully',
     });
   }
 }
