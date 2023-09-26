@@ -60,6 +60,8 @@ Route.get('/', async () => {
 
 import './api/user';
 import './api/shop';
+import './api/supplier';
+import './api/merchant';
 import './api/product/product';
 import './api/product/categories';
 import './api/product/attribute';
