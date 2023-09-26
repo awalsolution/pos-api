@@ -5,7 +5,7 @@ export default class extends BaseSeeder {
   public async run() {
     await Menu.createMany([
       {
-        menu_name: 'Dashbaord',
+        menu_name: 'Dashboard',
       },
       {
         menu_name: 'System Setting',

@@ -71,7 +71,9 @@ export default class PermissionsController extends BaseController {
       }
       const DM = new this.MODEL();
 
-      DM.name = request.input('name');
+      DM.menuId = request.body().menu_id;
+      DM.name = request.body().name;
+      DM.type = request.body().type;
 
       const DQ = await DM.save();
       return response.ok({
@@ -110,7 +112,9 @@ export default class PermissionsController extends BaseController {
         });
       }
 
+      DQ.menuId = request.body().menu_id;
       DQ.name = request.body().name;
+      DQ.type = request.body().type;
 
       await DQ.save();
       return response.ok({

@@ -95,9 +95,9 @@ export default class UsersController extends BaseController {
   public async create({ auth, request, response }) {
     const currentUser = auth.user!;
     try {
-      let userExists = await this.MODEL.findBy('email', request.body().email);
-      if (userExists && !userExists.isEmailVerified) {
-        delete userExists.$attributes.password;
+      let DE = await this.MODEL.findBy('email', request.body().email);
+      if (DE && !DE.isEmailVerified) {
+        delete DE.$attributes.password;
 
         return response.conflict({
           code: HttpCodes.CONFLICTS,
@@ -105,29 +105,29 @@ export default class UsersController extends BaseController {
         });
       }
 
-      const user = new this.MODEL();
+      const DM = new this.MODEL();
       if (this.isSuperAdmin(currentUser)) {
-        user.shopId = request.body().shop_id;
+        DM.shopId = request.body().shop_id;
       } else {
-        user.shopId = currentUser.shopId;
+        DM.shopId = currentUser.shopId;
       }
-      user.email = request.body().email;
-      user.status = request.body().status;
-      user.password = request.body().password;
+      DM.email = request.body().email;
+      DM.status = request.body().status;
+      DM.password = request.body().password;
 
-      await user.save();
-      user.related('roles').sync(request.body().roles);
-      user.related('profile').create({
+      await DM.save();
+      DM.related('roles').sync(request.body().roles);
+      DM.related('profile').create({
         first_name: request.body().first_name,
         last_name: request.body().last_name,
         phone_number: request.body().phone_number,
       });
 
-      delete user.$attributes.password;
+      delete DM.$attributes.password;
       return response.ok({
         code: HttpCodes.SUCCESS,
         message: 'User Register Successfully!',
-        result: user,
+        result: DM,
       });
     } catch (e) {
       console.log('register error', e.toString());
@@ -141,8 +141,8 @@ export default class UsersController extends BaseController {
   // update user
   public async update({ auth, request, response }) {
     const currentUser = auth.user!;
-    const user = await this.MODEL.findBy('id', request.param('id'));
-    if (!user) {
+    const DQ = await this.MODEL.findBy('id', request.param('id'));
+    if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
         message: 'User Not Found',
@@ -150,30 +150,31 @@ export default class UsersController extends BaseController {
     }
 
     if (this.isSuperAdmin(currentUser)) {
-      user.shopId = request.body().shop_id;
+      DQ.shopId = request.body().shop_id;
     } else {
-      user.shopId = currentUser.shopId;
+      DQ.shopId = currentUser.shopId;
     }
 
-    user.email = request.body().email;
-    user.status = request.body().status;
+    DQ.email = request.body().email;
+    DQ.status = request.body().status;
 
-    await user.save();
-    user.related('permissions').sync(request.body().permissions);
-    user.related('roles').sync(request.body().roles);
+    await DQ.save();
+    DQ.related('permissions').sync(request.body().permissions);
+    DQ.related('roles').sync(request.body().roles);
 
-    delete user.$attributes.password;
+    delete DQ.$attributes.password;
     return response.ok({
       code: HttpCodes.SUCCESS,
       message: 'User Update successfully.',
-      result: user,
+      result: DQ,
     });
   }
+
   // assign permission to user
   public async assignPermission({ auth, request, response }) {
     const currentUser = auth.user!;
-    const user = await this.MODEL.findBy('id', request.param('id'));
-    if (!user) {
+    const DQ = await this.MODEL.findBy('id', request.param('id'));
+    if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
         message: 'User Not Found',
@@ -181,32 +182,32 @@ export default class UsersController extends BaseController {
     }
 
     if (this.isSuperAdmin(currentUser)) {
-      user.shopId = request.body().shop_id;
+      DQ.shopId = request.body().shop_id;
     } else {
-      user.shopId = currentUser.shopId;
+      DQ.shopId = currentUser.shopId;
     }
 
-    await user.save();
-    user.related('permissions').sync(request.body().permissions);
+    await DQ.save();
+    DQ.related('permissions').sync(request.body().permissions);
 
-    delete user.$attributes.password;
+    delete DQ.$attributes.password;
     return response.ok({
       code: HttpCodes.SUCCESS,
       message: 'Assigned Permissions successfully.',
-      result: user,
+      result: DQ,
     });
   }
 
   // update user profile
   public async profileUpdate({ request, response }) {
-    const user = await this.MODEL.findBy('id', request.param('id'));
-    if (!user) {
+    const DQ = await this.MODEL.findBy('id', request.param('id'));
+    if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
         message: 'User Not Found',
       });
     }
-    user.related('profile').updateOrCreate(
+    DQ.related('profile').updateOrCreate(
       {},
       {
         first_name: request.body().first_name,
@@ -219,24 +220,24 @@ export default class UsersController extends BaseController {
       }
     );
 
-    delete user.$attributes.password;
+    delete DQ.$attributes.password;
     return response.ok({
       code: HttpCodes.SUCCESS,
       message: 'User Profile Update successfully.',
-      result: user,
+      result: DQ,
     });
   }
 
   // delete single user using id
   public async destroy({ request, response }) {
-    const data = await this.MODEL.findBy('id', request.param('id'));
-    if (!data) {
+    const DQ = await this.MODEL.findBy('id', request.param('id'));
+    if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
         message: 'User not found',
       });
     }
-    await data.delete();
+    await DQ.delete();
     return response.ok({
       code: HttpCodes.SUCCESS,
       result: { message: 'User deleted successfully' },
