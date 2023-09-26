@@ -27,6 +27,7 @@ export default class ShopController extends BaseController {
         message: 'Shops Data is Empty',
       });
     }
+
     if (pageSize) {
       return response.ok({
         code: HttpCodes.SUCCESS,
