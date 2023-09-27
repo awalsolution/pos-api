@@ -5,6 +5,7 @@ export default class extends BaseSeeder {
   public async run() {
     await Product.createMany([
       {
+        merchantId: 1,
         shopId: 1,
         categoryId: 1,
         product_code: '112233',
@@ -14,6 +15,7 @@ export default class extends BaseSeeder {
         product_image: '/uploads/products/product-01.png',
       },
       {
+        merchantId: 1,
         shopId: 1,
         categoryId: 1,
         product_code: '223344',
@@ -23,6 +25,7 @@ export default class extends BaseSeeder {
         product_image: '/uploads/products/product-02.png',
       },
       {
+        merchantId: 1,
         shopId: 1,
         categoryId: 2,
         product_code: '334455',
@@ -32,6 +35,7 @@ export default class extends BaseSeeder {
         product_image: '/uploads/products/product-03.png',
       },
       {
+        merchantId: 2,
         shopId: 2,
         categoryId: 1,
         product_code: '445566',
@@ -41,6 +45,7 @@ export default class extends BaseSeeder {
         product_image: '/uploads/products/product-04.png',
       },
       {
+        merchantId: 2,
         shopId: 2,
         categoryId: 2,
         product_code: '556677',
@@ -50,6 +55,7 @@ export default class extends BaseSeeder {
         product_image: '/uploads/products/product-05.png',
       },
       {
+        merchantId: 2,
         shopId: 2,
         categoryId: 3,
         product_code: '667788',
@@ -59,6 +65,7 @@ export default class extends BaseSeeder {
         product_image: '/uploads/products/product-01.png',
       },
       {
+        merchantId: 3,
         shopId: 3,
         categoryId: 1,
         product_code: '778899',
@@ -68,6 +75,7 @@ export default class extends BaseSeeder {
         product_image: '/uploads/products/product-02.png',
       },
       {
+        merchantId: 3,
         shopId: 3,
         categoryId: 2,
         product_code: '889900',
@@ -77,6 +85,7 @@ export default class extends BaseSeeder {
         product_image: '/uploads/products/product-03.png',
       },
       {
+        merchantId: 3,
         shopId: 3,
         categoryId: 3,
         product_code: '9900011',

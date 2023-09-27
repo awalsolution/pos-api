@@ -7,6 +7,13 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id');
       table
+        .integer('merchant_id')
+        .unsigned()
+        .notNullable()
+        .references('merchants.id')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE');
+      table
         .integer('shop_id')
         .unsigned()
         .notNullable()

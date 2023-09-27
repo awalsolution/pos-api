@@ -2,11 +2,15 @@ import { DateTime } from 'luxon';
 import { column, BaseModel, belongsTo, BelongsTo } from '@ioc:Adonis/Lucid/Orm';
 import { STANDARD_DATE_TIME_FORMAT } from 'App/Helpers/utils';
 import { slugify } from '@ioc:Adonis/Addons/LucidSlugify';
+import Merchant from 'App/Models/Merchant';
 import Shop from 'App/Models/Shop';
 
 export default class Product extends BaseModel {
   @column({ isPrimary: true })
   public id: number;
+
+  @column()
+  public merchantId: number | undefined;
 
   @column()
   public shopId: number | undefined;
@@ -53,6 +57,9 @@ export default class Product extends BaseModel {
     },
   })
   public updatedAt: DateTime;
+
+  @belongsTo(() => Merchant)
+  public merchant: BelongsTo<typeof Merchant>;
 
   @belongsTo(() => Shop)
   public shop: BelongsTo<typeof Shop>;

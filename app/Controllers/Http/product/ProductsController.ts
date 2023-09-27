@@ -31,13 +31,15 @@ export default class ProductsController extends BaseController {
       return response.ok({
         code: HttpCodes.SUCCESS,
         message: 'Products find Successfully',
-        result: await DQ.preload('shop').paginate(page, pageSize),
+        result: await DQ.preload('shop')
+          .preload('merchant')
+          .paginate(page, pageSize),
       });
     } else {
       return response.ok({
         code: HttpCodes.SUCCESS,
         message: 'Products find Successfully',
-        result: await DQ.preload('shop'),
+        result: await DQ.preload('shop').preload('merchant'),
       });
     }
   }
@@ -85,6 +87,7 @@ export default class ProductsController extends BaseController {
       }
       const DM = new this.MODEL();
       DM.shopId = auth.user?.shop.id;
+      DM.merchantId = request.body().merchant_id;
       DM.categoryId = request.body().category_id;
       DM.product_code = request.body().product_code;
       DM.title = request.body().title;
