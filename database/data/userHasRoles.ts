@@ -21,18 +21,26 @@ export const userHasRole = [
   },
   {
     user: 6,
-    roles: [6],
+    roles: [3],
   },
   {
     user: 7,
+    roles: [6],
+  },
+  {
+    user: 8,
     roles: [7],
   },
   {
-    user: 8,
+    user: 9,
+    roles: [3],
+  },
+  {
+    user: 10,
     roles: [8],
   },
   {
-    user: 8,
+    user: 11,
     roles: [9],
   },
 ];

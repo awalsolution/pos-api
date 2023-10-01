@@ -16,6 +16,11 @@ export default class extends BaseSeeder {
       },
       {
         shopId: 1,
+        email: 'shop1admin@gmail.com',
+        password: '123456',
+      },
+      {
+        shopId: 1,
         email: 'shop1user1@gmail.com',
         password: '123456',
       },
@@ -26,12 +31,22 @@ export default class extends BaseSeeder {
       },
       {
         shopId: 2,
+        email: 'shop2admin@gmail.com',
+        password: '123456',
+      },
+      {
+        shopId: 2,
         email: 'shop2user1@gmail.com',
         password: '123456',
       },
       {
         shopId: 2,
         email: 'shop2user2@gmail.com',
+        password: '123456',
+      },
+      {
+        shopId: 3,
+        email: 'shop3admin@gmail.com',
         password: '123456',
       },
       {
