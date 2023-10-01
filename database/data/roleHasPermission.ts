@@ -1,26 +1,14 @@
 export const roleHasPermission = [
   {
-    role: 'super admin',
+    role: 2,
+    permissions: [1, 2, 3, 8],
   },
   {
-    role: 'admin',
+    role: 3,
     permissions: [
-      'can view dashboard',
-      'can view system setting',
-      'can view users',
-      'can view roles',
-      'can view permissions',
-      'can view shops',
-      'can view products',
-    ],
-  },
-  {
-    role: 'vendor',
-    permissions: [
-      'can view products',
-      'can view dashboard',
-      'can view roles',
-      'can view permissions',
+      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 30, 31, 32, 33, 34, 35, 36,
+      37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54,
+      55, 56, 57, 58, 59, 60, 61, 62, 63, 64,
     ],
   },
 ];

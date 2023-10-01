@@ -13,7 +13,7 @@ export default class extends BaseSeeder {
           const perms: any = userHasPermission[i].permissions;
           for (const j in perms) {
             try {
-              const foundPermission = await Permission.findBy('name', perms[j]);
+              const foundPermission = await Permission.findBy('id', perms[j]);
               if (foundPermission) {
                 const id = foundPermission?.id;
                 permissions.push(id);

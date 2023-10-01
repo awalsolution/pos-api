@@ -1,34 +1,38 @@
 export const userHasRole = [
   {
     user: 1,
-    roles: ['super admin'],
+    roles: [1],
   },
   {
     user: 2,
-    roles: ['admin'],
+    roles: [2],
   },
   {
     user: 3,
-    roles: ['vendor'],
+    roles: [3],
   },
   {
     user: 4,
-    roles: ['vendor'],
+    roles: [4],
   },
   {
     user: 5,
-    roles: ['vendor'],
+    roles: [5],
   },
   {
     user: 6,
-    roles: ['vendor'],
+    roles: [6],
   },
   {
     user: 7,
-    roles: ['vendor'],
+    roles: [7],
   },
   {
     user: 8,
-    roles: ['vendor'],
+    roles: [8],
+  },
+  {
+    user: 8,
+    roles: [9],
   },
 ];

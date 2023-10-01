@@ -1,14 +1,14 @@
 export const userHasPermission = [
   {
     user: 1,
-    permissions: ['can view dashboard'],
+    permissions: [1],
   },
   {
     user: 2,
-    permissions: ['can view dashboard'],
+    permissions: [1],
   },
   {
     user: 3,
-    permissions: ['can view dashboard'],
+    permissions: [1],
   },
 ];

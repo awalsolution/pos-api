@@ -13,7 +13,7 @@ export default class extends BaseSeeder {
           const perms: any = userHasRole[i].roles;
           for (const j in perms) {
             try {
-              const foundRole = await Role.findBy('name', perms[j]);
+              const foundRole = await Role.findBy('id', perms[j]);
               if (foundRole) {
                 const id = foundRole?.id;
                 roles.push(id);

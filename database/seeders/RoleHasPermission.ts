@@ -7,13 +7,13 @@ export default class PermissionRoleSeeder extends BaseSeeder {
   public async run() {
     try {
       for (const i in roleHasPermission) {
-        const foundRole = await Role.findBy('name', roleHasPermission[i].role);
+        const foundRole = await Role.findBy('id', roleHasPermission[i].role);
         if (foundRole) {
           let permissions: number[] = [];
           const perms = roleHasPermission[i].permissions;
           for (const j in perms) {
             try {
-              const foundPermission = await Permission.findBy('name', perms[j]);
+              const foundPermission = await Permission.findBy('id', perms[j]);
               if (foundPermission) {
                 const id = foundPermission?.id;
                 permissions.push(id);

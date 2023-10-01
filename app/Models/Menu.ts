@@ -10,6 +10,9 @@ export default class Menu extends BaseModel {
   @column()
   public menu_name: string;
 
+  @column()
+  public menu_type: string;
+
   @column.dateTime({
     autoCreate: true,
     serialize(value: DateTime) {

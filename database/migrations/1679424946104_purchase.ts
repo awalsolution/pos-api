@@ -1,12 +1,22 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema';
 
 export default class extends BaseSchema {
-  protected tableName = 'menus';
+  protected tableName = 'purchase_orders';
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary();
-      table.string('menu_name').notNullable().unique();
+      table
+        .integer('shop_id')
+        .unsigned()
+        .notNullable()
+        .references('shops.id')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE');
+      table.string('merchant_name').notNullable().index();
+      table.string('status').notNullable().defaultTo('active');
+
+      table.unique(['shop_id', 'merchant_name']);
 
       /**
        * Uses timestampz for PostgreSQL and DATETIME2 for MSSQL
