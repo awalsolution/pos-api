@@ -25,9 +25,8 @@ export default class RolesController extends BaseController {
 
     if (!this.isSuperAdmin(currentUser)) {
       DQ = DQ.where('shop_id', currentUser.shopId!);
-    } else {
-      DQ = DQ.whereNull('shop_id');
     }
+
     if (pageSize) {
       return response.ok({
         code: HttpCodes.SUCCESS,

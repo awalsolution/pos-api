@@ -10,7 +10,8 @@ export default class MenuController extends BaseController {
   }
 
   // find Menu list
-  public async findAllRecords({ request, response }) {
+  public async findAllRecords({ auth, request, response }) {
+    const currentUser = auth.user;
     let DQ = this.MODEL.query();
 
     const page = request.input('page');
@@ -35,11 +36,24 @@ export default class MenuController extends BaseController {
         message: 'Menus find Successfully',
       });
     } else {
-      response.ok({
-        code: HttpCodes.SUCCESS,
-        result: await DQ.preload('permissions'),
-        message: 'Menus find Successfully',
-      });
+      if (!this.ischeckAllSuperAdminUser(currentUser)) {
+        response.ok({
+          code: HttpCodes.SUCCESS,
+          result: await DQ.where('menu_type', 'public').preload(
+            'permissions',
+            (q) => {
+              q.where('type', 'public');
+            }
+          ),
+          message: 'Menus find Successfully',
+        });
+      } else {
+        response.ok({
+          code: HttpCodes.SUCCESS,
+          result: await DQ.preload('permissions'),
+          message: 'Menus find Successfully',
+        });
+      }
     }
   }
 

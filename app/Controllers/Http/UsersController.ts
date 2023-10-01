@@ -13,8 +13,8 @@ export default class UsersController extends BaseController {
 
   // find all users  list
   public async findAllRecords({ auth, request, response }) {
-    const user = auth.user!;
-    let DQ = this.MODEL.query().whereNot('id', user.id);
+    const currentUser = auth.user!;
+    let DQ = this.MODEL.query().whereNotIn('id', [currentUser.id, 1]);
 
     const page = request.input('page');
     const pageSize = request.input('pageSize');
@@ -24,8 +24,10 @@ export default class UsersController extends BaseController {
       DQ = DQ.whereILike('email', request.input('name') + '%');
     }
 
-    if (!this.isSuperAdmin(user)) {
-      DQ = DQ.where('shop_id', user.shopId!);
+    if (!this.isSuperAdmin(currentUser)) {
+      if (!this.ischeckAllSuperAdminUser(currentUser)) {
+        DQ = DQ.where('shop_id', currentUser.shopId!);
+      }
     }
 
     if (!DQ) {

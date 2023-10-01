@@ -1,8 +1,9 @@
 import { BaseModel } from '@ioc:Adonis/Lucid/Orm';
+import { CheckRole } from 'App/Helpers/CheckRole';
 import User from 'App/Models/User';
 import _ from 'lodash';
 
-export class BaseController {
+export class BaseController extends CheckRole {
   public MODEL: typeof BaseModel;
 
   public toJSON(payload: any) {
