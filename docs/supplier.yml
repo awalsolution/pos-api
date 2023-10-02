@@ -6,7 +6,7 @@
           'post':
             {
               'summary': 'Add a new supplier',
-              'tags': ['Vendor supplier'],
+              'tags': ['supplier'],
               'requestBody':
                 { '$ref': '#/components/requestBodies/supplierBody' },
               'responses':
@@ -22,7 +22,7 @@
           'get':
             {
               'summary': 'Get total supplier',
-              'tags': ['Vendor supplier'],
+              'tags': ['supplier'],
               'parameters':
                 [
                   {
@@ -62,7 +62,7 @@
           'get':
             {
               'summary': 'Get a supplier by ID',
-              'tags': ['Vendor supplier'],
+              'tags': ['supplier'],
               'parameters':
                 [
                   {
@@ -86,7 +86,7 @@
           'put':
             {
               'summary': 'Update a supplier',
-              'tags': ['Vendor supplier'],
+              'tags': ['supplier'],
               'parameters':
                 [
                   {
@@ -112,7 +112,7 @@
           'delete':
             {
               'summary': 'Delete a supplier',
-              'tags': ['Vendor supplier'],
+              'tags': ['supplier'],
               'parameters':
                 [
                   {
@@ -196,11 +196,17 @@
                       'example': 'Pakistan',
                       'description': 'add supplier country',
                     },
-                  'supplier_logo':
+                  'supplier_category':
                     {
                       'type': 'string',
-                      'example': 'supplier logo',
-                      'description': 'add supplier logo',
+                      'example': 'supplier category',
+                      'description': 'add supplier category',
+                    },
+                  'supplier_email':
+                    {
+                      'type': 'string',
+                      'example': 'supplier email',
+                      'description': 'add supplier email',
                     },
                 },
             },

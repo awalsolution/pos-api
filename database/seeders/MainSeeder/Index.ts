@@ -6,6 +6,7 @@ export default class IndexSeeder extends BaseSeeder {
   }
   public async run() {
     await this.runSeeder(await import('../Shop'));
+    await this.runSeeder(await import('../Warehouse'));
     await this.runSeeder(await import('../Merchant'));
     await this.runSeeder(await import('../Supplier'));
     await this.runSeeder(await import('../Menus'));

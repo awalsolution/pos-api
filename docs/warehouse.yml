@@ -1,14 +1,14 @@
 {
   'paths':
     {
-      '/api/v1/merchants':
+      '/api/v1/warehouse':
         {
           'post':
             {
-              'summary': 'Add a new merchant',
-              'tags': ['merchant'],
+              'summary': 'Add a new warehouse',
+              'tags': ['warehouse'],
               'requestBody':
-                { '$ref': '#/components/requestBodies/merchantBody' },
+                { '$ref': '#/components/requestBodies/warehouseBody' },
               'responses':
                 {
                   '200': { 'description': 'OK' },
@@ -21,8 +21,8 @@
             },
           'get':
             {
-              'summary': 'Get total merchants',
-              'tags': ['merchant'],
+              'summary': 'Get total warehouse',
+              'tags': ['warehouse'],
               'parameters':
                 [
                   {
@@ -57,12 +57,12 @@
                 },
             },
         },
-      '/api/v1/merchants/{id}':
+      '/api/v1/warehouse/{id}':
         {
           'get':
             {
-              'summary': 'Get a merchant by ID',
-              'tags': ['merchant'],
+              'summary': 'Get a warehouse by ID',
+              'tags': ['warehouse'],
               'parameters':
                 [
                   {
@@ -70,7 +70,7 @@
                     'name': 'id',
                     'schema': { 'type': 'integer' },
                     'required': true,
-                    'description': 'Numeric ID of the merchant to get',
+                    'description': 'Numeric ID of the warehouse to get',
                   },
                 ],
               'responses':
@@ -85,8 +85,8 @@
             },
           'put':
             {
-              'summary': 'Update a merchant',
-              'tags': ['merchant'],
+              'summary': 'Update a warehouse',
+              'tags': ['warehouse'],
               'parameters':
                 [
                   {
@@ -94,11 +94,11 @@
                     'name': 'id',
                     'schema': { 'type': 'integer' },
                     'required': true,
-                    'description': 'Numeric ID of the merchant to get',
+                    'description': 'Numeric ID of the warehouse to get',
                   },
                 ],
               'requestBody':
-                { '$ref': '#/components/requestBodies/merchantBody' },
+                { '$ref': '#/components/requestBodies/warehouseBody' },
               'responses':
                 {
                   '200': { 'description': 'OK' },
@@ -111,8 +111,8 @@
             },
           'delete':
             {
-              'summary': 'Delete a merchant',
-              'tags': ['merchant'],
+              'summary': 'Delete a warehouse',
+              'tags': ['warehouse'],
               'parameters':
                 [
                   {
@@ -120,11 +120,11 @@
                     'name': 'id',
                     'schema': { 'type': 'integer' },
                     'required': true,
-                    'description': 'Numeric ID of the merchant to get',
+                    'description': 'Numeric ID of the warehouse to get',
                   },
                 ],
               'requestBody':
-                { '$ref': '#/components/requestBodies/merchantBody' },
+                { '$ref': '#/components/requestBodies/warehouseBody' },
               'responses':
                 {
                   '200': { 'description': 'OK' },
@@ -141,30 +141,30 @@
     {
       'requestBodies':
         {
-          'merchantBody':
+          'warehouseBody':
             {
-              'description': 'A JSON object containing merchant information',
+              'description': 'A JSON object containing warehouse information',
               'required': true,
               'content':
                 {
                   'application/json':
-                    { 'schema': { '$ref': '#/components/schemas/merchant' } },
+                    { 'schema': { '$ref': '#/components/schemas/warehouse' } },
                 },
             },
         },
       'schemas':
         {
-          'merchant':
+          'warehouse':
             {
-              'title': 'merchant Schemas Information',
+              'title': 'warehouse Schemas Information',
               'type': 'object',
               'properties':
                 {
-                  'merchant_name':
+                  'warehouse_name':
                     {
                       'type': 'string',
-                      'example': 'merchant 01',
-                      'description': 'add merchant name',
+                      'example': 'warehouse 01',
+                      'description': 'add warehouse name',
                     },
                 },
             },

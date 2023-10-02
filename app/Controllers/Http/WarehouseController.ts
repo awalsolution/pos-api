@@ -1,15 +1,15 @@
 import { BaseController } from 'App/Controllers/BaseController';
 import HttpCodes from 'App/Enums/HttpCodes';
-import Supplier from 'App/Models/Supplier';
+import Warehouse from 'App/Models/Warehouse';
 
-export default class SupplierController extends BaseController {
-  public MODEL: typeof Supplier;
+export default class WarehouseController extends BaseController {
+  public MODEL: typeof Warehouse;
   constructor() {
     super();
-    this.MODEL = Supplier;
+    this.MODEL = Warehouse;
   }
 
-  // find supplier list
+  // find warehouse list
   public async findAllRecords({ auth, request, response }) {
     let DQ = this.MODEL.query();
     const currentUser = auth.user;
@@ -19,7 +19,7 @@ export default class SupplierController extends BaseController {
 
     // name filter
     if (request.input('name')) {
-      DQ = DQ.whereILike('supplier_name', request.input('name') + '%');
+      DQ = DQ.whereILike('warehouse_name', request.input('name') + '%');
     }
 
     if (!this.isSuperAdmin(currentUser)) {
@@ -31,7 +31,7 @@ export default class SupplierController extends BaseController {
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Supplier Data is Empty',
+        message: 'Warehouse Data is Empty',
       });
     }
 
@@ -39,18 +39,18 @@ export default class SupplierController extends BaseController {
       return response.ok({
         code: HttpCodes.SUCCESS,
         result: await DQ.preload('shop').paginate(page, pageSize),
-        message: 'Supplier find Successfully',
+        message: 'Warehouse find Successfully',
       });
     } else {
       return response.ok({
         code: HttpCodes.SUCCESS,
         result: await DQ.preload('shop'),
-        message: 'Supplier find Successfully',
+        message: 'Warehouse find Successfully',
       });
     }
   }
 
-  // find supplier using id
+  // find warehouse using id
   public async findSingleRecord({ request, response }) {
     try {
       const DQ = await this.MODEL.query()
@@ -60,13 +60,13 @@ export default class SupplierController extends BaseController {
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'Supplier Data is Empty',
+          message: 'Warehouse Data is Empty',
         });
       }
 
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Supplier find successfully',
+        message: 'Warehouse find successfully',
         result: DQ,
       });
     } catch (e) {
@@ -77,33 +77,44 @@ export default class SupplierController extends BaseController {
     }
   }
 
-  // create new supplier
-  public async create({ request, response }) {
+  // create new warehouse
+  public async create({ auth, request, response }) {
     try {
+      const currentUser = auth.user;
+
       const DE = await this.MODEL.findBy(
-        'supplier_name',
-        request.body().supplier_name
+        'warehouse_name',
+        request.body().warehouse_name
       );
 
       if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: 'Supplier already exists!',
+          message: 'Warehouse already exists!',
         });
       }
       const DM = new this.MODEL();
-      DM.supplier_name = request.body().supplier_name;
-      DM.supplier_phone = request.body().supplier_phone;
-      DM.status = request.body().status;
-      DM.address = request.body().address;
-      DM.city = request.body().city;
-      DM.state = request.body().state;
-      DM.country = request.body().country;
+
+      if (this.isSuperAdmin(currentUser)) {
+        DM.shopId = request.body().shop_id;
+      } else if (this.ischeckAllSuperAdminUser(currentUser)) {
+        DM.shopId = request.body().shop_id;
+      } else {
+        DM.shopId = currentUser.shopId;
+      }
+
+      DM.warehouse_name = request.body().warehouse_name;
+      DM.warehouse_phone = request.body().warehouse_phone;
+      DM.warehouse_status = request.body().warehouse_status;
+      DM.warehouse_address = request.body().warehouse_address;
+      DM.warehouse_city = request.body().warehouse_city;
+      DM.warehouse_state = request.body().warehouse_state;
+      DM.warehouse_country = request.body().warehouse_country;
 
       const DQ = await DM.save();
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Supplier Created Successfully!',
+        message: 'Warehouse Created Successfully!',
         result: DQ,
       });
     } catch (e) {
@@ -115,39 +126,40 @@ export default class SupplierController extends BaseController {
     }
   }
 
-  // update supplier using id
+  // update warehouse using id
   public async update({ request, response }) {
     try {
       const DQ = await this.MODEL.findBy('id', request.param('id'));
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'Supplier does not exists!',
+          message: 'Warehouse does not exists!',
         });
       }
       const DE = await this.MODEL.query()
-        .where('supplier_name', 'like', request.body().supplier_name)
+        .where('warehouse_name', 'like', request.body().warehouse_name)
         .whereNot('id', request.param('id'))
         .first();
 
       if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: 'supplier_name already exists!',
+          message: 'Warehouse already exists!',
         });
       }
-      DQ.supplier_name = request.body().supplier_name;
-      DQ.supplier_phone = request.body().supplier_phone;
-      DQ.status = request.body().status;
-      DQ.address = request.body().address;
-      DQ.city = request.body().city;
-      DQ.state = request.body().state;
-      DQ.country = request.body().country;
+
+      DQ.warehouse_name = request.body().warehouse_name;
+      DQ.warehouse_phone = request.body().warehouse_phone;
+      DQ.warehouse_status = request.body().warehouse_status;
+      DQ.warehouse_address = request.body().warehouse_address;
+      DQ.warehouse_city = request.body().warehouse_city;
+      DQ.warehouse_state = request.body().warehouse_state;
+      DQ.warehouse_country = request.body().warehouse_country;
 
       await DQ.save();
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Supplier Update Successfully!',
+        message: 'Warehouse Update Successfully!',
         result: DQ,
       });
     } catch (e) {
@@ -159,19 +171,19 @@ export default class SupplierController extends BaseController {
     }
   }
 
-  // delete supplier using id
+  // delete warehouse using id
   public async destroy({ request, response }) {
     const DQ = await this.MODEL.findBy('id', request.param('id'));
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Supplier not found',
+        message: 'Warehouse not found',
       });
     }
     await DQ.delete();
     return response.ok({
       code: HttpCodes.SUCCESS,
-      message: 'Supplier deleted successfully',
+      message: 'Warehouse deleted successfully',
     });
   }
 }

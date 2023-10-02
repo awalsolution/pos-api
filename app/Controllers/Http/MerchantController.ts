@@ -10,8 +10,9 @@ export default class MerchantController extends BaseController {
   }
 
   // find merchant list
-  public async findAllRecords({ request, response }) {
+  public async findAllRecords({ auth, request, response }) {
     let DQ = this.MODEL.query();
+    const currentUser = auth.user;
 
     const page = request.input('page');
     const pageSize = request.input('pageSize');
@@ -19,6 +20,12 @@ export default class MerchantController extends BaseController {
     // name filter
     if (request.input('name')) {
       DQ = DQ.whereILike('merchant_name', request.input('name') + '%');
+    }
+
+    if (!this.isSuperAdmin(currentUser)) {
+      if (!this.ischeckAllSuperAdminUser(currentUser)) {
+        DQ = DQ.where('shop_id', currentUser.shopId!);
+      }
     }
 
     if (!DQ) {
@@ -89,6 +96,8 @@ export default class MerchantController extends BaseController {
       const DM = new this.MODEL();
 
       if (this.isSuperAdmin(currentUser)) {
+        DM.shopId = request.body().shop_id;
+      } else if (this.ischeckAllSuperAdminUser(currentUser)) {
         DM.shopId = request.body().shop_id;
       } else {
         DM.shopId = currentUser.shopId;

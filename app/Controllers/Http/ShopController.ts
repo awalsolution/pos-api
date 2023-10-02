@@ -81,6 +81,7 @@ export default class ShopController extends BaseController {
           message: `Shop: "${request.body().shop_name}" already exists!`,
         });
       }
+
       const DM = new this.MODEL();
       DM.shop_name = request.body().shop_name;
       DM.shop_phone = request.body().shop_phone;

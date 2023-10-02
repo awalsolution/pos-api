@@ -1,14 +1,14 @@
 {
   'paths':
     {
-      '/api/v1/merchants':
+      '/api/v1/purchase':
         {
           'post':
             {
-              'summary': 'Add a new merchant',
-              'tags': ['merchant'],
+              'summary': 'Add a new purchase',
+              'tags': ['purchase'],
               'requestBody':
-                { '$ref': '#/components/requestBodies/merchantBody' },
+                { '$ref': '#/components/requestBodies/purchaseBody' },
               'responses':
                 {
                   '200': { 'description': 'OK' },
@@ -21,8 +21,8 @@
             },
           'get':
             {
-              'summary': 'Get total merchants',
-              'tags': ['merchant'],
+              'summary': 'Get total purchase',
+              'tags': ['purchase'],
               'parameters':
                 [
                   {
@@ -57,12 +57,12 @@
                 },
             },
         },
-      '/api/v1/merchants/{id}':
+      '/api/v1/purchase/{id}':
         {
           'get':
             {
-              'summary': 'Get a merchant by ID',
-              'tags': ['merchant'],
+              'summary': 'Get a purchase by ID',
+              'tags': ['purchase'],
               'parameters':
                 [
                   {
@@ -70,7 +70,7 @@
                     'name': 'id',
                     'schema': { 'type': 'integer' },
                     'required': true,
-                    'description': 'Numeric ID of the merchant to get',
+                    'description': 'Numeric ID of the purchase to get',
                   },
                 ],
               'responses':
@@ -85,8 +85,8 @@
             },
           'put':
             {
-              'summary': 'Update a merchant',
-              'tags': ['merchant'],
+              'summary': 'Update a purchase',
+              'tags': ['purchase'],
               'parameters':
                 [
                   {
@@ -94,11 +94,11 @@
                     'name': 'id',
                     'schema': { 'type': 'integer' },
                     'required': true,
-                    'description': 'Numeric ID of the merchant to get',
+                    'description': 'Numeric ID of the purchase to get',
                   },
                 ],
               'requestBody':
-                { '$ref': '#/components/requestBodies/merchantBody' },
+                { '$ref': '#/components/requestBodies/purchaseBody' },
               'responses':
                 {
                   '200': { 'description': 'OK' },
@@ -111,8 +111,8 @@
             },
           'delete':
             {
-              'summary': 'Delete a merchant',
-              'tags': ['merchant'],
+              'summary': 'Delete a purchase',
+              'tags': ['purchase'],
               'parameters':
                 [
                   {
@@ -120,11 +120,11 @@
                     'name': 'id',
                     'schema': { 'type': 'integer' },
                     'required': true,
-                    'description': 'Numeric ID of the merchant to get',
+                    'description': 'Numeric ID of the purchase to get',
                   },
                 ],
               'requestBody':
-                { '$ref': '#/components/requestBodies/merchantBody' },
+                { '$ref': '#/components/requestBodies/purchaseBody' },
               'responses':
                 {
                   '200': { 'description': 'OK' },
@@ -141,30 +141,72 @@
     {
       'requestBodies':
         {
-          'merchantBody':
+          'purchaseBody':
             {
-              'description': 'A JSON object containing merchant information',
+              'description': 'A JSON object containing purchase information',
               'required': true,
               'content':
                 {
                   'application/json':
-                    { 'schema': { '$ref': '#/components/schemas/merchant' } },
+                    { 'schema': { '$ref': '#/components/schemas/purchase' } },
                 },
             },
         },
       'schemas':
         {
-          'merchant':
+          'purchase':
             {
-              'title': 'merchant Schemas Information',
+              'title': 'purchase Schemas Information',
               'type': 'object',
               'properties':
                 {
-                  'merchant_name':
+                  'purchase_name':
                     {
                       'type': 'string',
-                      'example': 'merchant 01',
-                      'description': 'add merchant name',
+                      'example': 'purchase 01',
+                      'description': 'add purchase name',
+                    },
+                  'purchase_phone':
+                    {
+                      'type': 'string',
+                      'example': '123456789',
+                      'description': 'add purchase phone',
+                    },
+                  'address':
+                    {
+                      'type': 'string',
+                      'example': 'DHA Phase 5',
+                      'description': 'add purchase address',
+                    },
+                  'city':
+                    {
+                      'type': 'string',
+                      'example': 'Lahore',
+                      'description': 'add purchase city',
+                    },
+                  'state':
+                    {
+                      'type': 'string',
+                      'example': 'punjab',
+                      'description': 'add purchase state',
+                    },
+                  'country':
+                    {
+                      'type': 'string',
+                      'example': 'Pakistan',
+                      'description': 'add purchase country',
+                    },
+                  'purchase_category':
+                    {
+                      'type': 'string',
+                      'example': 'purchase category',
+                      'description': 'add purchase category',
+                    },
+                  'purchase_email':
+                    {
+                      'type': 'string',
+                      'example': 'purchase email',
+                      'description': 'add purchase email',
                     },
                 },
             },
