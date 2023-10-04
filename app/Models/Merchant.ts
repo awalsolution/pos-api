@@ -14,7 +14,7 @@ export default class Merchant extends BaseModel {
   public merchant_name: string;
 
   @column()
-  public status: string;
+  public merchant_status: string;
 
   @column.dateTime({
     autoCreate: true,

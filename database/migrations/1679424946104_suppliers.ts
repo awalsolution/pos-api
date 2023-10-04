@@ -15,11 +15,23 @@ export default class extends BaseSchema {
         .onDelete('CASCADE');
       table.string('supplier_name').notNullable().index();
       table.string('supplier_phone').nullable();
+      table.string('supplier_email').nullable();
       table.string('status').notNullable().defaultTo('active');
-      table.string('address').nullable();
-      table.string('city').nullable();
-      table.string('state').nullable();
-      table.string('country').nullable();
+      table.string('supplier_address').nullable();
+      table.string('supplier_city').nullable();
+      table.string('supplier_state').nullable();
+      table.string('supplier_country').nullable();
+      table.string('ordered').nullable();
+      table.string('received').nullable();
+      table.string('quantity_check').nullable();
+      table.string('quality_check').nullable();
+      table.string('put_away').nullable();
+      table.string('to').nullable();
+      table.string('cc').nullable();
+      table.string('billing_type').nullable();
+      table.string('billing_value').nullable();
+      table.string('bill_cycles').nullable();
+      table.string('bill_grace_period').nullable();
 
       table.unique(['shop_id', 'supplier_phone']);
 

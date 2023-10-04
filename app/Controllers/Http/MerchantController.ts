@@ -104,7 +104,7 @@ export default class MerchantController extends BaseController {
       }
 
       DM.merchant_name = request.body().merchant_name;
-      DM.status = request.body().status;
+      DM.merchant_status = request.body().merchant_status;
 
       const DQ = await DM.save();
       return response.ok({
@@ -144,7 +144,7 @@ export default class MerchantController extends BaseController {
       }
 
       DQ.merchant_name = request.body().merchant_name;
-      DQ.status = request.body().status;
+      DQ.merchant_status = request.body().merchant_status;
 
       await DQ.save();
       return response.ok({
