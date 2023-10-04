@@ -105,11 +105,11 @@ export default class WarehouseController extends BaseController {
 
       DM.warehouse_name = request.body().warehouse_name;
       DM.warehouse_phone = request.body().warehouse_phone;
-      DM.warehouse_status = request.body().warehouse_status;
-      DM.warehouse_address = request.body().warehouse_address;
-      DM.warehouse_city = request.body().warehouse_city;
-      DM.warehouse_state = request.body().warehouse_state;
-      DM.warehouse_country = request.body().warehouse_country;
+      DM.status = request.body().status;
+      DM.address = request.body().address;
+      DM.city = request.body().city;
+      DM.state = request.body().state;
+      DM.country = request.body().country;
 
       const DQ = await DM.save();
       return response.ok({
@@ -151,11 +151,11 @@ export default class WarehouseController extends BaseController {
       DQ.shopId = request.body().shop_id;
       DQ.warehouse_name = request.body().warehouse_name;
       DQ.warehouse_phone = request.body().warehouse_phone;
-      DQ.warehouse_status = request.body().warehouse_status;
-      DQ.warehouse_address = request.body().warehouse_address;
-      DQ.warehouse_city = request.body().warehouse_city;
-      DQ.warehouse_state = request.body().warehouse_state;
-      DQ.warehouse_country = request.body().warehouse_country;
+      DQ.status = request.body().status;
+      DQ.address = request.body().address;
+      DQ.city = request.body().city;
+      DQ.state = request.body().state;
+      DQ.country = request.body().country;
 
       await DQ.save();
       return response.ok({

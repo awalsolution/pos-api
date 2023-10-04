@@ -94,6 +94,7 @@ export default class SupplierController extends BaseController {
       const DM = new this.MODEL();
       DM.supplier_name = request.body().supplier_name;
       DM.supplier_phone = request.body().supplier_phone;
+      DM.supplier_email = request.body().supplier_email;
       DM.status = request.body().status;
       DM.address = request.body().address;
       DM.city = request.body().city;
@@ -138,6 +139,7 @@ export default class SupplierController extends BaseController {
       }
       DQ.supplier_name = request.body().supplier_name;
       DQ.supplier_phone = request.body().supplier_phone;
+      DQ.supplier_email = request.body().supplier_email;
       DQ.status = request.body().status;
       DQ.address = request.body().address;
       DQ.city = request.body().city;
