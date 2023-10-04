@@ -63,6 +63,7 @@ import './api/shop';
 import './api/warehouse';
 import './api/supplier';
 import './api/merchant';
+import './api/purchase';
 import './api/product/product';
 import './api/product/categories';
 import './api/product/attribute';

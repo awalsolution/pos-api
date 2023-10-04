@@ -14,6 +14,13 @@ export default class extends BaseSchema {
         .onUpdate('CASCADE')
         .onDelete('CASCADE');
       table
+        .integer('user_id')
+        .unsigned()
+        .notNullable()
+        .references('users.id')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE');
+      table
         .integer('warehouse_id')
         .unsigned()
         .notNullable()
@@ -34,18 +41,15 @@ export default class extends BaseSchema {
         .references('suppliers.id')
         .onUpdate('CASCADE')
         .onDelete('CASCADE');
-      table.timestamp('date').notNullable();
-      table.string('ref_no').nullable();
       table.string('status').notNullable().defaultTo('active');
       table.integer('quantity').notNullable().defaultTo(0);
       table.integer('received_quantity').notNullable().defaultTo(0);
-      table.double('total').notNullable();
+      table.double('total').notNullable().defaultTo(0);
       table.double('paid').nullable();
       table.double('balance').nullable();
       table.string('payment_status').notNullable().defaultTo('pending');
       table.string('insert_stock').notNullable().defaultTo('incomplete');
-      table.string('created_by').nullable();
-      table.text('note').nullable();
+      table.text('notes').nullable();
       table.string('included_grand_total').nullable();
       table.double('grand_total').nullable();
       table.timestamp('expected_date').nullable();
@@ -69,7 +73,7 @@ export default class extends BaseSchema {
       table.double('billing_value').nullable();
       table.double('credit_day').nullable();
 
-      table.unique(['shop_id', 'ref_no']);
+      table.unique(['shop_id', 'id']);
 
       /**
        * Uses timestampz for PostgreSQL and DATETIME2 for MSSQL
