@@ -34,6 +34,26 @@ export default class Supplier extends BaseModel {
   @column()
   public country: string | null;
 
+  @column()
+  public ordered: boolean;
+
+  @column()
+  public received: boolean;
+
+  @column()
+  public quantity_check: boolean;
+
+  @column()
+  public quality_check: boolean;
+
+  @column()
+  public put_away: boolean;
+
+  @column()
+  public to: string | null;
+  @column()
+  public cc: string | null;
+
   @column.dateTime({
     autoCreate: true,
     serialize(value: DateTime) {

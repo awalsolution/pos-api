@@ -21,11 +21,11 @@ export default class extends BaseSchema {
       table.string('city').nullable();
       table.string('state').nullable();
       table.string('country').nullable();
-      table.string('ordered').nullable();
-      table.string('received').nullable();
-      table.string('quantity_check').nullable();
-      table.string('quality_check').nullable();
-      table.string('put_away').nullable();
+      table.boolean('ordered').nullable().defaultTo(0);
+      table.boolean('received').nullable().defaultTo(0);
+      table.boolean('quantity_check').nullable().defaultTo(0);
+      table.boolean('quality_check').nullable().defaultTo(0);
+      table.boolean('put_away').nullable().defaultTo(0);
       table.string('to').nullable();
       table.string('cc').nullable();
       table.string('billing_type').nullable();

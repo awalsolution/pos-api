@@ -108,6 +108,13 @@ export default class SupplierController extends BaseController {
       DM.city = request.body().city;
       DM.state = request.body().state;
       DM.country = request.body().country;
+      DM.ordered = request.body().ordered;
+      DM.received = request.body().received;
+      DM.quantity_check = request.body().quantity_check;
+      DM.quality_check = request.body().quality_check;
+      DM.put_away = request.body().put_away;
+      DM.to = request.body().to;
+      DM.cc = request.body().cc;
 
       const DQ = await DM.save();
       return response.ok({
@@ -155,6 +162,13 @@ export default class SupplierController extends BaseController {
       DQ.city = request.body().city;
       DQ.state = request.body().state;
       DQ.country = request.body().country;
+      DQ.ordered = request.body().ordered;
+      DQ.received = request.body().received;
+      DQ.quantity_check = request.body().quantity_check;
+      DQ.quality_check = request.body().quality_check;
+      DQ.put_away = request.body().put_away;
+      DQ.to = request.body().to;
+      DQ.cc = request.body().cc;
 
       await DQ.save();
       return response.ok({

@@ -13,6 +13,8 @@ export default class extends BaseSeeder {
         city: 'Lahore',
         state: 'Punjab',
         country: 'Pakistan',
+        to: 'supplier1@gmail.com',
+        cc: 'supplier1@gmail.com',
       },
       {
         shopId: 2,
@@ -23,6 +25,8 @@ export default class extends BaseSeeder {
         city: 'Lahore',
         state: 'Punjab',
         country: 'Pakistan',
+        to: 'supplier2@gmail.com',
+        cc: 'supplier2@gmail.com',
       },
       {
         shopId: 3,
@@ -33,6 +37,8 @@ export default class extends BaseSeeder {
         city: 'Lahore',
         state: 'Punjab',
         country: 'Pakistan',
+        to: 'supplier3@gmail.com',
+        cc: 'supplier3@gmail.com',
       },
     ]);
   }
