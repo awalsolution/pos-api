@@ -78,8 +78,9 @@ export default class SupplierController extends BaseController {
   }
 
   // create new supplier
-  public async create({ request, response }) {
+  public async create({ auth, request, response }) {
     try {
+      const currentUser = auth.user;
       const DE = await this.MODEL.findBy(
         'supplier_name',
         request.body().supplier_name
@@ -92,6 +93,13 @@ export default class SupplierController extends BaseController {
         });
       }
       const DM = new this.MODEL();
+      if (this.isSuperAdmin(currentUser)) {
+        DM.shopId = request.body().shop_id;
+      } else if (this.ischeckAllSuperAdminUser(currentUser)) {
+        DM.shopId = request.body().shop_id;
+      } else {
+        DM.shopId = currentUser.shopId;
+      }
       DM.supplier_name = request.body().supplier_name;
       DM.supplier_phone = request.body().supplier_phone;
       DM.supplier_email = request.body().supplier_email;
@@ -137,6 +145,8 @@ export default class SupplierController extends BaseController {
           message: 'supplier_name already exists!',
         });
       }
+
+      DQ.shopId = request.body().shop_id;
       DQ.supplier_name = request.body().supplier_name;
       DQ.supplier_phone = request.body().supplier_phone;
       DQ.supplier_email = request.body().supplier_email;
