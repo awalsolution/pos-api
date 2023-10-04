@@ -16,10 +16,10 @@ export default class extends BaseSchema {
       table.string('warehouse_name').notNullable().index();
       table.string('warehouse_phone').notNullable();
       table.string('status').notNullable().defaultTo('active');
-      table.string('warehouse_address').nullable();
-      table.string('warehouse_city').nullable();
-      table.string('warehouse_state').nullable();
-      table.string('warehouse_country').nullable();
+      table.string('address').nullable();
+      table.string('city').nullable();
+      table.string('state').nullable();
+      table.string('country').nullable();
 
       table.unique(['shop_id', 'warehouse_name']);
 

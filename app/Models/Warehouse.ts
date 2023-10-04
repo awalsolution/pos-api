@@ -20,16 +20,16 @@ export default class Warehouse extends BaseModel {
   public status: string;
 
   @column()
-  public warehouse_address: string;
+  public address: string;
 
   @column()
-  public warehouse_city: string;
+  public city: string;
 
   @column()
-  public warehouse_state: string;
+  public state: string;
 
   @column()
-  public warehouse_country: string;
+  public country: string;
 
   @column.dateTime({
     autoCreate: true,
