@@ -148,6 +148,7 @@ export default class WarehouseController extends BaseController {
         });
       }
 
+      DQ.shopId = request.body().shop_id;
       DQ.warehouse_name = request.body().warehouse_name;
       DQ.warehouse_phone = request.body().warehouse_phone;
       DQ.warehouse_status = request.body().warehouse_status;

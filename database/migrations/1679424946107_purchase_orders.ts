@@ -69,7 +69,7 @@ export default class extends BaseSchema {
       table.double('billing_value').nullable();
       table.double('credit_day').nullable();
 
-      table.unique(['shop_id', 'merchant_name']);
+      table.unique(['shop_id', 'ref_no']);
 
       /**
        * Uses timestampz for PostgreSQL and DATETIME2 for MSSQL

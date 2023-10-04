@@ -17,7 +17,7 @@ export default class Warehouse extends BaseModel {
   public warehouse_phone: string;
 
   @column()
-  public warehouse_status: string;
+  public status: string;
 
   @column()
   public warehouse_address: string;

@@ -17,6 +17,9 @@ export default class Supplier extends BaseModel {
   public supplier_phone: string;
 
   @column()
+  public supplier_email: string;
+
+  @column()
   public status: string;
 
   @column()

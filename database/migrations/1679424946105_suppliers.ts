@@ -17,10 +17,10 @@ export default class extends BaseSchema {
       table.string('supplier_phone').nullable();
       table.string('supplier_email').nullable();
       table.string('status').notNullable().defaultTo('active');
-      table.string('supplier_address').nullable();
-      table.string('supplier_city').nullable();
-      table.string('supplier_state').nullable();
-      table.string('supplier_country').nullable();
+      table.string('address').nullable();
+      table.string('city').nullable();
+      table.string('state').nullable();
+      table.string('country').nullable();
       table.string('ordered').nullable();
       table.string('received').nullable();
       table.string('quantity_check').nullable();

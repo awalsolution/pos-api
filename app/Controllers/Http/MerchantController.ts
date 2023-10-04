@@ -143,6 +143,7 @@ export default class MerchantController extends BaseController {
         });
       }
 
+      DQ.shopId = request.body().shop_id;
       DQ.merchant_name = request.body().merchant_name;
       DQ.merchant_status = request.body().merchant_status;
 

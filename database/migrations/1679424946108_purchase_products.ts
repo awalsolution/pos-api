@@ -39,7 +39,7 @@ export default class extends BaseSchema {
       table.integer('putaway_quantity').notNullable().defaultTo(0);
       table.double('manufacturing_cost').nullable();
 
-      table.unique(['shop_id', 'merchant_name']);
+      // table.unique(['shop_id', 'sku_id']);
 
       /**
        * Uses timestampz for PostgreSQL and DATETIME2 for MSSQL
