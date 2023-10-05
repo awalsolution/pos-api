@@ -65,7 +65,7 @@ export default class PurchaseController extends BaseController {
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'Purchase Data is Empty',
+          message: 'Record not found!',
         });
       }
 
