@@ -11,6 +11,9 @@ export default class Category extends BaseModel {
   declare name: string
 
   @column()
+  declare parent_id: number | null
+
+  @column()
   declare image: string
 
   @column()
