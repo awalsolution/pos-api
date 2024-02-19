@@ -64,38 +64,20 @@ export default class AuthController extends BaseController {
    * @login
    * @requestBody {"email": "iqbal@gmail.com","password":"123456"}
    */
-  async login({ auth, request, response }: HttpContext) {
+  async login({ request, response }: HttpContext) {
     try {
-      // const email = request.input('email')
-      // const password = request.input('password')
-
-      // let user = await this.MODEL.findBy('email', email)
-      // if (!user) {
-      //   return response.notFound({
-      //     code: HttpCodes.NOT_FOUND,
-      //     message: 'User Not Found',
-      //   })
-      // }
-      // const isPasswordValid = await hash.verify(user.password, password)
-      // if (!isPasswordValid) {
-      //   return response.unauthorized({
-      //     code: HttpCodes.UNAUTHORIZED,
-      //     message: 'Invalid Password',
-      //   })
-      // }
-      // const token = await auth.use('api').attempt(email, password)
       const { email, password } = request.only(['email', 'password'])
       const user = await this.MODEL.verifyCredentials(email, password)
-      const token = await this.MODEL.accessTokens.create(user)
+      const token = await this.MODEL.accessTokens.create(user, ['*'], {
+        name: 'admin_login_token',
+      })
       return response.ok({
         code: HttpCodes.SUCCESS,
         message: 'User Login Successfully!',
-        result: {
-          token: token,
-          user: auth.user,
-        },
+        data: token,
       })
     } catch (e) {
+      console.log(e)
       return response.internalServerError({
         code: HttpCodes.SERVER_ERROR,
         message: e.toString(),
@@ -103,9 +85,9 @@ export default class AuthController extends BaseController {
     }
   }
 
-  async logout({ auth, request, response }: HttpContext) {
+  async logout({ auth, response }: HttpContext) {
     const user = auth.user!
-    await this.MODEL.accessTokens.delete(user, request.param('id'))
+    await this.MODEL.accessTokens.delete(user, user.currentAccessToken.identifier)
     return response.ok({
       code: HttpCodes.SUCCESS,
       message: 'User logged out Successfully',

@@ -11,7 +11,7 @@ export default class extends BaseSeeder {
       },
       {
         shopId: undefined,
-        email: 'admin@gmail.com',
+        email: 'jawad@gmail.com',
         password: '123456',
       },
       {

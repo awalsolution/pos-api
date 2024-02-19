@@ -1,11 +1,12 @@
 const AuthController = () => import('#controllers/auth_controller')
+import { middleware } from '#start/kernel'
 import router from '@adonisjs/core/services/router'
 
 router
   .group(() => {
     router.post('/register', [AuthController, 'register'])
     router.post('/login', [AuthController, 'login'])
-    router.get('/logout', [AuthController, 'logout'])
+    router.get('/logout', [AuthController, 'logout']).use(middleware.auth({ guards: ['api'] }))
 
     // .middleware(["auth:api"]);
     // router.post('/verify-otp', (ctx: HttpContextContract) => {

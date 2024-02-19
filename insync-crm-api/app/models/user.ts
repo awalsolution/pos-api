@@ -5,9 +5,9 @@ import { compose } from '@adonisjs/core/helpers'
 import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
 import {
   BaseModel,
-  afterFetch,
+  // afterFetch,
   beforeFind,
-  beforeSave,
+  // beforeSave,
   belongsTo,
   column,
   hasOne,
@@ -70,19 +70,19 @@ export default class User extends compose(BaseModel, AuthFinder) {
 
   static accessTokens = DbAccessTokensProvider.forModel(User)
 
-  @beforeSave()
-  static async hashPassword(user: User) {
-    if (user.$dirty.password) {
-      user.password = await hash.make(user.password)
-    }
-  }
+  // @beforeSave()
+  // static async hashPassword(user: User) {
+  //   if (user.$dirty.password) {
+  //     user.password = await hash.make(user.password)
+  //   }
+  // }
 
-  @afterFetch()
-  static deletePasswordList(users: User[]) {
-    users.forEach((user) => {
-      delete user.$attributes.password
-    })
-  }
+  // @afterFetch()
+  // static deletePasswordList(users: User[]) {
+  //   users.forEach((user) => {
+  //     delete user.$attributes.password
+  //   })
+  // }
 
   @beforeFind()
   static preloadListUserRoles(query: UserQuery) {
