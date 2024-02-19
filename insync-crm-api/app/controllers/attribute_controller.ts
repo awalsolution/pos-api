@@ -3,7 +3,7 @@ import { HttpContext } from '@adonisjs/core/http'
 import HttpCodes from '#enums/http_codes'
 import Attribute from '#models/attribute'
 
-export default class AttributesController extends BaseController {
+export default class AttributeController extends BaseController {
   declare MODEL: typeof Attribute
   constructor() {
     super()

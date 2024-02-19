@@ -3,7 +3,7 @@ import { HttpContext } from '@adonisjs/core/http'
 import HttpCodes from '#enums/http_codes'
 import Variant from '#models/variant'
 
-export default class VariantsController extends BaseController {
+export default class VariantController extends BaseController {
   declare MODEL: typeof Variant
   constructor() {
     super()
