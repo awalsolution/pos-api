@@ -1,17 +1,3 @@
-// import { BaseCommand } from '@adonisjs/core/ace'
-// import type { CommandOptions } from '@adonisjs/core/types/ace'
-
-// export default class DocsGenerate extends BaseCommand {
-//   static commandName = 'docs:generate'
-//   static description = ''
-
-//   static options: CommandOptions = {}
-
-//   async run() {
-//     this.logger.info('Hello world from "DocsGenerate"')
-//   }
-// }
-
 import { BaseCommand } from '@adonisjs/core/ace'
 import { CommandOptions } from '@adonisjs/core/types/ace'
 import AutoSwagger from 'adonis-autoswagger'
