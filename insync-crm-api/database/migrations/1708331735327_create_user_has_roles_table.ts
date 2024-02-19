@@ -8,7 +8,6 @@ export default class extends BaseSchema {
       table.increments('id')
       table
         .integer('user_id')
-        .notNullable()
         .unsigned()
         .references('id')
         .inTable('users')

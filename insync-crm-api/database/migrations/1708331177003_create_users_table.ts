@@ -8,7 +8,6 @@ export default class extends BaseSchema {
       table.increments('id').notNullable()
       table
         .integer('shop_id')
-        .notNullable()
         .unsigned()
         .references('id')
         .inTable('shops')
@@ -20,9 +19,9 @@ export default class extends BaseSchema {
       table.boolean('status').notNullable().defaultTo(true)
       table.boolean('remember_token').notNullable().defaultTo(false)
       table.boolean('is_email_verified').notNullable().defaultTo(false)
-      table.timestamp('email_verified_time').nullable()
+      table.datetime('email_verified_at').nullable()
       table.boolean('is_phone_verified').notNullable().defaultTo(false)
-      table.timestamp('phone_verified_time').nullable()
+      table.datetime('phone_verified_at').nullable()
 
       table.unique(['shop_id', 'email'])
 

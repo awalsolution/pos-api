@@ -8,7 +8,6 @@ export default class extends BaseSchema {
       table.increments('id')
       table
         .integer('menu_id')
-        .notNullable()
         .unsigned()
         .references('id')
         .inTable('menus')

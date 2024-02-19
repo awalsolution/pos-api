@@ -9,7 +9,6 @@ export default class extends BaseSchema {
       table
         .integer('user_id')
         .unsigned()
-        .notNullable()
         .references('id')
         .inTable('users')
         .onUpdate('CASCADE')
