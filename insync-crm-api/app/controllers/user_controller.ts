@@ -12,7 +12,10 @@ export default class UserController extends BaseController {
     this.MODEL = User
   }
 
-  // find all users  list
+  /**
+   * @findAllRecords
+   * @paramUse(paginated)
+   */
   async findAllRecords({ auth, request, response }: HttpContext) {
     const currentUser = auth.user!
     let DQ = this.MODEL.query().whereNotIn('id', [currentUser.id, 1])

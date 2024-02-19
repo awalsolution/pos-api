@@ -10,7 +10,10 @@ export default class AttributeController extends BaseController {
     this.MODEL = Attribute
   }
 
-  // find attribute list
+  /**
+   * @findAllRecords
+   * @paramUse(paginated)
+   */
   async findAllRecords({ request, response }: HttpContext) {
     let DQ = this.MODEL.query()
 
@@ -69,7 +72,13 @@ export default class AttributeController extends BaseController {
     }
   }
 
-  // create new attribute
+  /**
+   * @create
+   * @tag atrribute
+   * @summary create Records
+   * @description create Attribute
+   * @requestBody <Attribute>
+   */
   async create({ request, response }: HttpContext) {
     try {
       const DE = await this.MODEL.findBy('name', request.body().name)

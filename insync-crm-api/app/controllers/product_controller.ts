@@ -10,7 +10,10 @@ export default class ProductController extends BaseController {
     this.MODEL = Product
   }
 
-  // find Product list
+  /**
+   * @findAllRecords
+   * @paramUse(paginated)
+   */
   async findAllRecords({ auth, request, response }: HttpContext) {
     const currentUser = auth.user!
     let DQ = this.MODEL.query()

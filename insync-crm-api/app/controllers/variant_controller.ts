@@ -10,7 +10,10 @@ export default class VariantController extends BaseController {
     this.MODEL = Variant
   }
 
-  // find Variation list
+  /**
+   * @findAllRecords
+   * @paramUse(paginated)
+   */
   async findAllRecords({ request, response }: HttpContext) {
     let DQ = this.MODEL.query()
 

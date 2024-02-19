@@ -12,6 +12,10 @@ export default class AuthController extends BaseController {
     this.MODEL = User
   }
 
+  /**
+   * @register
+   * @requestBody {"email": "iqbal@gmail.com","password":"123456"}
+   */
   async register({ request, response }: HttpContext) {
     try {
       let userExists = await this.MODEL.findBy('email', request.body().email)
@@ -55,6 +59,11 @@ export default class AuthController extends BaseController {
       })
     }
   }
+
+  /**
+   * @login
+   * @requestBody {"email": "iqbal@gmail.com","password":"123456"}
+   */
   async login({ auth, request, response }: HttpContext) {
     try {
       // const email = request.input('email')

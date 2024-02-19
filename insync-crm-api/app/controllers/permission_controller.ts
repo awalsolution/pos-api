@@ -9,7 +9,11 @@ export default class PermissionController extends BaseController {
     super()
     this.MODEL = Permission
   }
-  // find permissions list
+
+  /**
+   * @findAllRecords
+   * @paramUse(paginated)
+   */
   async findAllRecords({ request, response }: HttpContext) {
     let DQ = this.MODEL.query()
 

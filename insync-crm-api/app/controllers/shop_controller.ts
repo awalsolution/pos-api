@@ -10,7 +10,10 @@ export default class ShopController extends BaseController {
     this.MODEL = Shop
   }
 
-  // find shop list
+  /**
+   * @findAllRecords
+   * @paramUse(paginated)
+   */
   async findAllRecords({ request, response }: HttpContext) {
     let DQ = this.MODEL.query()
 

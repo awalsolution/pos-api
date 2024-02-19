@@ -10,7 +10,10 @@ export default class CategoryController extends BaseController {
     this.MODEL = Category
   }
 
-  // find categories list
+  /**
+   * @findAllRecords
+   * @paramUse(paginated)
+   */
   async findAllRecords({ request, response }: HttpContext) {
     let DQ = this.MODEL.query()
 

@@ -11,7 +11,10 @@ export default class RoleController extends BaseController {
     this.MODEL = Role
   }
 
-  // find all Roles  list
+  /**
+   * @findAllRecords
+   * @paramUse(paginated)
+   */
   async findAllRecords({ auth, request, response }: HttpContext) {
     const currentUser = auth.user!
     let DQ = this.MODEL.query().whereNot('name', 'super admin')

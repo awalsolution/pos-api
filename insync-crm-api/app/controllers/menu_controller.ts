@@ -10,7 +10,10 @@ export default class MenuController extends BaseController {
     this.MODEL = Menu
   }
 
-  // find Menu list
+  /**
+   * @findAllRecords
+   * @paramUse(paginated)
+   */
   async findAllRecords({ auth, request, response }: HttpContext) {
     const currentUser = auth.user!
     let DQ = this.MODEL.query()
