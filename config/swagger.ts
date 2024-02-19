@@ -1,35 +1,30 @@
-import { SwaggerConfig } from '@ioc:Adonis/Addons/Swagger';
+import path from 'node:path'
+import url from 'node:url'
 
 export default {
-  uiEnabled: true, //disable or enable swaggerUi route
-  uiUrl: 'api', // url path to swaggerUI
-  specEnabled: true, //disable or enable swagger.json route
-  specUrl: '/swagger.json',
-
-  middleware: [], // middlewares array, for protect your swagger docs and spec endpoints
-
-  options: {
-    definition: {
-      openapi: '3.0.0',
-      info: {
-        title: 'InSync',
-        version: '1.0.0',
-        description: 'Docs',
-      },
-      components: {
-        securitySchemes: {
-          bearerAuth: {
-            type: 'http',
-            scheme: 'bearer',
-            bearerFormat: 'JWT',
-          },
+  path: path.dirname(url.fileURLToPath(import.meta.url)) + '/../',
+  title: 'InSync CRM REST API Docs',
+  version: '1.0.0',
+  tagIndex: 3,
+  snakeCase: true,
+  ignore: ['/swagger', '/docs', '/'],
+  preferredPutPatch: 'PUT',
+  common: {
+    parameters: {
+      paginated: [
+        {
+          in: 'query',
+          name: 'page',
+          schema: { type: 'integer', example: 1 },
         },
-      },
+        {
+          in: 'query',
+          name: 'perPage',
+          schema: { type: 'integer', example: 10 },
+        },
+      ],
     },
-
-    apis: ['app/**/*.ts', 'docs/**/*.yml', 'start/index.ts'],
-    basePath: '/',
+    headers: {},
   },
-  mode: process.env.NODE_ENV === 'production' ? 'PRODUCTION' : 'RUNTIME',
-  specFilePath: 'docs/swagger.json',
-} as SwaggerConfig;
+  persistAuthorization: true,
+}
