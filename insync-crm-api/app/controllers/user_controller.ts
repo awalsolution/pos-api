@@ -2,7 +2,6 @@ import BaseController from '#controllers/base_controller'
 import { HttpContext } from '@adonisjs/core/http'
 import HttpCodes from '#enums/http_codes'
 import User from '#models/user'
-import ResponseMessages from '#enums/response_messages'
 
 export default class UserController extends BaseController {
   declare MODEL: typeof User
@@ -14,7 +13,10 @@ export default class UserController extends BaseController {
 
   /**
    * @findAllRecords
-   * @paramUse(paginated)
+   * @operationId getUsers
+   * @paramUse (paginated)
+   * @description Returns array of producs and it's relations
+   * @responseBody 200 - <User[]>.with(relations)
    */
   async findAllRecords({ auth, request, response }: HttpContext) {
     const currentUser = auth.user!
@@ -48,7 +50,7 @@ export default class UserController extends BaseController {
           .preload('roles', (PQ) => {
             PQ.preload('permissions')
           })
-          .preload('userProfile')
+          .preload('user_profile')
           .preload('shop')
           .paginate(page, perPage),
         message: 'Users find Successfully',
@@ -60,7 +62,7 @@ export default class UserController extends BaseController {
           .preload('roles', (PQ) => {
             PQ.preload('permissions')
           })
-          .preload('userProfile')
+          .preload('user_profile')
           .preload('shop'),
         message: 'Users find Successfully',
       })
@@ -76,7 +78,7 @@ export default class UserController extends BaseController {
         .preload('roles', (RQ) => {
           RQ.where('name', '!=', 'super admin').preload('permissions')
         })
-        .preload('userProfile')
+        .preload('user_profile')
         .preload('shop')
         .first()
 
@@ -122,7 +124,7 @@ export default class UserController extends BaseController {
 
       await DM.save()
       DM.related('roles').sync(request.body().roles)
-      DM.related('userProfile').create({
+      DM.related('user_profile').create({
         first_name: request.body().first_name,
         last_name: request.body().last_name,
         phone_number: request.body().phone_number,
@@ -212,7 +214,7 @@ export default class UserController extends BaseController {
         message: 'User Not Found',
       })
     }
-    DQ.related('userProfile').updateOrCreate(
+    DQ.related('user_profile').updateOrCreate(
       {},
       {
         first_name: request.body().first_name,
@@ -246,20 +248,6 @@ export default class UserController extends BaseController {
     return response.ok({
       code: HttpCodes.SUCCESS,
       result: { message: 'User deleted successfully' },
-    })
-  }
-
-  // auth user
-  async authenticated({ auth, response }: HttpContext) {
-    const authenticatedUser = auth.user
-    if (!authenticatedUser) {
-      return response.unauthorized({ message: ResponseMessages.UNAUTHORIZED })
-    }
-    delete authenticatedUser.$attributes.password
-    return response.ok({
-      code: HttpCodes.SUCCESS,
-      message: 'User find Successfully',
-      result: auth.user,
     })
   }
 }

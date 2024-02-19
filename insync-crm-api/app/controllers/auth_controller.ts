@@ -1,5 +1,6 @@
 import BaseController from '#controllers/base_controller'
 import { HttpContext } from '@adonisjs/core/http'
+import ResponseMessages from '#enums/response_messages'
 import HttpCodes from '#enums/http_codes'
 import Role from '#models/role'
 import User from '#models/user'
@@ -36,7 +37,7 @@ export default class AuthController extends BaseController {
 
       await user.save()
 
-      user.related('userProfile').create({
+      user.related('user_profile').create({
         first_name: request.body().first_name,
         last_name: request.body().last_name,
         phone_number: request.body().phone_number,
@@ -83,6 +84,19 @@ export default class AuthController extends BaseController {
         message: e.toString(),
       })
     }
+  }
+
+  async authenticated({ auth, response }: HttpContext) {
+    const authenticatedUser = auth.user
+    if (!authenticatedUser) {
+      return response.unauthorized({ message: ResponseMessages.UNAUTHORIZED })
+    }
+    delete authenticatedUser.$attributes.password
+    return response.ok({
+      code: HttpCodes.SUCCESS,
+      message: 'User find Successfully',
+      result: auth.user,
+    })
   }
 
   async logout({ auth, response }: HttpContext) {
