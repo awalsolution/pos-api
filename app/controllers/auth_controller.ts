@@ -15,7 +15,7 @@ export default class AuthController extends BaseController {
 
   /**
    * @register
-   * @requestBody {"email": "iqbal@gmail.com","password":"123456"}
+   * @requestBody {"email": "iqbal@gmail.com","password":"123456","user_type":"customer"}
    */
   async register({ request, response }: HttpContext) {
     try {

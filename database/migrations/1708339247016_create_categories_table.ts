@@ -7,7 +7,13 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table.string('name').notNullable()
-      table.integer('parent_id').nullable()
+      table
+        .integer('parent_id')
+        .unsigned()
+        .references('id')
+        .inTable('categories')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE')
       table.string('image').nullable()
       table.boolean('status').notNullable().defaultTo(true)
 

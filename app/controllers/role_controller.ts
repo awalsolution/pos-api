@@ -13,7 +13,7 @@ export default class RoleController extends BaseController {
 
   /**
    * @findAllRecords
-   * @paramUse (paginated)
+   * @paramUse(paginated)
    */
   async findAllRecords({ auth, request, response }: HttpContext) {
     const currentUser = auth.use('api').user!

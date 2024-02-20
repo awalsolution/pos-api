@@ -17,7 +17,7 @@ export default class extends BaseSeeder {
         image: '/uploads/categories/category-03.jpeg',
       },
       {
-        name: 'laptops child',
+        name: 'cloths child',
         parent_id: 1,
         image: '/uploads/categories/category-03.jpeg',
       },
