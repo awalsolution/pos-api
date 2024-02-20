@@ -16,7 +16,7 @@ export default class RoleController extends BaseController {
    * @paramUse (paginated)
    */
   async findAllRecords({ auth, request, response }: HttpContext) {
-    const currentUser = auth.user!
+    const currentUser = auth.use('api').user!
     let DQ = this.MODEL.query().whereNot('name', 'super admin')
 
     const page = request.input('page')
@@ -75,7 +75,7 @@ export default class RoleController extends BaseController {
 
   // create new Role
   async create({ auth, request, response }: HttpContext) {
-    const currentUser = auth.user!
+    const currentUser = auth.use('api').user!
     try {
       const DE = await this.MODEL.findBy('name', request.body().name)
 
@@ -113,7 +113,7 @@ export default class RoleController extends BaseController {
 
   // update Role using id
   async update({ auth, request, response }: HttpContext) {
-    const currentUser = auth.user!
+    const currentUser = auth.use('api').user!
     try {
       const DQ = await this.MODEL.findBy('id', request.param('id'))
       if (!DQ) {

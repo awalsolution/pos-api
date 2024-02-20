@@ -15,7 +15,7 @@ export default class ProductController extends BaseController {
    * @paramUse (paginated)
    */
   async findAllRecords({ auth, request, response }: HttpContext) {
-    const currentUser = auth.user!
+    const currentUser = auth.use('api').user!
     let DQ = this.MODEL.query()
 
     const page = request.input('page')
@@ -73,6 +73,7 @@ export default class ProductController extends BaseController {
 
   // create new product
   async create({ auth, request, response }: HttpContext) {
+    const currentUser = auth.use('api').user!
     try {
       const DE = await this.MODEL.findBy('product_code', request.body().product_code)
       if (DE) {
@@ -82,7 +83,7 @@ export default class ProductController extends BaseController {
         })
       }
       const DM = new this.MODEL()
-      DM.shopId = auth.user?.shop.id
+      DM.shopId = currentUser.shop.id
       DM.categoryId = request.body().category_id
       DM.product_code = request.body().product_code
       DM.title = request.body().title

@@ -19,9 +19,9 @@ export default class AuthController extends BaseController {
    */
   async register({ request, response }: HttpContext) {
     try {
-      let userExists = await this.MODEL.findBy('email', request.body().email)
-      if (userExists && !userExists.is_email_verified) {
-        delete userExists.$attributes.password
+      let DE = await this.MODEL.findBy('email', request.body().email)
+      if (DE && !DE.is_email_verified) {
+        delete DE.$attributes.password
 
         return response.conflict({
           code: HttpCodes.CONFLICTS,
@@ -49,7 +49,7 @@ export default class AuthController extends BaseController {
       delete user.$attributes.password
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'User Register Successfully!',
+        message: 'Register Successfully!',
         result: user,
       })
     } catch (e) {
@@ -70,11 +70,11 @@ export default class AuthController extends BaseController {
       const { email, password } = request.only(['email', 'password'])
       const user = await this.MODEL.verifyCredentials(email, password)
       const token = await this.MODEL.accessTokens.create(user, ['*'], {
-        name: 'admin_login_token',
+        name: 'login_token',
       })
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'User Login Successfully!',
+        message: 'Login Successfully!',
         data: token,
       })
     } catch (e) {
@@ -87,21 +87,35 @@ export default class AuthController extends BaseController {
   }
 
   async authenticated({ auth, response }: HttpContext) {
-    const authenticatedUser = auth.user
+    const authenticatedUser = auth.user!
     if (!authenticatedUser) {
       return response.unauthorized({ message: ResponseMessages.UNAUTHORIZED })
     }
     delete authenticatedUser.$attributes.password
-    return response.ok({
-      code: HttpCodes.SUCCESS,
-      message: 'User find Successfully',
-      result: auth.user,
-    })
+    if (authenticatedUser.user_type === 'customer') {
+      const data = await this.MODEL.query()
+        .where('id', authenticatedUser.id)
+        .preload('user_profile')
+        .preload('shop')
+        .first()
+
+      return response.ok({
+        code: HttpCodes.SUCCESS,
+        message: 'User find Successfully',
+        result: data,
+      })
+    } else {
+      return response.ok({
+        code: HttpCodes.SUCCESS,
+        message: 'User find Successfully',
+        result: auth.user,
+      })
+    }
   }
 
   async logout({ auth, response }: HttpContext) {
-    const user = auth.user!
-    await this.MODEL.accessTokens.delete(user, user.currentAccessToken.identifier)
+    const currentUser = auth.user!
+    await this.MODEL.accessTokens.delete(currentUser, currentUser.currentAccessToken.identifier)
     return response.ok({
       code: HttpCodes.SUCCESS,
       message: 'User logged out Successfully',

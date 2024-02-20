@@ -5,7 +5,7 @@ export default class extends BaseSchema {
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('id').notNullable()
+      table.increments('id')
       table
         .integer('shop_id')
         .unsigned()
@@ -25,8 +25,8 @@ export default class extends BaseSchema {
 
       table.unique(['shop_id', 'email'])
 
-      table.timestamp('created_at').notNullable()
-      table.timestamp('updated_at').nullable()
+      table.timestamp('created_at')
+      table.timestamp('updated_at')
     })
   }
 
