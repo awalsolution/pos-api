@@ -3,7 +3,15 @@ import { withAuthFinder } from '@adonisjs/auth'
 import hash from '@adonisjs/core/services/hash'
 import { compose } from '@adonisjs/core/helpers'
 import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
-import { BaseModel, beforeFind, belongsTo, column, hasOne, manyToMany } from '@adonisjs/lucid/orm'
+import {
+  BaseModel,
+  beforeFind,
+  belongsTo,
+  column,
+  hasOne,
+  manyToMany,
+  SnakeCaseNamingStrategy,
+} from '@adonisjs/lucid/orm'
 import type { BelongsTo, HasOne, ManyToMany } from '@adonisjs/lucid/types/relations'
 import type { ModelQueryBuilderContract } from '@adonisjs/lucid/types/model'
 import UserProfile from '#models/user_profile'
@@ -11,6 +19,7 @@ import Permission from '#models/permission'
 import Shop from '#models/shop'
 import Role from '#models/role'
 
+BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
 type UserQuery = ModelQueryBuilderContract<typeof User>
 type RoleQuery = ModelQueryBuilderContract<typeof Role>
 
