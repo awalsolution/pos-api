@@ -1,21 +1,20 @@
 import BaseController from '#controllers/base_controller'
 import { HttpContext } from '@adonisjs/core/http'
 import HttpCodes from '#enums/http_codes'
-import Product from '#models/product'
+import Order from '#models/order'
 
-export default class ProductController extends BaseController {
-  declare MODEL: typeof Product
+export default class OrderController extends BaseController {
+  declare MODEL: typeof Order
   constructor() {
     super()
-    this.MODEL = Product
+    this.MODEL = Order
   }
 
   /**
    * @findAllRecords
    * @paramUse(paginated)
    */
-  async findAllRecords({ auth, request, response }: HttpContext) {
-    const currentUser = auth.use('api').user!
+  async findAllRecords({ request, response }: HttpContext) {
     let DQ = this.MODEL.query()
 
     const page = request.input('page')
@@ -23,44 +22,45 @@ export default class ProductController extends BaseController {
 
     // name filter
     if (request.input('name')) {
-      DQ = DQ.whereILike('title', request.input('name') + '%')
+      DQ = DQ.whereILike('name', request.input('name') + '%')
     }
 
-    // fetched products with related shops
-    if (!this.isSuperAdmin(currentUser)) {
-      DQ = DQ.where('shop_id', currentUser.shopId!)
+    if (!DQ) {
+      return response.notFound({
+        code: HttpCodes.NOT_FOUND,
+        message: 'Data is Empty',
+      })
     }
 
     if (perPage) {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Products find Successfully',
-        result: await DQ.preload('shop').paginate(page, perPage),
+        message: 'Record find Successfully',
+        result: await DQ.paginate(page, perPage),
       })
     } else {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Products find Successfully',
-        result: await DQ.preload('shop'),
+        message: 'Record find Successfully',
+        result: await DQ.select('*'),
       })
     }
   }
 
-  // find Product using id
   async findSingleRecord({ request, response }: HttpContext) {
     try {
-      const DQ = await this.MODEL.query().where('id', request.param('id')).preload('shop').first()
+      const DQ = await this.MODEL.query().where('id', request.param('id')).first()
 
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'Product Data is Empty',
+          message: 'Data is Empty',
         })
       }
 
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Product find Successfully',
+        message: 'Record find successfully',
         result: DQ,
       })
     } catch (e) {
@@ -71,32 +71,37 @@ export default class ProductController extends BaseController {
     }
   }
 
-  // create new product
-  async create({ auth, request, response }: HttpContext) {
-    const currentUser = auth.use('api').user!
+  /**
+   * @create
+   * @requestBody <Order>
+   */
+  async create({ request, response }: HttpContext) {
     try {
-      const DE = await this.MODEL.findBy('product_code', request.body().product_code)
+      const DE = await this.MODEL.findBy('order_key', request.body().order_key)
+
       if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: 'Product already exists!',
+          message: `Record: "${request.body().order_key}" already exists!`,
         })
       }
-      const DM = new this.MODEL()
-      DM.shopId = currentUser.shop.id
-      DM.categoryId = request.body().category_id
-      DM.product_code = request.body().product_code
-      DM.title = request.body().title
-      DM.description = request.body().description
-      DM.status = request.body().status
-      DM.product_image = request.body().product_image
 
-      await DM.save()
+      const DM = new this.MODEL()
+
+      DM.user_id = request.body().user_id
+      DM.shipment_address_id = request.body().shipment_address_id
+      DM.payment_method_id = request.body().payment_method_id
+      DM.total = request.body().total
+      DM.order_key = request.body().order_key
+
+      const DQ = await DM.save()
+
+      DM.related('order_items').createMany(request.body().order_items)
 
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Product Created Successfully!',
-        result: DM,
+        message: 'Created Successfully!',
+        result: DQ,
       })
     } catch (e) {
       console.log(e)
@@ -107,7 +112,10 @@ export default class ProductController extends BaseController {
     }
   }
 
-  // update product using id
+  /**
+   * @update
+   * @requestBody <Order>
+   */
   async update({ request, response }: HttpContext) {
     try {
       const DQ = await this.MODEL.findBy('id', request.param('id'))
@@ -115,48 +123,46 @@ export default class ProductController extends BaseController {
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'Product does not exists!',
+          message: 'Record does not exists!',
         })
       }
 
-      DQ.title = request.body().title
-      DQ.categoryId = request.body().category_id
-      DQ.product_code = request.body().product_code
-      DQ.description = request.body().description
+      DQ.user_id = request.body().user_id
+      DQ.shipment_address_id = request.body().shipment_address_id
+      DQ.payment_method_id = request.body().payment_method_id
+      DQ.total = request.body().total
+      DQ.order_key = request.body().order_key
       DQ.status = request.body().status
-      DQ.product_image = request.body().product_image
 
       await DQ.save()
-
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Product updated successfully!',
+        message: 'Update Successfully!',
         result: DQ,
       })
     } catch (e) {
       console.log(e)
       return response.internalServerError({
         code: HttpCodes.SERVER_ERROR,
-        message: e.message,
+        message: e.toString(),
       })
     }
   }
 
-  // delete product using id
   async destroy({ request, response }: HttpContext) {
     const DQ = await this.MODEL.findBy('id', request.param('id'))
 
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Product not found',
+        message: 'Record not found',
       })
     }
 
     await DQ.delete()
     return response.ok({
       code: HttpCodes.SUCCESS,
-      result: { message: 'Product deleted successfully' },
+      result: { message: 'Deleted successfully!' },
     })
   }
 }

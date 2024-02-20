@@ -1,13 +1,17 @@
 import { DateTime } from 'luxon'
-import { BaseModel, SnakeCaseNamingStrategy, column } from '@adonisjs/lucid/orm'
+import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm'
+import type { BelongsTo } from '@adonisjs/lucid/types/relations'
+import User from '#models/user'
 
-BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
-export default class UserProfile extends BaseModel {
+export default class ShipmentAddress extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
 
   @column()
-  declare userId: number
+  declare userId: number | null
+
+  @column()
+  declare type: string | null
 
   @column()
   declare first_name: string | null
@@ -30,12 +34,12 @@ export default class UserProfile extends BaseModel {
   @column()
   declare country: string | null
 
-  @column()
-  declare profile_picture: string | null
-
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
+
+  @belongsTo(() => User)
+  declare user: BelongsTo<typeof User>
 }

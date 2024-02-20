@@ -7,6 +7,7 @@ router
     router.get('/', [VariantController, 'findAllRecords'])
     router.post('/', [VariantController, 'create'])
     router.get('/:id', [VariantController, 'findSingleRecord'])
+    router.get('/getVariantsByProduct/:id', [VariantController, 'getVariantsByProduct'])
     router.put('/:id', [VariantController, 'update'])
     router.delete('/:id', [VariantController, 'destroy'])
   })

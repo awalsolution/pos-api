@@ -12,7 +12,7 @@ export default class CategoryController extends BaseController {
 
   /**
    * @findAllRecords
-   * @paramUse (paginated)
+   * @paramUse(paginated)
    */
   async findAllRecords({ request, response }: HttpContext) {
     let DQ = this.MODEL.query()
@@ -28,26 +28,25 @@ export default class CategoryController extends BaseController {
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Categories Data is Empty',
+        message: 'Category Data is Empty',
       })
     }
 
     if (perPage) {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        result: await DQ.paginate(page, perPage),
-        message: 'Categories find Successfully',
+        result: await DQ.preload('sub_category').paginate(page, perPage),
+        message: 'Records find Successfully',
       })
     } else {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        result: await DQ.select('*'),
-        message: 'Categories find Successfully',
+        result: await DQ.preload('sub_category'),
+        message: 'Records find Successfully',
       })
     }
   }
 
-  // find category using id
   async findSingleRecord({ request, response }: HttpContext) {
     try {
       const DQ = await this.MODEL.query().where('id', request.param('id')).first()
@@ -86,6 +85,7 @@ export default class CategoryController extends BaseController {
       const DM = new this.MODEL()
 
       DM.name = request.body().name
+      DM.parent_id = request.body()?.parent_id
       DM.image = request.body().image
 
       const DQ = await DM.save()
@@ -127,6 +127,7 @@ export default class CategoryController extends BaseController {
         })
       }
       DQ.name = request.body().name
+      DQ.parent_id = request.body()?.parent_id
       DQ.image = request.body().image
 
       await DQ.save()

@@ -8,6 +8,7 @@ router
     router.post('/', [RoleController, 'create'])
     router.get('/:id', [RoleController, 'findSingleRecord'])
     router.put('/:id', [RoleController, 'update'])
+    router.put('/assign-permission/:id', [RoleController, 'assignPermission'])
     router.delete('/:id', [RoleController, 'destroy'])
   })
   .use(

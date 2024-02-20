@@ -14,7 +14,7 @@ export default class UserController extends BaseController {
   /**
    * @findAllRecords
    * @operationId getUsers
-   * @paramUse (paginated)
+   * @paramUse(paginated)
    * @description Returns array of producs and it's relations
    * @responseBody 200 - <User[]>.with(relations)
    */
@@ -133,7 +133,7 @@ export default class UserController extends BaseController {
       delete DM.$attributes.password
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'User Register Successfully!',
+        message: 'Register Successfully!',
         result: DM,
       })
     } catch (e) {
@@ -172,7 +172,7 @@ export default class UserController extends BaseController {
     delete DQ.$attributes.password
     return response.ok({
       code: HttpCodes.SUCCESS,
-      message: 'User Update successfully.',
+      message: 'Update successfully.',
       result: DQ,
     })
   }
@@ -230,7 +230,7 @@ export default class UserController extends BaseController {
     delete DQ.$attributes.password
     return response.ok({
       code: HttpCodes.SUCCESS,
-      message: 'User Profile Update successfully.',
+      message: 'Profile Update successfully.',
       result: DQ,
     })
   }
@@ -247,7 +247,7 @@ export default class UserController extends BaseController {
     await DQ.delete()
     return response.ok({
       code: HttpCodes.SUCCESS,
-      result: { message: 'User deleted successfully' },
+      result: { message: 'Deleted successfully' },
     })
   }
 }
