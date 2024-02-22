@@ -1,8 +1,16 @@
 import { DateTime } from 'luxon'
-import { BaseModel, belongsTo, column, manyToMany } from '@adonisjs/lucid/orm'
+import {
+  BaseModel,
+  SnakeCaseNamingStrategy,
+  belongsTo,
+  column,
+  manyToMany,
+} from '@adonisjs/lucid/orm'
 import type { BelongsTo, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Menu from '#models/menu'
 import Role from '#models/role'
+
+BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
 
 export default class Permission extends BaseModel {
   @column({ isPrimary: true })

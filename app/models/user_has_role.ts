@@ -1,5 +1,7 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { BaseModel, SnakeCaseNamingStrategy, column } from '@adonisjs/lucid/orm'
+
+BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
 
 export default class UserHasRole extends BaseModel {
   @column({ isPrimary: true })

@@ -1,9 +1,11 @@
 import { DateTime } from 'luxon'
-import { BaseModel, belongsTo, column, hasMany } from '@adonisjs/lucid/orm'
+import { BaseModel, SnakeCaseNamingStrategy, belongsTo, column, hasMany } from '@adonisjs/lucid/orm'
 import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 import Attribute from '#models/attribute'
 import Product from '#models/product'
 import VariantImage from '#models/variant_image'
+
+BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
 
 export default class Variant extends BaseModel {
   @column({ isPrimary: true })
