@@ -13,22 +13,21 @@ export default class BaseController {
     return JSON.parse(JSON.stringify(payload))
   }
 
-  async ischeckAllSuperAdminUser(user: User) {
+  ischeckAllSuperAdminUser(user: User) {
     if (user && user.shopId === null) {
       return true
     }
     return false
   }
 
-  async checkRole(user?: User, role?: string) {
+  checkRole(user?: User, role?: string) {
     if (user?.roles && user.roles.length) {
       const roles = user.roles.filter((userRole) => userRole.name === role)
       return roles.length > 0
     }
-    return false
   }
 
-  async isSuperAdmin(user?: User) {
+  isSuperAdmin(user?: User) {
     return this.checkRole(user, 'super admin')
   }
 
