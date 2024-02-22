@@ -196,7 +196,7 @@ export default class RoleController extends BaseController {
     await DQ.delete()
     return response.ok({
       code: HttpCodes.SUCCESS,
-      result: { message: 'Role deleted successfully' },
+      message: 'Record deleted successfully',
     })
   }
 }

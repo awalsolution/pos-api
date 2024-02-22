@@ -90,6 +90,7 @@ export default class MenuController extends BaseController {
       const DM = new this.MODEL()
 
       DM.menu_name = request.body().menu_name
+      DM.menu_type = request.body().menu_type
 
       const DQ = await DM.save()
       return response.ok({
@@ -129,6 +130,7 @@ export default class MenuController extends BaseController {
       }
 
       DQ.menu_name = request.body().menu_name
+      DQ.menu_type = request.body().menu_type
 
       await DQ.save()
       return response.ok({
@@ -157,7 +159,7 @@ export default class MenuController extends BaseController {
     await DQ.delete()
     return response.ok({
       code: HttpCodes.SUCCESS,
-      result: { message: 'Menu deleted successfully' },
+      message: 'Menu deleted successfully',
     })
   }
 }

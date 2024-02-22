@@ -155,7 +155,7 @@ export default class ShipmentAddressController extends BaseController {
     await DQ.delete()
     return response.ok({
       code: HttpCodes.SUCCESS,
-      result: { message: 'Deleted successfully!' },
+      message: 'Record deleted successfully',
     })
   }
 }

@@ -156,7 +156,7 @@ export default class ProductController extends BaseController {
     await DQ.delete()
     return response.ok({
       code: HttpCodes.SUCCESS,
-      result: { message: 'Product deleted successfully' },
+      message: 'Record deleted successfully',
     })
   }
 }

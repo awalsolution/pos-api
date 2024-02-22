@@ -164,7 +164,7 @@ export default class AttributeController extends BaseController {
     await DQ.delete()
     return response.ok({
       code: HttpCodes.SUCCESS,
-      result: { message: 'Attribute deleted successfully!' },
+      message: 'Record deleted successfully',
     })
   }
 }
