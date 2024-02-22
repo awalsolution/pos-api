@@ -101,7 +101,7 @@ export default class RoleController extends BaseController {
       const DQ = await DM.save()
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Role Created Successfully!',
+        message: 'Record Created Successfully',
         result: DQ,
       })
     } catch (e) {

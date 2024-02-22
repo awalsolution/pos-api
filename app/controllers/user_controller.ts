@@ -102,9 +102,7 @@ export default class UserController extends BaseController {
   async create({ auth, request, response }: HttpContext) {
     const currentUser = auth.user!
     try {
-      let DE = await this.MODEL.query()
-        .where({ email: request.body().email, shop_id: currentUser.shopId! })
-        .first()
+      let DE = await this.MODEL.query().where('email', request.body().email).first()
 
       if (DE && !DE.is_email_verified) {
         delete DE.$attributes.password
