@@ -162,7 +162,7 @@ export default class OrderController extends BaseController {
     await DQ.delete()
     return response.ok({
       code: HttpCodes.SUCCESS,
-      result: { message: 'Deleted successfully!' },
+      message: 'Record deleted successfully',
     })
   }
 }

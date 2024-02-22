@@ -203,7 +203,7 @@ export default class VariantController extends BaseController {
     await DQ.delete()
     return response.ok({
       code: HttpCodes.SUCCESS,
-      result: { message: 'Variant deleted successfully' },
+      message: 'Record deleted successfully',
     })
   }
 }

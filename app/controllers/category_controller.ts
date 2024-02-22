@@ -157,7 +157,7 @@ export default class CategoryController extends BaseController {
     await DQ.delete()
     return response.ok({
       code: HttpCodes.SUCCESS,
-      result: { message: 'Category deleted successfully!' },
+      message: 'Record deleted successfully',
     })
   }
 }
