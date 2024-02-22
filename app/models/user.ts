@@ -24,7 +24,7 @@ type UserQuery = ModelQueryBuilderContract<typeof User>
 type RoleQuery = ModelQueryBuilderContract<typeof Role>
 
 const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
-  uids: ['email'],
+  uids: ['username'],
   passwordColumnName: 'password',
 })
 

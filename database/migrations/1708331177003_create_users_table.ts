@@ -13,7 +13,7 @@ export default class extends BaseSchema {
         .inTable('shops')
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
-      table.string('email').notNullable()
+      table.string('email').notNullable().unique()
       table.string('password').notNullable()
       table.string('user_type').nullable()
       table.boolean('status').notNullable().defaultTo(true)
@@ -22,8 +22,6 @@ export default class extends BaseSchema {
       table.datetime('email_verified_at').nullable()
       table.boolean('is_phone_verified').notNullable().defaultTo(false)
       table.datetime('phone_verified_at').nullable()
-
-      table.unique(['shop_id', 'email'])
 
       table.timestamp('created_at')
       table.timestamp('updated_at')

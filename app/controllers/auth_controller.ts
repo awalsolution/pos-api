@@ -25,7 +25,7 @@ export default class AuthController extends BaseController {
 
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: `Provided Email: ' ${request.body().email} ' Already exists`,
+          message: 'Record already exists!',
         })
       }
       const userRole = await Role.findBy('name', request.body().user_type)
