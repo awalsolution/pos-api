@@ -1,10 +1,12 @@
 import { DateTime } from 'luxon'
-import { BaseModel, belongsTo, column, hasMany } from '@adonisjs/lucid/orm'
+import { BaseModel, SnakeCaseNamingStrategy, belongsTo, column, hasMany } from '@adonisjs/lucid/orm'
 import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 import User from '#models/user'
 import OrderItem from '#models/order_item'
 import ShipmentAddress from '#models/shipment_address'
 import PaymentMethod from '#models/payment_method'
+
+BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
 
 export default class Order extends BaseModel {
   @column({ isPrimary: true })

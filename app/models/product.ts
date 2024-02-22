@@ -1,7 +1,9 @@
 import { DateTime } from 'luxon'
-import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm'
+import { BaseModel, SnakeCaseNamingStrategy, belongsTo, column } from '@adonisjs/lucid/orm'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 import Shop from '#models/shop'
+
+BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
 
 export default class Product extends BaseModel {
   @column({ isPrimary: true })

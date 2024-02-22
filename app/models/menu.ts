@@ -1,7 +1,9 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, hasMany } from '@adonisjs/lucid/orm'
+import { BaseModel, SnakeCaseNamingStrategy, column, hasMany } from '@adonisjs/lucid/orm'
 import type { HasMany } from '@adonisjs/lucid/types/relations'
 import Permission from '#models/permission'
+
+BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
 
 export default class Menu extends BaseModel {
   @column({ isPrimary: true })
