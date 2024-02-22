@@ -75,20 +75,22 @@ export default class RoleController extends BaseController {
 
   // create new Role
   async create({ auth, request, response }: HttpContext) {
-    const currentUser = auth.use('api').user!
+    const currentUser = auth.user!
     try {
-      const DE = await this.MODEL.findBy('name', request.body().name)
+      const DE = await this.MODEL.query()
+        .where({ name: request.body().name, shop_id: currentUser.shopId! })
+        .first()
 
       if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: `Role ${request.input('name')} already exists!`,
+          message: 'Record already exists!',
         })
       }
 
       const DM = new this.MODEL()
 
-      if (await this.isSuperAdmin(currentUser)) {
+      if (this.isSuperAdmin(currentUser)) {
         DM.shopId = request.body().shop_id
       } else {
         DM.shopId = currentUser.shopId
@@ -113,7 +115,7 @@ export default class RoleController extends BaseController {
 
   // update Role using id
   async update({ auth, request, response }: HttpContext) {
-    const currentUser = auth.use('api').user!
+    const currentUser = auth.user!
     try {
       const DQ = await this.MODEL.findBy('id', request.param('id'))
       if (!DQ) {
@@ -130,11 +132,11 @@ export default class RoleController extends BaseController {
       if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: `${request.body().name} Role type already exist!`,
+          message: 'Record already exist!',
         })
       }
 
-      if (await this.isSuperAdmin(currentUser)) {
+      if (this.isSuperAdmin(currentUser)) {
         DQ.shopId = request.body().shop_id
       } else {
         DQ.shopId = currentUser.shopId

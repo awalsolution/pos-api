@@ -72,14 +72,18 @@ export default class CategoryController extends BaseController {
   }
 
   // create new Category
-  async create({ request, response }: HttpContext) {
+  async create({ auth, request, response }: HttpContext) {
+    const currentUser = auth.user!
     try {
-      const DE = await this.MODEL.findBy('name', request.body().name)
+      const DE = await this.MODEL.query().where({
+        name: request.body().name,
+        shop_id: currentUser.shopId!,
+      })
 
       if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: `Category: "${request.body().name}" already exists!`,
+          message: 'Record already exists!',
         })
       }
       const DM = new this.MODEL()
@@ -91,7 +95,7 @@ export default class CategoryController extends BaseController {
       const DQ = await DM.save()
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: `Category: "${request.body().name}" Created Successfully!`,
+        message: 'Record Created Successfully',
         result: DQ,
       })
     } catch (e) {

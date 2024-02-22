@@ -15,7 +15,7 @@ export default class ProductController extends BaseController {
    * @paramUse(paginated)
    */
   async findAllRecords({ auth, request, response }: HttpContext) {
-    const currentUser = auth.use('api').user!
+    const currentUser = auth.user!
     let DQ = this.MODEL.query()
 
     const page = request.input('page')
@@ -73,13 +73,19 @@ export default class ProductController extends BaseController {
 
   // create new product
   async create({ auth, request, response }: HttpContext) {
-    const currentUser = auth.use('api').user!
+    const currentUser = auth.user!
     try {
-      const DE = await this.MODEL.findBy('product_code', request.body().product_code)
+      const DE = await this.MODEL.query()
+        .where({
+          product_code: request.body().product_code,
+          shop_id: currentUser.shopId!,
+        })
+        .first()
+
       if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: 'Product already exists!',
+          message: 'Record already exists!',
         })
       }
       const DM = new this.MODEL()
@@ -95,7 +101,7 @@ export default class ProductController extends BaseController {
 
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Product Created Successfully!',
+        message: 'Record Created Successfully',
         result: DM,
       })
     } catch (e) {

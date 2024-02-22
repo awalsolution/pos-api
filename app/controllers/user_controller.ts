@@ -102,18 +102,21 @@ export default class UserController extends BaseController {
   async create({ auth, request, response }: HttpContext) {
     const currentUser = auth.user!
     try {
-      let DE = await this.MODEL.findBy('email', request.body().email)
+      let DE = await this.MODEL.query()
+        .where({ email: request.body().email, shop_id: currentUser.shopId! })
+        .first()
+
       if (DE && !DE.is_email_verified) {
         delete DE.$attributes.password
 
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: `Provided Email: ' ${request.body().email} ' Already exists`,
+          message: 'Record already exists',
         })
       }
 
       const DM = new this.MODEL()
-      if (await this.isSuperAdmin(currentUser)) {
+      if (this.isSuperAdmin(currentUser)) {
         DM.shopId = request.body().shop_id
       } else {
         DM.shopId = currentUser.shopId
@@ -148,6 +151,7 @@ export default class UserController extends BaseController {
   // update user
   async update({ request, response }: HttpContext) {
     const DQ = await this.MODEL.findBy('id', request.param('id'))
+
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
