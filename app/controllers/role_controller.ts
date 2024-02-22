@@ -16,7 +16,7 @@ export default class RoleController extends BaseController {
    * @paramUse(paginated)
    */
   async findAllRecords({ auth, request, response }: HttpContext) {
-    const currentUser = auth.use('api').user!
+    const currentUser = auth.user!
     let DQ = this.MODEL.query().whereNot('name', 'super admin')
 
     const page = request.input('page')
@@ -33,7 +33,7 @@ export default class RoleController extends BaseController {
     if (perPage) {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        result: await DQ.paginate(page, perPage),
+        result: await DQ.preload('shop').paginate(page, perPage),
         message: 'Roles Found Successfully',
       })
     } else {
