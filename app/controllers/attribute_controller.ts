@@ -79,14 +79,18 @@ export default class AttributeController extends BaseController {
    * @description create Attribute
    * @requestBody <Attribute>
    */
-  async create({ request, response }: HttpContext) {
+  async create({ auth, request, response }: HttpContext) {
+    const currentUser = auth.user!
     try {
-      const DE = await this.MODEL.findBy('name', request.body().name)
+      const DE = await this.MODEL.query().where({
+        name: request.body().name,
+        shop_id: currentUser.shopId!,
+      })
 
       if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: `Attribute: "${request.body().name}" already exists!`,
+          message: 'Record already exists!',
         })
       }
 
@@ -97,7 +101,7 @@ export default class AttributeController extends BaseController {
       const DQ = await DM.save()
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: `Attribute: "${request.body().name}" Created Successfully!`,
+        message: 'Record Created Successfully',
         result: DQ,
       })
     } catch (e) {
