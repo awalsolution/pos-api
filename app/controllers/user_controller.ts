@@ -146,8 +146,7 @@ export default class UserController extends BaseController {
   }
 
   // update user
-  async update({ auth, request, response }: HttpContext) {
-    const currentUser = auth.user!
+  async update({ request, response }: HttpContext) {
     const DQ = await this.MODEL.findBy('id', request.param('id'))
     if (!DQ) {
       return response.notFound({
@@ -156,17 +155,10 @@ export default class UserController extends BaseController {
       })
     }
 
-    if (await this.isSuperAdmin(currentUser)) {
-      DQ.shopId = request.body().shop_id
-    } else {
-      DQ.shopId = currentUser.shopId
-    }
-
     DQ.email = request.body().email
     DQ.status = request.body().status
 
     await DQ.save()
-    DQ.related('permissions').sync(request.body().permissions)
     DQ.related('roles').sync(request.body().roles)
 
     delete DQ.$attributes.password
