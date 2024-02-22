@@ -12,7 +12,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
-    "docs": "node ace docs:generate"
+    "docs": "node ace docs:generate",
+    "cp": "cp swagger.yml build/"
   },
   "imports": {
     "#controllers/*": "./app/controllers/*.js",
