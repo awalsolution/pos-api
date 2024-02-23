@@ -14,7 +14,7 @@ export default class VariantsController extends BaseController {
     let DQ = this.MODEL.query();
 
     const page = request.input('page');
-    const pageSize = request.input('pageSize');
+    const perPage = request.input('perPage');
 
     // name filter
     if (request.input('name')) {
@@ -28,13 +28,13 @@ export default class VariantsController extends BaseController {
       });
     }
 
-    if (pageSize) {
+    if (perPage) {
       return response.ok({
         code: HttpCodes.SUCCESS,
         result: await DQ.preload('products')
           .preload('attributes')
           .preload('images')
-          .paginate(page, pageSize),
+          .paginate(page, perPage),
         message: 'Variation find Successfully',
       });
     } else {

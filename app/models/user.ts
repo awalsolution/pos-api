@@ -95,7 +95,7 @@ export default class User extends BaseModel {
   public permissions: ManyToMany<typeof Permission>;
 
   @hasOne(() => UserProfile)
-  public profile: HasOne<typeof UserProfile>;
+  public user_profile: HasOne<typeof UserProfile>;
 
   @belongsTo(() => Shop)
   public shop: BelongsTo<typeof Shop>;
@@ -108,7 +108,7 @@ export default class User extends BaseModel {
       .preload('roles', (rolesQuery: RoleQuery) => {
         rolesQuery.preload('permissions');
       })
-      .preload('profile')
+      .preload('user_profile')
       .preload('shop');
   }
   // 'name', '!=', 'super admin').preload('permissions'

@@ -15,7 +15,7 @@ export default class ProductsController extends BaseController {
     let DQ = this.MODEL.query();
 
     const page = request.input('page');
-    const pageSize = request.input('pageSize');
+    const perPage = request.input('perPage');
 
     // name filter
     if (request.input('name')) {
@@ -27,19 +27,17 @@ export default class ProductsController extends BaseController {
       DQ = DQ.where('shop_id', currentUser.shopId!);
     }
 
-    if (pageSize) {
+    if (perPage) {
       return response.ok({
         code: HttpCodes.SUCCESS,
         message: 'Products find Successfully',
-        result: await DQ.preload('shop')
-          .preload('merchant')
-          .paginate(page, pageSize),
+        result: await DQ.preload('shop').paginate(page, perPage),
       });
     } else {
       return response.ok({
         code: HttpCodes.SUCCESS,
         message: 'Products find Successfully',
-        result: await DQ.preload('shop').preload('merchant'),
+        result: await DQ.preload('shop'),
       });
     }
   }
@@ -87,7 +85,6 @@ export default class ProductsController extends BaseController {
       }
       const DM = new this.MODEL();
       DM.shopId = auth.user?.shop.id;
-      DM.merchantId = request.body().merchant_id;
       DM.categoryId = request.body().category_id;
       DM.product_code = request.body().product_code;
       DM.title = request.body().title;

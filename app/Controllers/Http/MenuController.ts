@@ -15,7 +15,7 @@ export default class MenuController extends BaseController {
     let DQ = this.MODEL.query();
 
     const page = request.input('page');
-    const pageSize = request.input('pageSize');
+    const perPage = request.input('perPage');
 
     // name filter
     if (request.input('name')) {
@@ -29,10 +29,10 @@ export default class MenuController extends BaseController {
       });
     }
 
-    if (pageSize) {
+    if (perPage) {
       response.ok({
         code: HttpCodes.SUCCESS,
-        result: await DQ.preload('permissions').paginate(page, pageSize),
+        result: await DQ.preload('permissions').paginate(page, perPage),
         message: 'Menus find Successfully',
       });
     } else {

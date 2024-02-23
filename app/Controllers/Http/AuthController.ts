@@ -77,14 +77,11 @@ export default class AuthController extends BaseController {
           message: 'Invalid Password',
         });
       }
-      const token = await auth.use('api').attempt(email, password);
+      const DQ = await auth.use('api').attempt(email, password);
       return response.ok({
         code: HttpCodes.SUCCESS,
         message: 'User Login Successfully!',
-        result: {
-          token: token.token,
-          user: auth.user,
-        },
+        token: DQ.token,
       });
     } catch (e) {
       return response.internalServerError({

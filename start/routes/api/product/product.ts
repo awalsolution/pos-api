@@ -20,4 +20,4 @@ Route.group(async () => {
   });
 })
   .middleware(['auth:api'])
-  .prefix('/api/v1/products');
+  .prefix('/api/v1/product');

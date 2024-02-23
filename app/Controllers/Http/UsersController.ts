@@ -17,7 +17,7 @@ export default class UsersController extends BaseController {
     let DQ = this.MODEL.query().whereNotIn('id', [currentUser.id, 1]);
 
     const page = request.input('page');
-    const pageSize = request.input('pageSize');
+    const perPage = request.input('perPage');
 
     // name filter
     if (request.input('name')) {
@@ -37,16 +37,16 @@ export default class UsersController extends BaseController {
       });
     }
 
-    if (pageSize) {
+    if (perPage) {
       return response.ok({
         code: HttpCodes.SUCCESS,
         result: await DQ.preload('permissions')
           .preload('roles', (PQ) => {
             PQ.preload('permissions');
           })
-          .preload('profile')
+          .preload('user_profile')
           .preload('shop')
-          .paginate(page, pageSize),
+          .paginate(page, perPage),
         message: 'Users find Successfully',
       });
     } else {
@@ -56,7 +56,7 @@ export default class UsersController extends BaseController {
           .preload('roles', (PQ) => {
             PQ.preload('permissions');
           })
-          .preload('profile')
+          .preload('user_profile')
           .preload('shop'),
         message: 'Users find Successfully',
       });
@@ -73,7 +73,7 @@ export default class UsersController extends BaseController {
           RQ.where('name', '!=', 'super admin') // Exclude the "super admin" role
             .preload('permissions');
         })
-        .preload('profile')
+        .preload('user_profile')
         .preload('shop')
         .first();
 
@@ -119,7 +119,7 @@ export default class UsersController extends BaseController {
 
       await DM.save();
       DM.related('roles').sync(request.body().roles);
-      DM.related('profile').create({
+      DM.related('user_profile').create({
         first_name: request.body().first_name,
         last_name: request.body().last_name,
         phone_number: request.body().phone_number,
@@ -209,7 +209,7 @@ export default class UsersController extends BaseController {
         message: 'User Not Found',
       });
     }
-    DQ.related('profile').updateOrCreate(
+    DQ.related('user_profile').updateOrCreate(
       {},
       {
         first_name: request.body().first_name,
@@ -256,7 +256,7 @@ export default class UsersController extends BaseController {
     return response.ok({
       code: HttpCodes.SUCCESS,
       message: 'User find Successfully',
-      result: auth.user,
+      data: auth.user,
     });
   }
 }

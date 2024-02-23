@@ -14,7 +14,7 @@ export default class ShopController extends BaseController {
     let DQ = this.MODEL.query();
 
     const page = request.input('page');
-    const pageSize = request.input('pageSize');
+    const perPage = request.input('perPage');
 
     // name filter
     if (request.input('name')) {
@@ -28,10 +28,10 @@ export default class ShopController extends BaseController {
       });
     }
 
-    if (pageSize) {
+    if (perPage) {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        result: await DQ.paginate(page, pageSize),
+        result: await DQ.paginate(page, perPage),
         message: 'Shops find Successfully',
       });
     } else {

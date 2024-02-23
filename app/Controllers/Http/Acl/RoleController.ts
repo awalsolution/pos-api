@@ -3,7 +3,7 @@ import { BaseController } from 'App/Controllers/BaseController';
 import Role from 'App/Models/Acl/Role';
 import HttpCodes from 'App/Enums/HttpCodes';
 
-export default class RolesController extends BaseController {
+export default class RoleController extends BaseController {
   public MODEL: typeof Role;
 
   constructor() {
@@ -17,7 +17,7 @@ export default class RolesController extends BaseController {
     let DQ = this.MODEL.query().whereNot('name', 'super admin');
 
     const page = request.input('page');
-    const pageSize = request.input('pageSize');
+    const perPage = request.input('perPage');
 
     if (request.input('name')) {
       DQ = DQ.whereILike('name', request.input('name') + '%');
@@ -27,10 +27,10 @@ export default class RolesController extends BaseController {
       DQ = DQ.where('shop_id', currentUser.shopId!);
     }
 
-    if (pageSize) {
+    if (perPage) {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        result: await DQ.paginate(page, pageSize),
+        result: await DQ.preload('shop').paginate(page, perPage),
         message: 'Roles Found Successfully',
       });
     } else {

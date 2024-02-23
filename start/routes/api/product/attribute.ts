@@ -12,7 +12,6 @@ Route.group(async () => {
   Route.delete('/:id', (ctx: HttpContextContract) => {
     return new AttributesController().destroy(ctx);
   });
-
   Route.get('/', (ctx: HttpContextContract) => {
     return new AttributesController().findAllRecords(ctx);
   });
@@ -21,4 +20,4 @@ Route.group(async () => {
   });
 })
   .middleware(['auth:api'])
-  .prefix('/api/v1/attributes');
+  .prefix('/api/v1/attribute');

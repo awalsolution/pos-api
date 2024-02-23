@@ -14,7 +14,7 @@ export default class AttributesController extends BaseController {
     let DQ = this.MODEL.query();
 
     const page = request.input('page');
-    const pageSize = request.input('pageSize');
+    const perPage = request.input('perPage');
 
     // name filter
     if (request.input('name')) {
@@ -28,11 +28,11 @@ export default class AttributesController extends BaseController {
       });
     }
 
-    if (pageSize) {
+    if (perPage) {
       return response.ok({
         code: HttpCodes.SUCCESS,
         message: 'Attributes find Successfully',
-        result: await DQ.paginate(page, pageSize),
+        result: await DQ.paginate(page, perPage),
       });
     } else {
       return response.ok({

@@ -3,7 +3,7 @@ import { BaseController } from 'App/Controllers/BaseController';
 import HttpCodes from 'App/Enums/HttpCodes';
 import Permission from 'App/Models/Acl/Permission';
 
-export default class PermissionsController extends BaseController {
+export default class PermissionController extends BaseController {
   public MODEL: typeof Permission;
   constructor() {
     super();
@@ -14,17 +14,17 @@ export default class PermissionsController extends BaseController {
     let DQ = this.MODEL.query();
 
     const page = request.input('page');
-    const pageSize = request.input('pageSize');
+    const perPage = request.input('perPage');
 
     // name filter
     if (request.input('name')) {
       DQ = DQ.whereILike('name', request.input('name') + '%');
     }
 
-    if (pageSize) {
+    if (perPage) {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        result: await DQ.preload('menus').paginate(page, pageSize),
+        result: await DQ.preload('menus').paginate(page, perPage),
         message: 'Permissions Found Successfully',
       });
     } else {

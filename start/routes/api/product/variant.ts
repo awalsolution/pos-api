@@ -23,4 +23,4 @@ Route.group(async () => {
   });
 })
   .middleware(['auth:api'])
-  .prefix('/api/v1/variants');
+  .prefix('/api/v1/variant');
