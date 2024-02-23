@@ -1,26 +1,35 @@
-import { DateTime } from 'luxon'
-import { BaseModel, SnakeCaseNamingStrategy, column, hasMany } from '@adonisjs/lucid/orm'
-import type { HasMany } from '@adonisjs/lucid/types/relations'
-import Permission from '#models/permission'
-
-BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
+import { DateTime } from 'luxon';
+import { column, BaseModel, hasMany, HasMany } from '@ioc:Adonis/Lucid/Orm';
+import { STANDARD_DATE_TIME_FORMAT } from 'App/Helpers/utils';
+import Permission from 'App/Models/Acl/Permission';
 
 export default class Menu extends BaseModel {
   @column({ isPrimary: true })
-  declare id: number
+  public id: number;
 
   @column()
-  declare menu_name: string
+  public menu_name: string;
 
   @column()
-  declare menu_type: string
+  public menu_type: string;
 
-  @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
+  @column.dateTime({
+    autoCreate: true,
+    serialize(value: DateTime) {
+      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : '';
+    },
+  })
+  public createdAt: DateTime;
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime
+  @column.dateTime({
+    autoCreate: true,
+    autoUpdate: true,
+    serialize(value: DateTime) {
+      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : '';
+    },
+  })
+  public updatedAt: DateTime;
 
   @hasMany(() => Permission)
-  declare permissions: HasMany<typeof Permission>
+  public permissions: HasMany<typeof Permission>;
 }

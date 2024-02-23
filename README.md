@@ -56,13 +56,20 @@ InSnync CRM API's is developed with Adonisjs and mysql.
    2. Next, Let's seed important tables on the database. Run the index seeder command below to run all configured seeders for the application and fully setup it up in one command:
 
       ```bash
-      node ace db:seed --files "./database/seeders/main/index_seeder.ts"
+      node ace db:seed --files="database/seeders/MainSeeder/Index.ts"
+      ```
+
+      If you are on Windows and having errors, you can run:
+
+      ```bash
+      node ace db:seed --files="database\seeders\MainSeeder\Index.ts"
       ```
 
       Please note that this operation could take a couple of minutes.
 
-7. Get an email and password of a user and log in.
-8. Congratulations. You have successfully set up the InSync.
+7. After running the index seeder, all users generated will be logged to file. Check the file: `database/data/seeded_users.txt` and take note of the user credentials logged to the file.
+8. Get an email and password of a user and log in.
+9. Congratulations. You have successfully set up the InSync.
 
 # Resources
 

@@ -1,0 +1,206 @@
+{
+  'paths':
+    {
+      '/api/v1/menus':
+        {
+          'post':
+            {
+              'summary': 'Add a new menu',
+              'tags': ['menus'],
+              'requestBody': { '$ref': '#/components/requestBodies/menuBody' },
+              'responses':
+                {
+                  '200': { 'description': 'OK' },
+                  '400': { 'description': 'Bad request.' },
+                  '401':
+                    {
+                      'description': 'Authorization information is missing or invalid.',
+                    },
+                },
+            },
+          'get':
+            {
+              'summary': 'Get total menus',
+              'tags': ['menus'],
+              'parameters':
+                [
+                  {
+                    'in': 'query',
+                    'name': 'offset',
+                    'schema': { 'type': 'integer', 'minimum': 0, 'default': 0 },
+                    'required': false,
+                    'description': 'The number of items to skip before starting to collect the result set.',
+                  },
+                  {
+                    'in': 'query',
+                    'name': 'limit',
+                    'schema':
+                      {
+                        'type': 'integer',
+                        'minimum': 1,
+                        'maximum': 100,
+                        'default': 20,
+                      },
+                    'required': false,
+                    'description': 'The number of items to return.',
+                  },
+                ],
+              'responses':
+                {
+                  '200': { 'description': 'OK' },
+                  '400': { 'description': 'Bad request.' },
+                  '401':
+                    {
+                      'description': 'Authorization information is missing or invalid.',
+                    },
+                },
+            },
+        },
+      '/api/v1/menus/{id}':
+        {
+          'get':
+            {
+              'summary': 'Get a menu by ID',
+              'tags': ['menus'],
+              'parameters':
+                [
+                  {
+                    'in': 'path',
+                    'name': 'id',
+                    'schema': { 'type': 'integer' },
+                    'required': true,
+                    'description': 'Numeric ID of the menu to get',
+                  },
+                ],
+              'responses':
+                {
+                  '200': { 'description': 'OK' },
+                  '400': { 'description': 'Bad request.' },
+                  '401':
+                    {
+                      'description': 'Authorization information is missing or invalid.',
+                    },
+                },
+            },
+          'put':
+            {
+              'summary': 'Update a menu',
+              'tags': ['menus'],
+              'parameters':
+                [
+                  {
+                    'in': 'path',
+                    'name': 'id',
+                    'schema': { 'type': 'integer' },
+                    'required': true,
+                    'description': 'Numeric ID of the menu to get',
+                  },
+                ],
+              'requestBody': { '$ref': '#/components/requestBodies/menuBody' },
+              'responses':
+                {
+                  '200': { 'description': 'OK' },
+                  '400': { 'description': 'Bad request.' },
+                  '401':
+                    {
+                      'description': 'Authorization information is missing or invalid.',
+                    },
+                },
+            },
+          'delete':
+            {
+              'summary': 'Delete a menu',
+              'tags': ['menus'],
+              'parameters':
+                [
+                  {
+                    'in': 'path',
+                    'name': 'id',
+                    'schema': { 'type': 'integer' },
+                    'required': true,
+                    'description': 'Numeric ID of the menu to get',
+                  },
+                ],
+              'requestBody': { '$ref': '#/components/requestBodies/menuBody' },
+              'responses':
+                {
+                  '200': { 'description': 'OK' },
+                  '400': { 'description': 'Bad request.' },
+                  '401':
+                    {
+                      'description': 'Authorization information is missing or invalid.',
+                    },
+                },
+            },
+        },
+    },
+  'components':
+    {
+      'requestBodies':
+        {
+          'menuBody':
+            {
+              'description': 'A JSON object containing menu information',
+              'required': true,
+              'content':
+                {
+                  'application/json':
+                    { 'schema': { '$ref': '#/components/schemas/menu' } },
+                },
+            },
+        },
+      'schemas':
+        {
+          'menu':
+            {
+              'title': 'menu Schemas Information',
+              'type': 'object',
+              'properties':
+                {
+                  'parent_id':
+                    {
+                      'type': 'string',
+                      'example': 2,
+                      'description': 'add menu parent id if it is child menu otherwise id is null',
+                    },
+                  'route_name':
+                    {
+                      'type': 'string',
+                      'example': 'users',
+                      'description': 'add menu phone',
+                    },
+                  'menu_url':
+                    {
+                      'type': 'string',
+                      'example': '/users',
+                      'description': 'add menu URL',
+                    },
+                  'menu_name':
+                    {
+                      'type': 'string',
+                      'example': 'Users',
+                      'description': 'add menu name',
+                    },
+                  'menu_order':
+                    {
+                      'type': 'number',
+                      'example': 1,
+                      'description': 'add menu order',
+                    },
+                  'menu_icon':
+                    {
+                      'type': 'string',
+                      'example': 'UserOutlined',
+                      'description': 'add menu Icon in this project using Naive UI icons',
+                    },
+                  'status':
+                    {
+                      'type': 'string',
+                      'example': 'active',
+                      'description': 'add menu status active or disabled',
+                    },
+                },
+            },
+        },
+    },
+}
