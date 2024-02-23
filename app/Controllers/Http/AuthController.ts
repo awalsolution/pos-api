@@ -35,7 +35,7 @@ export default class AuthController extends BaseController {
 
       await user.save();
 
-      user.related('profile').create({
+      user.related('user_profile').create({
         first_name: request.body().first_name,
         last_name: request.body().last_name,
         phone_number: request.body().phone_number,
