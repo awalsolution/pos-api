@@ -29,18 +29,18 @@ Route.post('/api/v1/upload', async ({ request, response }) => {
     image = request.file('categories');
     await image.move(Application.tmpPath('uploads/categories'));
     url = await Drive.getUrl(`/categories/${image.fileName}`);
-  } else if (request.file('productImages')) {
-    image = request.file('productImages');
+  } else if (request.file('products')) {
+    image = request.file('products');
     await image.move(Application.tmpPath('uploads/products'));
     url = await Drive.getUrl(`/products/${image.fileName}`);
-  } else if (request.file('shop_images')) {
-    image = request.file('shop_images');
-    await image.move(Application.tmpPath('uploads/shop_logo'));
+  } else if (request.file('shops_logo')) {
+    image = request.file('shops_logo');
+    await image.move(Application.tmpPath('uploads/shops_logo'));
     url = await Drive.getUrl(`/shop_logo/${image.fileName}`);
-  } else if (request.file('profile_image')) {
-    image = request.file('profile_image');
-    await image.move(Application.tmpPath('uploads/profile_pictures'));
-    url = await Drive.getUrl(`/profile_pictures/${image.fileName}`);
+  } else if (request.file('profile_picture')) {
+    image = request.file('profile_picture');
+    await image.move(Application.tmpPath('uploads/profile_picture'));
+    url = await Drive.getUrl(`/profile_picture/${image.fileName}`);
   } else {
     image = request.file('images');
     await image.move(Application.tmpPath('uploads'));

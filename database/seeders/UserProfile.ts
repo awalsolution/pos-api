@@ -13,7 +13,7 @@ export default class extends BaseSeeder {
         city: 'Lahore',
         state: 'Punjab',
         country: 'Pakistan',
-        profile_picture: '/uploads/profile_pictures/user_profile_pic.avif',
+        profile_picture: '/uploads/profile_picture/user_profile_pic.avif',
       },
       {
         userId: 2,
@@ -24,7 +24,7 @@ export default class extends BaseSeeder {
         city: 'Lahore',
         state: 'Punjab',
         country: 'Pakistan',
-        profile_picture: '/uploads/profile_pictures/user-profile.jpg',
+        profile_picture: '/uploads/profile_picture/user-profile.jpg',
       },
       {
         userId: 3,
@@ -35,7 +35,7 @@ export default class extends BaseSeeder {
         city: 'Lahore',
         state: 'Punjab',
         country: 'Pakistan',
-        profile_picture: '/uploads/profile_pictures/user_profile_pic.avif',
+        profile_picture: '/uploads/profile_picture/user_profile_pic.avif',
       },
       {
         userId: 4,
@@ -46,7 +46,7 @@ export default class extends BaseSeeder {
         city: 'Lahore',
         state: 'Punjab',
         country: 'Pakistan',
-        profile_picture: '/uploads/profile_pictures/user-profile.jpg',
+        profile_picture: '/uploads/profile_picture/user-profile.jpg',
       },
       {
         userId: 5,
@@ -57,7 +57,7 @@ export default class extends BaseSeeder {
         city: 'Lahore',
         state: 'Punjab',
         country: 'Pakistan',
-        profile_picture: '/uploads/profile_pictures/user_profile_pic.avif',
+        profile_picture: '/uploads/profile_picture/user_profile_pic.avif',
       },
       {
         userId: 6,
@@ -68,7 +68,7 @@ export default class extends BaseSeeder {
         city: 'Lahore',
         state: 'Punjab',
         country: 'Pakistan',
-        profile_picture: '/uploads/profile_pictures/user-profile.jpg',
+        profile_picture: '/uploads/profile_picture/user-profile.jpg',
       },
       {
         userId: 7,
@@ -79,7 +79,7 @@ export default class extends BaseSeeder {
         city: 'Lahore',
         state: 'Punjab',
         country: 'Pakistan',
-        profile_picture: '/uploads/profile_pictures/user_profile_pic.avif',
+        profile_picture: '/uploads/profile_picture/user_profile_pic.avif',
       },
       {
         userId: 8,
@@ -90,7 +90,7 @@ export default class extends BaseSeeder {
         city: 'Lahore',
         state: 'Punjab',
         country: 'Pakistan',
-        profile_picture: '/uploads/profile_pictures/user-profile.jpg',
+        profile_picture: '/uploads/profile_picture/user-profile.jpg',
       },
       {
         userId: 9,
@@ -101,7 +101,7 @@ export default class extends BaseSeeder {
         city: 'Lahore',
         state: 'Punjab',
         country: 'Pakistan',
-        profile_picture: '/uploads/profile_pictures/user_profile_pic.avif',
+        profile_picture: '/uploads/profile_picture/user_profile_pic.avif',
       },
       {
         userId: 10,
@@ -112,7 +112,7 @@ export default class extends BaseSeeder {
         city: 'Lahore',
         state: 'Punjab',
         country: 'Pakistan',
-        profile_picture: '/uploads/profile_pictures/user-profile.jpg',
+        profile_picture: '/uploads/profile_picture/user-profile.jpg',
       },
       {
         userId: 11,
@@ -123,7 +123,7 @@ export default class extends BaseSeeder {
         city: 'Lahore',
         state: 'Punjab',
         country: 'Pakistan',
-        profile_picture: '/uploads/profile_pictures/user_profile_pic.avif',
+        profile_picture: '/uploads/profile_picture/user_profile_pic.avif',
       },
     ]);
   }
