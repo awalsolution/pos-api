@@ -1,20 +1,32 @@
-import router from '@adonisjs/core/services/router'
-import { middleware } from '#start/kernel'
-const UserController = () => import('#controllers/user_controller')
+import Route from '@ioc:Adonis/Core/Route';
+import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
+import UsersController from 'App/Controllers/Http/UsersController';
 
-router
-  .group(() => {
-    router.get('/', [UserController, 'findAllRecords'])
-    router.post('/', [UserController, 'create'])
-    router.get('/:id', [UserController, 'findSingleRecord'])
-    router.put('/:id', [UserController, 'update'])
-    router.put('/assign-permission/:id', [UserController, 'assignPermission'])
-    router.put('/profile/:id', [UserController, 'profileUpdate'])
-    router.delete('/:id', [UserController, 'destroy'])
-  })
-  .use(
-    middleware.auth({
-      guards: ['api'],
-    })
-  )
-  .prefix('/api/v1/user')
+Route.group(async () => {
+  Route.get('/authenticated', async (ctx: HttpContextContract) => {
+    return new UsersController().authenticated(ctx);
+  });
+  Route.post('/', (ctx: HttpContextContract) => {
+    return new UsersController().create(ctx);
+  });
+  Route.put('/:id', (ctx: HttpContextContract) => {
+    return new UsersController().update(ctx);
+  });
+  Route.delete('/:id', (ctx: HttpContextContract) => {
+    return new UsersController().destroy(ctx);
+  });
+  Route.put('/assign-permission/:id', (ctx: HttpContextContract) => {
+    return new UsersController().assignPermission(ctx);
+  });
+  Route.get('/', (ctx: HttpContextContract) => {
+    return new UsersController().findAllRecords(ctx);
+  });
+  Route.get('/:id', (ctx: HttpContextContract) => {
+    return new UsersController().findSingleRecord(ctx);
+  });
+  Route.put('/profile/:id', (ctx: HttpContextContract) => {
+    return new UsersController().profileUpdate(ctx);
+  });
+})
+  .middleware(['auth:api'])
+  .prefix('/api/v1/user');

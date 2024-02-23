@@ -1,18 +1,25 @@
-import router from '@adonisjs/core/services/router'
-import { middleware } from '#start/kernel'
-const MenuController = () => import('#controllers/menu_controller')
+import Route from '@ioc:Adonis/Core/Route';
+import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
+import MenuController from 'App/Controllers/Http/MenuController';
 
-router
-  .group(() => {
-    router.get('/', [MenuController, 'findAllRecords'])
-    router.post('/', [MenuController, 'create'])
-    router.get('/:id', [MenuController, 'findSingleRecord'])
-    router.put('/:id', [MenuController, 'update'])
-    router.delete('/:id', [MenuController, 'destroy'])
-  })
-  .use(
-    middleware.auth({
-      guards: ['api'],
-    })
-  )
-  .prefix('/api/v1/menu')
+Route.group(async () => {
+  Route.post('/', (ctx: HttpContextContract) => {
+    return new MenuController().create(ctx);
+  });
+  Route.put('/:id', (ctx: HttpContextContract) => {
+    return new MenuController().update(ctx);
+  });
+  Route.delete('/:id', (ctx: HttpContextContract) => {
+    return new MenuController().destroy(ctx);
+  });
+
+  Route.get('/', (ctx: HttpContextContract) => {
+    return new MenuController().findAllRecords(ctx);
+  });
+
+  Route.get('/:id', (ctx: HttpContextContract) => {
+    return new MenuController().findSingleRecord(ctx);
+  });
+})
+  .middleware(['auth:api'])
+  .prefix('/api/v1/menu');

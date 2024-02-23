@@ -11,13 +11,10 @@ InSnync CRM API's is developed with Adonisjs and mysql.
 
 ==> Branch Name: main
 
-==> Domain Name: main.insync-crm-api.com
-
 2. Development
 
 ==> Branch Name: develop
 
-==> Domain Name: develop.insync-crm-api.com
 ```
 
 ## How to Install
@@ -56,13 +53,12 @@ InSnync CRM API's is developed with Adonisjs and mysql.
    2. Next, Let's seed important tables on the database. Run the index seeder command below to run all configured seeders for the application and fully setup it up in one command:
 
       ```bash
-      node ace db:seed --files "./database/seeders/main/index_seeder.ts"
+      node ace db:seed --files="database/seeders/MainSeeder/Index.ts"
       ```
 
       Please note that this operation could take a couple of minutes.
 
-7. Get an email and password of a user and log in.
-8. Congratulations. You have successfully set up the InSync.
+7. Congratulations. You have successfully set up the InSync.
 
 # Resources
 

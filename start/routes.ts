@@ -1,73 +1,71 @@
 /*
 |--------------------------------------------------------------------------
-| Routes file
+| Routes
 |--------------------------------------------------------------------------
 |
-| The routes file is used for defining the HTTP routes.
+| This file is dedicated for defining HTTP routes. A single file is enough
+| for majority of projects, however you can define routes in different
+| files and just make sure to import them inside this file. For example
+|
+| Define routes in following two files
+| ├── start/routes/cart.ts
+| ├── start/routes/customer.ts
+|
+| and then import them inside `start/routes.ts` as follows
+|
+| import './routes/cart'
+| import './routes/customer'
 |
 */
 
-// import { HttpContext } from '@adonisjs/core/http'
-import router from '@adonisjs/core/services/router'
-// import app from '@adonisjs/core/services/app'
+import Route from '@ioc:Adonis/Core/Route';
+import Application from '@ioc:Adonis/Core/Application';
+import Drive from '@ioc:Adonis/Core/Drive';
 
-router.get('/', async () => {
-  return "InSync CRM API's is Started."
-})
+Route.get('/', async () => {
+  return "InSync CRM API's is Started.";
+});
 
-import AutoSwagger from 'adonis-autoswagger'
-import swagger from '#config/swagger'
+Route.post('/api/v1/upload', async ({ request, response }) => {
+  const folders = ['categories', 'products', 'shops_logo', 'profile_picture'];
 
-// router.post('/api/v1/upload', async ({ request, response }: HttpContext) => {
-//   let image: any = ''
-//   let url: any = ''
-//   if (request.file('categories')) {
-//     image = request.file('categories')
-//     await image.move(app.tmpPath('uploads/categories'))
-//     url = await Drive.getUrl(`/categories/${image.fileName}`)
-//   } else if (request.file('productImages')) {
-//     image = request.file('productImages')
-//     await image.move(app.tmpPath('uploads/products'))
-//     url = await Drive.getUrl(`/products/${image.fileName}`)
-//   } else if (request.file('shop_images')) {
-//     image = request.file('shop_images')
-//     await image.move(app.tmpPath('uploads/shop_logo'))
-//     url = await Drive.getUrl(`/shop_logo/${image.fileName}`)
-//   } else if (request.file('profile_image')) {
-//     image = request.file('profile_image')
-//     await image.move(app.tmpPath('uploads/profile_pictures'))
-//     url = await Drive.getUrl(`/profile_pictures/${image.fileName}`)
-//   } else {
-//     image = request.file('images')
-//     await image.move(app.tmpPath('uploads'))
-//     url = await Drive.getUrl(image.fileName)
-//   }
+  let image: any = null;
+  let url: string | null = null;
 
-//   response.ok({
-//     code: 200,
-//     message: 'Image uploaded successfully.',
-//     data: url,
-//   })
-// })
+  for (const folder of folders) {
+    if (request.file(folder)) {
+      image = request.file(folder);
+      await image.move(Application.tmpPath(`uploads/${folder}`));
+      url = await Drive.getUrl(`/${folder}/${image.fileName}`);
+      break;
+    }
+  }
 
-router.get('/swagger', async () => {
-  return AutoSwagger.default.docs(router.toJSON(), swagger)
-})
+  if (!url) {
+    return response.badRequest({
+      code: 400,
+      message: 'Something went wrong! image not uploaded please try again!',
+      data: null,
+    });
+  }
 
-router.get('/docs', async () => {
-  return AutoSwagger.default.ui('/swagger', swagger)
-})
+  response.ok({
+    code: 200,
+    message: 'Image uploaded successfully.',
+    data: url,
+  });
+});
 
-import '#start/routes/auth'
-import '#start/routes/user'
-import '#start/routes/menu'
-import '#start/routes/role'
-import '#start/routes/permission'
-import '#start/routes/shop'
-import '#start/routes/attribute'
-import '#start/routes/category'
-import '#start/routes/product'
-import '#start/routes/variant'
-import '#start/routes/payment_method'
-import '#start/routes/order'
-import '#start/routes/shipment_address'
+import './routes/user';
+import './routes/shop';
+import './routes/shipment_address';
+import './routes/order';
+import './routes/payment_method';
+import './routes/product/product';
+import './routes/product/category';
+import './routes/product/attribute';
+import './routes/product/variant';
+import './routes/auth';
+import './routes/menu';
+import './routes/acl/role';
+import './routes/acl/permission';

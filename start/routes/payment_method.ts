@@ -1,18 +1,24 @@
-import router from '@adonisjs/core/services/router'
-import { middleware } from '#start/kernel'
-const PaymentMethodController = () => import('#controllers/payment_method_controller')
+import Route from '@ioc:Adonis/Core/Route';
+import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
+import PaymentMethodController from 'App/Controllers/Http/PaymentMethodController';
 
-router
-  .group(() => {
-    router.get('/', [PaymentMethodController, 'findAllRecords'])
-    router.post('/', [PaymentMethodController, 'create'])
-    router.get('/:id', [PaymentMethodController, 'findSingleRecord'])
-    router.put('/:id', [PaymentMethodController, 'update'])
-    router.delete('/:id', [PaymentMethodController, 'destroy'])
-  })
-  .use(
-    middleware.auth({
-      guards: ['api'],
-    })
-  )
-  .prefix('/api/v1/payment-method')
+Route.group(async () => {
+  Route.post('/', (ctx: HttpContextContract) => {
+    return new PaymentMethodController().create(ctx);
+  });
+  Route.put('/:id', (ctx: HttpContextContract) => {
+    return new PaymentMethodController().update(ctx);
+  });
+  Route.delete('/:id', (ctx: HttpContextContract) => {
+    return new PaymentMethodController().destroy(ctx);
+  });
+
+  Route.get('/', (ctx: HttpContextContract) => {
+    return new PaymentMethodController().findAllRecords(ctx);
+  });
+  Route.get('/:id', (ctx: HttpContextContract) => {
+    return new PaymentMethodController().findSingleRecord(ctx);
+  });
+})
+  .middleware(['auth:api'])
+  .prefix('/api/v1/payment-method');
