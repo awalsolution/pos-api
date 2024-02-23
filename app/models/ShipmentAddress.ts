@@ -1,26 +1,26 @@
 import { DateTime } from 'luxon';
 import { column, BaseModel, belongsTo, BelongsTo } from '@ioc:Adonis/Lucid/Orm';
 import { STANDARD_DATE_TIME_FORMAT } from 'App/Helpers/utils';
-import Shop from 'App/Models/Shop';
+import User from 'App/Models/User';
 
-export default class Supplier extends BaseModel {
+export default class ShipmentAddress extends BaseModel {
   @column({ isPrimary: true })
   public id: number;
 
   @column()
-  public shopId: number | undefined;
+  public userId: number | null;
 
   @column()
-  public supplier_name: string;
+  public type: string | null;
 
   @column()
-  public supplier_phone: string;
+  public first_name: string | null;
 
   @column()
-  public supplier_email: string;
+  public last_name: string | null;
 
   @column()
-  public status: string;
+  public phone_number: string | null;
 
   @column()
   public address: string | null;
@@ -33,26 +33,6 @@ export default class Supplier extends BaseModel {
 
   @column()
   public country: string | null;
-
-  @column()
-  public ordered: boolean;
-
-  @column()
-  public received: boolean;
-
-  @column()
-  public quantity_check: boolean;
-
-  @column()
-  public quality_check: boolean;
-
-  @column()
-  public put_away: boolean;
-
-  @column()
-  public to: string | null;
-  @column()
-  public cc: string | null;
 
   @column.dateTime({
     autoCreate: true,
@@ -71,6 +51,6 @@ export default class Supplier extends BaseModel {
   })
   public updatedAt: DateTime;
 
-  @belongsTo(() => Shop)
-  public shop: BelongsTo<typeof Shop>;
+  @belongsTo(() => User)
+  public user: BelongsTo<typeof User>;
 }

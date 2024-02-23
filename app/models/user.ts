@@ -16,7 +16,7 @@ import {
 } from '@ioc:Adonis/Lucid/Orm';
 import Permission from 'App/Models/Acl/Permission';
 import Role from 'App/Models/Acl/Role';
-import Profile from 'App/Models/Profile';
+import UserProfile from 'App/Models/UserProfile';
 import Shop from 'App/Models/Shop';
 import { STANDARD_DATE_TIME_FORMAT } from 'App/Helpers/utils';
 
@@ -94,8 +94,8 @@ export default class User extends BaseModel {
   })
   public permissions: ManyToMany<typeof Permission>;
 
-  @hasOne(() => Profile)
-  public profile: HasOne<typeof Profile>;
+  @hasOne(() => UserProfile)
+  public profile: HasOne<typeof UserProfile>;
 
   @belongsTo(() => Shop)
   public shop: BelongsTo<typeof Shop>;

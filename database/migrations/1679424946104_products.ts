@@ -1,28 +1,33 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema';
 
 export default class extends BaseSchema {
-  protected tableName = 'profiles';
+  protected tableName = 'products';
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id');
       table
-        .integer('user_id')
+        .integer('shop_id')
         .unsigned()
         .notNullable()
-        .unique()
-        .references('users.id')
+        .references('shops.id')
         .onUpdate('CASCADE')
         .onDelete('CASCADE');
-      table.string('first_name').nullable();
-      table.string('last_name').nullable();
-      table.string('phone_number').nullable();
-      table.string('address').nullable();
-      table.string('city').nullable();
-      table.string('state').nullable();
-      table.string('country').nullable();
-      table.string('profile_picture').nullable();
+      table
+        .integer('category_id')
+        .unsigned()
+        .notNullable()
+        .references('categories.id')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE');
+      table.string('product_code').notNullable().unique();
+      table.string('title').notNullable();
+      table.string('slug').notNullable();
+      table.boolean('status').notNullable().defaultTo(true);
+      table.string('description').nullable();
+      table.string('product_image').nullable();
 
+      table.unique(['shop_id', 'title', 'slug']);
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */

@@ -24,7 +24,7 @@ export default class extends BaseSchema {
       table.string('attribute_value').nullable();
       table.double('price').nullable();
       table.double('regular_price').nullable();
-      table.string('status').notNullable().defaultTo('active');
+      table.boolean('status').notNullable().defaultTo(true);
       table.double('sale_price').nullable();
       table.dateTime('date_on_sale_from').nullable();
       table.dateTime('date_on_sale_to').nullable();

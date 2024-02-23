@@ -1,28 +1,26 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema';
 
 export default class extends BaseSchema {
-  protected tableName = 'supplier_products';
+  protected tableName = 'categories';
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('id').primary();
+      table.increments('id');
+      table.string('name').notNullable().unique();
+      table.string('image').nullable();
       table
-        .integer('supplier_id')
+        .integer('parent_id')
         .unsigned()
-        .notNullable()
-        .references('suppliers.id')
+        .references('id')
+        .inTable('categories')
         .onUpdate('CASCADE')
         .onDelete('CASCADE');
-      table
-        .integer('product_id')
-        .unsigned()
-        .notNullable()
-        .references('products.id')
-        .onUpdate('CASCADE')
-        .onDelete('CASCADE');
+      table.boolean('status').notNullable().defaultTo(true);
+
+      table.unique(['name', 'parent_id']);
 
       /**
-       * Uses timestampz for PostgreSQL and DATETIME2 for MSSQL
+       * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */
       table.timestamp('created_at', { useTz: true }).defaultTo(this.now());
       table.timestamp('updated_at', { useTz: true }).defaultTo(this.now());

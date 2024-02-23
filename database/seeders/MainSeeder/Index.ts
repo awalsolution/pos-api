@@ -6,9 +6,6 @@ export default class IndexSeeder extends BaseSeeder {
   }
   public async run() {
     await this.runSeeder(await import('../Shop'));
-    await this.runSeeder(await import('../Warehouse'));
-    await this.runSeeder(await import('../Merchant'));
-    await this.runSeeder(await import('../Supplier'));
     await this.runSeeder(await import('../Menus'));
     await this.runSeeder(await import('../Role'));
     await this.runSeeder(await import('../Permission'));
@@ -21,6 +18,6 @@ export default class IndexSeeder extends BaseSeeder {
     await this.runSeeder(await import('../products/Product'));
     await this.runSeeder(await import('../products/Variants'));
     await this.runSeeder(await import('../products/VariantsImages'));
-    await this.runSeeder(await import('../Profile'));
+    await this.runSeeder(await import('../UserProfile'));
   }
 }

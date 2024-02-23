@@ -1,56 +1,51 @@
 import { BaseController } from 'App/Controllers/BaseController';
 import HttpCodes from 'App/Enums/HttpCodes';
-import Merchant from 'App/Models/Merchant';
+import Order from 'App/Models/Order';
 
-export default class MerchantController extends BaseController {
-  public MODEL: typeof Merchant;
+export default class OrderController extends BaseController {
+  public MODEL: typeof Order;
   constructor() {
     super();
-    this.MODEL = Merchant;
+    this.MODEL = Order;
   }
 
-  // find merchant list
-  public async findAllRecords({ auth, request, response }) {
+  // /**
+  //  * @findAllRecords
+  //  * @paramUse(paginated)
+  //  */
+  public async findAllRecords({ request, response }) {
     let DQ = this.MODEL.query();
-    const currentUser = auth.user;
 
     const page = request.input('page');
-    const pageSize = request.input('pageSize');
+    const perPage = request.input('perPage');
 
     // name filter
     if (request.input('name')) {
-      DQ = DQ.whereILike('merchant_name', request.input('name') + '%');
-    }
-
-    if (!this.isSuperAdmin(currentUser)) {
-      if (!this.ischeckAllSuperAdminUser(currentUser)) {
-        DQ = DQ.where('shop_id', currentUser.shopId!);
-      }
+      DQ = DQ.whereILike('name', request.input('name') + '%');
     }
 
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Merchant Data is Empty',
+        message: 'Data is Empty',
       });
     }
 
-    if (pageSize) {
+    if (perPage) {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        result: await DQ.preload('shop').paginate(page, pageSize),
-        message: 'Merchants find Successfully',
+        message: 'Record find Successfully',
+        result: await DQ.paginate(page, perPage),
       });
     } else {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        result: await DQ.preload('shop'),
-        message: 'Merchants find Successfully',
+        message: 'Record find Successfully',
+        result: await DQ.select('*'),
       });
     }
   }
 
-  // find merchant using id
   public async findSingleRecord({ request, response }) {
     try {
       const DQ = await this.MODEL.query()
@@ -60,13 +55,13 @@ export default class MerchantController extends BaseController {
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'Merchant Data is Empty',
+          message: 'Data is Empty',
         });
       }
 
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Merchant find successfully',
+        message: 'Record find successfully',
         result: DQ,
       });
     } catch (e) {
@@ -77,39 +72,36 @@ export default class MerchantController extends BaseController {
     }
   }
 
-  // create new merchant
-  public async create({ auth, request, response }) {
+  // /**
+  //  * @create
+  //  * @requestBody <Order>
+  //  */
+  public async create({ request, response }) {
     try {
-      const currentUser = auth.user;
-
-      const DE = await this.MODEL.findBy(
-        'merchant_name',
-        request.body().merchant_name
-      );
+      const DE = await this.MODEL.findBy('order_key', request.body().order_key);
 
       if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: 'Merchant already exists!',
+          message: `Record: "${request.body().order_key}" already exists!`,
         });
       }
+
       const DM = new this.MODEL();
 
-      if (this.isSuperAdmin(currentUser)) {
-        DM.shopId = request.body().shop_id;
-      } else if (this.ischeckAllSuperAdminUser(currentUser)) {
-        DM.shopId = request.body().shop_id;
-      } else {
-        DM.shopId = currentUser.shopId;
-      }
-
-      DM.merchant_name = request.body().merchant_name;
-      DM.status = request.body().status;
+      DM.user_id = request.body().user_id;
+      DM.shipment_address_id = request.body().shipment_address_id;
+      DM.payment_method_id = request.body().payment_method_id;
+      DM.total = request.body().total;
+      DM.order_key = request.body().order_key;
 
       const DQ = await DM.save();
+
+      DM.related('order_items').createMany(request.body().order_items);
+
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Merchant Created Successfully!',
+        message: 'Created Successfully!',
         result: DQ,
       });
     } catch (e) {
@@ -121,36 +113,32 @@ export default class MerchantController extends BaseController {
     }
   }
 
-  // update merchant using id
+  // /**
+  //  * @update
+  //  * @requestBody <Order>
+  //  */
   public async update({ request, response }) {
     try {
       const DQ = await this.MODEL.findBy('id', request.param('id'));
+
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'Merchant does not exists!',
-        });
-      }
-      const DE = await this.MODEL.query()
-        .where('merchant_name', 'like', request.body().merchant_name)
-        .whereNot('id', request.param('id'))
-        .first();
-
-      if (DE) {
-        return response.conflict({
-          code: HttpCodes.CONFLICTS,
-          message: 'Merchant already exists!',
+          message: 'Record does not exists!',
         });
       }
 
-      DQ.shopId = request.body().shop_id;
-      DQ.merchant_name = request.body().merchant_name;
+      DQ.user_id = request.body().user_id;
+      DQ.shipment_address_id = request.body().shipment_address_id;
+      DQ.payment_method_id = request.body().payment_method_id;
+      DQ.total = request.body().total;
+      DQ.order_key = request.body().order_key;
       DQ.status = request.body().status;
 
       await DQ.save();
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Merchant Update Successfully!',
+        message: 'Update Successfully!',
         result: DQ,
       });
     } catch (e) {
@@ -162,19 +150,20 @@ export default class MerchantController extends BaseController {
     }
   }
 
-  // delete merchant using id
   public async destroy({ request, response }) {
     const DQ = await this.MODEL.findBy('id', request.param('id'));
+
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Merchant not found',
+        message: 'Record not found',
       });
     }
+
     await DQ.delete();
     return response.ok({
       code: HttpCodes.SUCCESS,
-      message: 'Merchant deleted successfully',
+      message: 'Record deleted successfully',
     });
   }
 }

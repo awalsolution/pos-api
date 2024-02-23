@@ -1,35 +1,37 @@
 import { DateTime } from 'luxon';
-import { column, BaseModel, belongsTo, BelongsTo } from '@ioc:Adonis/Lucid/Orm';
+import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm';
 import { STANDARD_DATE_TIME_FORMAT } from 'App/Helpers/utils';
-import Shop from 'App/Models/Shop';
 
-export default class Warehouse extends BaseModel {
+export default class UserProfile extends BaseModel {
   @column({ isPrimary: true })
   public id: number;
 
   @column()
-  public shopId: number | undefined;
+  public userId: number | undefined;
 
   @column()
-  public warehouse_name: string;
+  public first_name: string | null;
 
   @column()
-  public warehouse_phone: string;
+  public last_name: string | null;
 
   @column()
-  public status: string;
+  public phone_number: string | null;
 
   @column()
-  public address: string;
+  public address: string | null;
 
   @column()
-  public city: string;
+  public city: string | null;
 
   @column()
-  public state: string;
+  public state: string | null;
 
   @column()
-  public country: string;
+  public country: string | null;
+
+  @column()
+  public profile_picture: string | null;
 
   @column.dateTime({
     autoCreate: true,
@@ -47,7 +49,4 @@ export default class Warehouse extends BaseModel {
     },
   })
   public updatedAt: DateTime;
-
-  @belongsTo(() => Shop)
-  public shop: BelongsTo<typeof Shop>;
 }

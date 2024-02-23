@@ -1,37 +1,35 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema';
 
 export default class extends BaseSchema {
-  protected tableName = 'warehouses';
+  protected tableName = 'shipment_addresses';
 
-  public async up() {
+  async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('id').primary();
+      table.increments('id');
       table
-        .integer('shop_id')
+        .integer('user_id')
         .unsigned()
-        .notNullable()
-        .references('shops.id')
+        .references('id')
+        .inTable('users')
         .onUpdate('CASCADE')
         .onDelete('CASCADE');
-      table.string('warehouse_name').notNullable().index();
-      table.string('warehouse_phone').notNullable();
-      table.string('status').notNullable().defaultTo('active');
+      table.string('type').nullable();
+      table.string('first_name').nullable();
+      table.string('last_name').nullable();
+      table.string('phone_number').nullable();
       table.string('address').nullable();
       table.string('city').nullable();
       table.string('state').nullable();
       table.string('country').nullable();
 
-      table.unique(['shop_id', 'warehouse_name']);
+      table.unique(['user_id', 'type']);
 
-      /**
-       * Uses timestampz for PostgreSQL and DATETIME2 for MSSQL
-       */
       table.timestamp('created_at', { useTz: true }).defaultTo(this.now());
       table.timestamp('updated_at', { useTz: true }).defaultTo(this.now());
     });
   }
 
-  public async down() {
+  async down() {
     this.schema.dropTable(this.tableName);
   }
 }

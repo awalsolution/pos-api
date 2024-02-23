@@ -1,24 +1,24 @@
 import Route from '@ioc:Adonis/Core/Route';
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
-import PurchaseController from 'App/Controllers/Http/PurchaseController';
+import PaymentMethodController from 'App/Controllers/Http/PaymentMethodController';
 
 Route.group(async () => {
   Route.post('/', (ctx: HttpContextContract) => {
-    return new PurchaseController().create(ctx);
+    return new PaymentMethodController().create(ctx);
   });
   Route.put('/:id', (ctx: HttpContextContract) => {
-    return new PurchaseController().update(ctx);
+    return new PaymentMethodController().update(ctx);
   });
   Route.delete('/:id', (ctx: HttpContextContract) => {
-    return new PurchaseController().destroy(ctx);
+    return new PaymentMethodController().destroy(ctx);
   });
 
   Route.get('/', (ctx: HttpContextContract) => {
-    return new PurchaseController().findAllRecords(ctx);
+    return new PaymentMethodController().findAllRecords(ctx);
   });
   Route.get('/:id', (ctx: HttpContextContract) => {
-    return new PurchaseController().findSingleRecord(ctx);
+    return new PaymentMethodController().findSingleRecord(ctx);
   });
 })
   .middleware(['auth:api'])
-  .prefix('/api/v1/purchase');
+  .prefix('/api/v1/payment-method');

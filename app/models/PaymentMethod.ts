@@ -1,37 +1,16 @@
 import { DateTime } from 'luxon';
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm';
+import { column, BaseModel } from '@ioc:Adonis/Lucid/Orm';
 import { STANDARD_DATE_TIME_FORMAT } from 'App/Helpers/utils';
 
-export default class Profile extends BaseModel {
+export default class PaymentMethod extends BaseModel {
   @column({ isPrimary: true })
   public id: number;
 
   @column()
-  public userId: number | undefined;
+  public method_title: string;
 
   @column()
-  public first_name: string | null;
-
-  @column()
-  public last_name: string | null;
-
-  @column()
-  public phone_number: string | null;
-
-  @column()
-  public address: string | null;
-
-  @column()
-  public city: string | null;
-
-  @column()
-  public state: string | null;
-
-  @column()
-  public country: string | null;
-
-  @column()
-  public profile_picture: string | null;
+  public status: boolean;
 
   @column.dateTime({
     autoCreate: true,

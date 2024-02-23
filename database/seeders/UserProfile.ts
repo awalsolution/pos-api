@@ -1,10 +1,9 @@
 import BaseSeeder from '@ioc:Adonis/Lucid/Seeder';
-// import User from 'App/Models/User';
-import Profile from 'App/Models/Profile';
+import UserProfile from 'App/Models/UserProfile';
 
 export default class extends BaseSeeder {
   public async run() {
-    await Profile.createMany([
+    await UserProfile.createMany([
       {
         userId: 1,
         first_name: 'Iqbal',
