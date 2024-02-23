@@ -75,7 +75,6 @@ export default class User extends BaseModel {
     }
   }
 
-  // Relations
   @manyToMany(() => Role, {
     pivotTable: 'user_has_roles',
     localKey: 'id',
@@ -100,7 +99,6 @@ export default class User extends BaseModel {
   @belongsTo(() => Shop)
   public shop: BelongsTo<typeof Shop>;
 
-  //Hooks
   @beforeFind()
   public static preloadListUserRoles(query: UserQuery) {
     query

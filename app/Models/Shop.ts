@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon';
 import { column, BaseModel } from '@ioc:Adonis/Lucid/Orm';
 import { STANDARD_DATE_TIME_FORMAT } from 'App/Helpers/utils';
+
 export default class Shop extends BaseModel {
   @column({ isPrimary: true })
   public id: number;

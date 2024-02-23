@@ -30,6 +30,7 @@ export default class Menu extends BaseModel {
   })
   public updatedAt: DateTime;
 
+  // relations
   @hasMany(() => Permission)
   public permissions: HasMany<typeof Permission>;
 }
