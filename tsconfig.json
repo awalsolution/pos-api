@@ -19,7 +19,6 @@
       "@adonisjs/lucid",
       "@adonisjs/auth",
       "@adonisjs/bouncer",
-      "adonis5-swagger",
       "@adonisjs/lucid-slugify"
     ]
   }

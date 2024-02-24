@@ -77,7 +77,10 @@ export default class MenuController extends BaseController {
     }
   }
 
-  // create new Menu
+  /**
+   * @create
+   * @requestBody {"menu_name":"Dashboard","menu_type":"public"}
+   */
   public async create({ request, response }) {
     try {
       const DE = await this.MODEL.findBy('menu_name', request.body().menu_name);
@@ -90,6 +93,7 @@ export default class MenuController extends BaseController {
       }
       const DM = new this.MODEL();
 
+      DM.menu_name = request.body().menu_name;
       DM.menu_name = request.body().menu_name;
 
       const DQ = await DM.save();
@@ -107,7 +111,10 @@ export default class MenuController extends BaseController {
     }
   }
 
-  // update Menu using id
+  /**
+   * @update
+   * @requestBody {"menu_name":"Dashboard","menu_type":"public"}
+   */
   public async update({ request, response }) {
     try {
       const DQ = await this.MODEL.findBy('id', request.param('id'));

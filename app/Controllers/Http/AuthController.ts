@@ -14,7 +14,11 @@ export default class AuthController extends BaseController {
     super();
     this.MODEL = User;
   }
-
+  // {"first_name": "Iqbal","last_name":"Hassan",email":"iqbal@gmail.com","password":"123456","user_type":"shop admin"}
+  /**
+   * @register
+   * @requestBody <User>
+   */
   public async register({ request, response }: HttpContextContract) {
     try {
       let userExists = await this.MODEL.findBy('email', request.body().email);
@@ -40,6 +44,7 @@ export default class AuthController extends BaseController {
         last_name: request.body().last_name,
         phone_number: request.body().phone_number,
       });
+
       // assign role to user
       if (userRole) {
         user.related('roles').sync([userRole.id]);
@@ -58,6 +63,11 @@ export default class AuthController extends BaseController {
       });
     }
   }
+
+  /**
+   * @login
+   * @requestBody {"foo": "bar"}
+   */
   public async login({ auth, request, response }: HttpContextContract) {
     try {
       const email = request.input('email');
@@ -92,7 +102,7 @@ export default class AuthController extends BaseController {
   }
 
   public async logout({ auth, response }: HttpContextContract) {
-    await auth.use('api').logout();
+    await auth.logout();
     return response.ok({
       code: HttpCodes.SUCCESS,
       message: 'User logged out Successfully',

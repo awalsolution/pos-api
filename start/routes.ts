@@ -22,8 +22,22 @@ import Route from '@ioc:Adonis/Core/Route';
 import Application from '@ioc:Adonis/Core/Application';
 import Drive from '@ioc:Adonis/Core/Drive';
 
-Route.get('/', async () => {
-  return "InSync CRM API's is Started.";
+import AutoSwagger from 'adonis-autoswagger';
+import swagger from 'Config/swagger';
+
+Route.get('/swagger', async () => {
+  return AutoSwagger.docs(Route.toJSON(), swagger);
+});
+
+Route.get('/docs', async () => {
+  return AutoSwagger.ui('/swagger', swagger);
+});
+
+Route.get('/', async ({ response }) => {
+  response.ok({
+    code: 200,
+    data: "InSync CRM API's is Started.",
+  });
 });
 
 Route.post('/api/v1/upload', async ({ request, response }) => {
@@ -56,16 +70,16 @@ Route.post('/api/v1/upload', async ({ request, response }) => {
   });
 });
 
-import './routes/user';
-import './routes/shop';
-import './routes/shipment_address';
+import './routes/auth';
 import './routes/order';
+import './routes/shipment_address';
 import './routes/payment_method';
 import './routes/product/product';
 import './routes/product/category';
 import './routes/product/attribute';
 import './routes/product/variant';
-import './routes/auth';
-import './routes/menu';
+import './routes/shop';
+import './routes/user';
 import './routes/acl/role';
 import './routes/acl/permission';
+import './routes/menu';
