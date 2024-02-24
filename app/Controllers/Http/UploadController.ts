@@ -17,13 +17,15 @@ export default class UploadController extends BaseController {
       'profile_picture',
     ];
 
+    // console.log('app root path');
+
     let image: any = null;
     let url: string | null = null;
 
     for (const file of receivedFile) {
       if (request.file(file)) {
         image = request.file(file);
-        await image.move(Application.tmpPath(`uploads/${file}`), {
+        await image.move(Application.tmpPath(`../../../imagebucket/${file}`), {
           name: `${cuid()}.${image.extname}`,
           overwrite: true,
         });
