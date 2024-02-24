@@ -9,7 +9,10 @@ export default class ShopController extends BaseController {
     this.MODEL = Shop;
   }
 
-  // find shop list
+  /**
+   * @findAllRecords
+   * @paramUse(paginated)
+   */
   public async findAllRecords({ request, response }) {
     let DQ = this.MODEL.query();
 
@@ -70,7 +73,10 @@ export default class ShopController extends BaseController {
     }
   }
 
-  // create new shop
+  /**
+   * @create
+   * @requestBody <Shop>
+   */
   public async create({ request, response }) {
     try {
       const DE = await this.MODEL.findBy('shop_name', request.body().shop_name);
@@ -107,7 +113,10 @@ export default class ShopController extends BaseController {
     }
   }
 
-  // update shop using id
+  /**
+   * @update
+   * @requestBody <Shop>
+   */
   public async update({ request, response }) {
     try {
       const DQ = await this.MODEL.findBy('id', request.param('id'));
@@ -152,7 +161,6 @@ export default class ShopController extends BaseController {
     }
   }
 
-  // delete shop using id
   public async destroy({ request, response }) {
     const DQ = await this.MODEL.findBy('id', request.param('id'));
     if (!DQ) {
@@ -164,7 +172,7 @@ export default class ShopController extends BaseController {
     await DQ.delete();
     return response.ok({
       code: HttpCodes.SUCCESS,
-      result: { message: 'Shop deleted successfully' },
+      message: 'Record deleted successfully',
     });
   }
 }

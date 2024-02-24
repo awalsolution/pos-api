@@ -9,7 +9,10 @@ export default class MenuController extends BaseController {
     this.MODEL = Menu;
   }
 
-  // find Menu list
+  /**
+   * @findAllRecords
+   * @paramUse(paginated)
+   */
   public async findAllRecords({ auth, request, response }) {
     const currentUser = auth.user;
     let DQ = this.MODEL.query();
@@ -25,7 +28,7 @@ export default class MenuController extends BaseController {
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Menus Data is Empty',
+        message: 'Data is Empty',
       });
     }
 
@@ -33,7 +36,7 @@ export default class MenuController extends BaseController {
       response.ok({
         code: HttpCodes.SUCCESS,
         result: await DQ.preload('permissions').paginate(page, perPage),
-        message: 'Menus find Successfully',
+        message: 'Record find Successfully',
       });
     } else {
       if (!this.ischeckAllSuperAdminUser(currentUser)) {
@@ -45,19 +48,18 @@ export default class MenuController extends BaseController {
               q.where('type', 'public');
             }
           ),
-          message: 'Menus find Successfully',
+          message: 'Record find Successfully',
         });
       } else {
         response.ok({
           code: HttpCodes.SUCCESS,
           result: await DQ.preload('permissions'),
-          message: 'Menus find Successfully',
+          message: 'Record find Successfully',
         });
       }
     }
   }
 
-  // find Menu using id
   public async findSingleRecord({ request, response }) {
     try {
       const DQ = await this.MODEL.query()
@@ -66,7 +68,7 @@ export default class MenuController extends BaseController {
 
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Menu find successfully',
+        message: 'Record find successfully',
         result: DQ,
       });
     } catch (e) {
@@ -88,7 +90,7 @@ export default class MenuController extends BaseController {
       if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: `Menu: "${request.body().menu_name}" already exists!`,
+          message: 'Record already exists!',
         });
       }
       const DM = new this.MODEL();
@@ -99,7 +101,7 @@ export default class MenuController extends BaseController {
       const DQ = await DM.save();
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: `Menu: "${request.body().menu_name}" Created Successfully!`,
+        message: 'Created Successfully!',
         result: DQ,
       });
     } catch (e) {
@@ -121,7 +123,7 @@ export default class MenuController extends BaseController {
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'Menu does not exists!',
+          message: 'Data does not exists!',
         });
       }
       const DE = await this.MODEL.query()
@@ -132,7 +134,7 @@ export default class MenuController extends BaseController {
       if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: `Menu: "${request.body().menu_name}" already exists!`,
+          message: 'Record already exists!',
         });
       }
 
@@ -141,7 +143,7 @@ export default class MenuController extends BaseController {
       await DQ.save();
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: `Menu: "${request.body().Menu_name}" Update Successfully!`,
+        message: 'Update Successfully!',
         result: DQ,
       });
     } catch (e) {
@@ -153,19 +155,18 @@ export default class MenuController extends BaseController {
     }
   }
 
-  // delete Menu using id
   public async destroy({ request, response }) {
     const DQ = await this.MODEL.findBy('id', request.param('id'));
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Menu not found',
+        message: 'Record not found',
       });
     }
     await DQ.delete();
     return response.ok({
       code: HttpCodes.SUCCESS,
-      result: { message: 'Menu deleted successfully' },
+      message: 'Record deleted successfully',
     });
   }
 }

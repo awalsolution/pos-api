@@ -1,15 +1,18 @@
-import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import { BaseController } from 'App/Controllers/BaseController';
 import HttpCodes from 'App/Enums/HttpCodes';
-import Permission from 'App/Models/Acl/Permission';
+import Attribute from 'App/Models/product/Attribute';
 
-export default class PermissionController extends BaseController {
-  public MODEL: typeof Permission;
+export default class AttributeController extends BaseController {
+  public MODEL: typeof Attribute;
   constructor() {
     super();
-    this.MODEL = Permission;
+    this.MODEL = Attribute;
   }
-  // find permissions list
+
+  /**
+   * @findAllRecords
+   * @paramUse(paginated)
+   */
   public async findAllRecords({ request, response }) {
     let DQ = this.MODEL.query();
 
@@ -21,34 +24,45 @@ export default class PermissionController extends BaseController {
       DQ = DQ.whereILike('name', request.input('name') + '%');
     }
 
+    if (!DQ) {
+      return response.notFound({
+        code: HttpCodes.NOT_FOUND,
+        message: 'Attributes Data is Empty',
+      });
+    }
+
     if (perPage) {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        result: await DQ.preload('menus').paginate(page, perPage),
-        message: 'Permissions Found Successfully',
+        message: 'Attributes find Successfully',
+        result: await DQ.paginate(page, perPage),
       });
     } else {
       return response.ok({
         code: HttpCodes.SUCCESS,
+        message: 'Attributes find Successfully',
         result: await DQ.select('*'),
-        message: 'Permissions Found Successfully',
       });
     }
   }
 
-  // find single permission using id
-  public async findSingleRecord({ request, response }: HttpContextContract) {
+  // find attribute using id
+  public async findSingleRecord({ request, response }) {
     try {
-      const DQ = await this.MODEL.findBy('id', request.param('id'));
+      const DQ = await this.MODEL.query()
+        .where('id', request.param('id'))
+        .first();
+
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'Permission does not exists!',
+          message: 'Attribute Data is Empty',
         });
       }
+
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Permission find Successfully!',
+        message: 'Attribute find successfully',
         result: DQ,
       });
     } catch (e) {
@@ -59,26 +73,29 @@ export default class PermissionController extends BaseController {
     }
   }
 
-  // create new permission
+  /**
+   * @create
+   * @requestBody <Attribute>
+   */
   public async create({ request, response }) {
     try {
       const DE = await this.MODEL.findBy('name', request.body().name);
+
       if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: `Permission ${request.input('name')} already exists!`,
+          message: `Attribute: "${request.body().name}" already exists!`,
         });
       }
+
       const DM = new this.MODEL();
 
-      DM.menuId = request.body().menu_id;
       DM.name = request.body().name;
-      DM.type = request.body().type;
 
       const DQ = await DM.save();
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Permission Created Successfully!',
+        message: `Attribute: "${request.body().name}" Created Successfully!`,
         result: DQ,
       });
     } catch (e) {
@@ -90,59 +107,65 @@ export default class PermissionController extends BaseController {
     }
   }
 
-  // update existing permission
-  public async update({ request, response }: HttpContextContract) {
+  /**
+   * @update
+   * @requestBody <Attribute>
+   */
+  public async update({ request, response }) {
     try {
       const DQ = await this.MODEL.findBy('id', request.param('id'));
+
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'Permission does not exists!',
+          message: 'Attribute does not exists!',
         });
       }
-      const permissionExists = await this.MODEL.query()
+
+      const DE = await this.MODEL.query()
         .where('name', 'like', request.body().name)
         .whereNot('id', request.param('id'))
         .first();
 
-      if (permissionExists) {
+      if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: `${request.body().name} permission already exist!`,
+          message: `Attribute: "${request.body().name}" already exists!`,
         });
       }
 
-      DQ.menuId = request.body().menu_id;
       DQ.name = request.body().name;
-      DQ.type = request.body().type;
 
       await DQ.save();
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Permission Updated Successfully!',
+        message: `Attribute: "${request.body().name}" Update Successfully!`,
         result: DQ,
       });
     } catch (e) {
+      console.log(e);
       return response.internalServerError({
         code: HttpCodes.SERVER_ERROR,
-        message: e.message,
+        message: e.toString(),
       });
     }
   }
 
-  // delete single permission using id
+  // delete attribute using id
   public async destroy({ request, response }) {
     const DQ = await this.MODEL.findBy('id', request.param('id'));
+
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Permission not found',
+        message: 'Attribute not found',
       });
     }
+
     await DQ.delete();
     return response.ok({
       code: HttpCodes.SUCCESS,
-      result: { message: 'Permission deleted successfully' },
+      result: { message: 'Attribute deleted successfully!' },
     });
   }
 }

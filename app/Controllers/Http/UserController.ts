@@ -1,9 +1,8 @@
 import { BaseController } from 'App/Controllers/BaseController';
 import User from 'App/Models/User';
 import HttpCodes from 'App/Enums/HttpCodes';
-import ResponseMessages from 'App/Enums/ResponseMessages';
 
-export default class UsersController extends BaseController {
+export default class UserController extends BaseController {
   public MODEL: typeof User;
 
   constructor() {
@@ -11,7 +10,10 @@ export default class UsersController extends BaseController {
     this.MODEL = User;
   }
 
-  // find all users  list
+  /**
+   * @findAllRecords
+   * @paramUse(paginated)
+   */
   public async findAllRecords({ auth, request, response }) {
     const currentUser = auth.user!;
     let DQ = this.MODEL.query().whereNotIn('id', [currentUser.id, 1]);
@@ -33,7 +35,7 @@ export default class UsersController extends BaseController {
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Users Not Found',
+        message: 'Data not found',
       });
     }
 
@@ -47,7 +49,7 @@ export default class UsersController extends BaseController {
           .preload('user_profile')
           .preload('shop')
           .paginate(page, perPage),
-        message: 'Users find Successfully',
+        message: 'Record find successfully',
       });
     } else {
       return response.ok({
@@ -58,7 +60,7 @@ export default class UsersController extends BaseController {
           })
           .preload('user_profile')
           .preload('shop'),
-        message: 'Users find Successfully',
+        message: 'Record find successfully',
       });
     }
   }
@@ -83,17 +85,22 @@ export default class UsersController extends BaseController {
 
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'User find Successfully!',
+        message: 'Record find successfully!',
         result: data,
       });
     } catch (e) {
-      return response
-        .status(HttpCodes.SERVER_ERROR)
-        .send({ code: HttpCodes.SERVER_ERROR, message: e.toString() });
+      console.log(e);
+      return response.internalServerError({
+        code: HttpCodes.SERVER_ERROR,
+        message: e.toString(),
+      });
     }
   }
 
-  // create new user
+  /**
+   * @create
+   * @requestBody <User>
+   */
   public async create({ auth, request, response }) {
     const currentUser = auth.user!;
     try {
@@ -103,7 +110,7 @@ export default class UsersController extends BaseController {
 
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: `Provided Email: ' ${request.body().email} ' Already exists`,
+          message: 'Record already exists!',
         });
       }
 
@@ -128,7 +135,7 @@ export default class UsersController extends BaseController {
       delete DM.$attributes.password;
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'User Register Successfully!',
+        message: 'Created Successfully!',
         result: DM,
       });
     } catch (e) {
@@ -140,14 +147,17 @@ export default class UsersController extends BaseController {
     }
   }
 
-  // update user
+  /**
+   * @update
+   * @requestBody <User>
+   */
   public async update({ auth, request, response }) {
     const currentUser = auth.user!;
     const DQ = await this.MODEL.findBy('id', request.param('id'));
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'User Not Found',
+        message: 'Data Not Found',
       });
     }
 
@@ -161,25 +171,28 @@ export default class UsersController extends BaseController {
     DQ.status = request.body().status;
 
     await DQ.save();
-    DQ.related('permissions').sync(request.body().permissions);
-    DQ.related('roles').sync(request.body().roles);
+    // DQ.related('permissions').sync(request.body().permissions);
+    // DQ.related('roles').sync(request.body().roles);
 
     delete DQ.$attributes.password;
     return response.ok({
       code: HttpCodes.SUCCESS,
-      message: 'User Update successfully.',
+      message: 'Update Successfully!',
       result: DQ,
     });
   }
 
-  // assign permission to user
+  /**
+   * @assignPermission
+   * @requestBody {"permissions":[1,2,3,4]}
+   */
   public async assignPermission({ auth, request, response }) {
     const currentUser = auth.user!;
     const DQ = await this.MODEL.findBy('id', request.param('id'));
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'User Not Found',
+        message: 'Data Not Found',
       });
     }
 
@@ -200,13 +213,16 @@ export default class UsersController extends BaseController {
     });
   }
 
-  // update user profile
+  /**
+   * @profileUpdate
+   * @requestBody {"first_name":"Iqbal","last_name":"Hassan","phone_number":"123456789","address":"Johar Town","city":"Lahore","state":"Punjab","country":"Pakistan","profile_picture":"/uploads/profile_picture/user-profile.jpg"}
+   */
   public async profileUpdate({ request, response }) {
     const DQ = await this.MODEL.findBy('id', request.param('id'));
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'User Not Found',
+        message: 'Data not found',
       });
     }
     DQ.related('user_profile').updateOrCreate(
@@ -217,6 +233,7 @@ export default class UsersController extends BaseController {
         phone_number: request.body().phone_number,
         address: request.body().address,
         city: request.body().city,
+        state: request.body().state,
         country: request.body().country,
         profile_picture: request.body().profile_picture,
       }
@@ -230,33 +247,18 @@ export default class UsersController extends BaseController {
     });
   }
 
-  // delete single user using id
   public async destroy({ request, response }) {
     const DQ = await this.MODEL.findBy('id', request.param('id'));
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'User not found',
+        message: 'Data not found',
       });
     }
     await DQ.delete();
     return response.ok({
       code: HttpCodes.SUCCESS,
-      result: { message: 'User deleted successfully' },
-    });
-  }
-
-  // auth user
-  public async authenticated({ auth, response }) {
-    const authenticatedUser = auth.user;
-    if (!authenticatedUser) {
-      return response.unauthorized({ message: ResponseMessages.UNAUTHORIZED });
-    }
-    delete authenticatedUser.$attributes.password;
-    return response.ok({
-      code: HttpCodes.SUCCESS,
-      message: 'User find Successfully',
-      data: auth.user,
+      message: 'Record deleted successfully',
     });
   }
 }

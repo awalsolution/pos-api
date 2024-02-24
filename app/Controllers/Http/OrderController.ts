@@ -9,10 +9,10 @@ export default class OrderController extends BaseController {
     this.MODEL = Order;
   }
 
-  // /**
-  //  * @findAllRecords
-  //  * @paramUse(paginated)
-  //  */
+  /**
+   * @findAllRecords
+   * @paramUse(paginated)
+   */
   public async findAllRecords({ request, response }) {
     let DQ = this.MODEL.query();
 
@@ -72,10 +72,10 @@ export default class OrderController extends BaseController {
     }
   }
 
-  // /**
-  //  * @create
-  //  * @requestBody <Order>
-  //  */
+  /**
+   * @create
+   * @requestBody <Order>
+   */
   public async create({ request, response }) {
     try {
       const DE = await this.MODEL.findBy('order_key', request.body().order_key);
@@ -113,10 +113,10 @@ export default class OrderController extends BaseController {
     }
   }
 
-  // /**
-  //  * @update
-  //  * @requestBody <Order>
-  //  */
+  /**
+   * @update
+   * @requestBody <Order>
+   */
   public async update({ request, response }) {
     try {
       const DQ = await this.MODEL.findBy('id', request.param('id'));

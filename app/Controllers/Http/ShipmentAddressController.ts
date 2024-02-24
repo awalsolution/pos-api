@@ -9,10 +9,10 @@ export default class ShipmentAddressController extends BaseController {
     this.MODEL = ShipmentAddress;
   }
 
-  // /**
-  //  * @findAllRecords
-  //  * @paramUse(paginated)
-  //  */
+  /**
+   * @findAllRecords
+   * @paramUse(paginated)
+   */
   public async findAllRecords({ request, response }) {
     let DQ = this.MODEL.query();
 
@@ -61,7 +61,7 @@ export default class ShipmentAddressController extends BaseController {
 
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Record find successfully',
+        message: 'Record find Successfully',
         result: DQ,
       });
     } catch (e) {
@@ -72,10 +72,10 @@ export default class ShipmentAddressController extends BaseController {
     }
   }
 
-  // /**
-  //  * @create
-  //  * @requestBody <ShipmentAddress>
-  //  */
+  /**
+   * @create
+   * @requestBody <ShipmentAddress>
+   */
   public async create({ request, response }) {
     try {
       const DM = new this.MODEL();
@@ -104,10 +104,10 @@ export default class ShipmentAddressController extends BaseController {
     }
   }
 
-  // /**
-  //  * @update
-  //  * @requestBody <ShipmentAddress>
-  //  */
+  /**
+   * @update
+   * @requestBody <ShipmentAddress>
+   */
   public async update({ request, response }) {
     try {
       const DQ = await this.MODEL.findBy('id', request.param('id'));

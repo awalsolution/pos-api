@@ -3,7 +3,7 @@ import { BaseModel, HasMany, column, hasMany } from '@ioc:Adonis/Lucid/Orm';
 import { STANDARD_DATE_TIME_FORMAT } from 'App/Helpers/utils';
 import Product from 'App/Models/product/Product';
 
-export default class Categories extends BaseModel {
+export default class Category extends BaseModel {
   @column({ isPrimary: true })
   public id: number;
 

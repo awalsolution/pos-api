@@ -14,10 +14,10 @@ export default class AuthController extends BaseController {
     super();
     this.MODEL = User;
   }
-  // {"first_name": "Iqbal","last_name":"Hassan",email":"iqbal@gmail.com","password":"123456","user_type":"shop admin"}
+
   /**
    * @register
-   * @requestBody <User>
+   * @requestBody {"first_name":"Iqbal", "last_name":"Hassan", "email":"iqbal@gmail.com", "password":"123456", "user_type":"shop admin", "phone_number":"123456789"}
    */
   public async register({ request, response }: HttpContextContract) {
     try {
@@ -52,7 +52,7 @@ export default class AuthController extends BaseController {
       delete user.$attributes.password;
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'User Register Successfully!',
+        message: 'Register Successfully!',
         result: user,
       });
     } catch (e) {
@@ -66,7 +66,7 @@ export default class AuthController extends BaseController {
 
   /**
    * @login
-   * @requestBody {"foo": "bar"}
+   * @requestBody {"email": "iqbal@gmail.com","password":"123456"}
    */
   public async login({ auth, request, response }: HttpContextContract) {
     try {
@@ -101,11 +101,25 @@ export default class AuthController extends BaseController {
     }
   }
 
+  // auth user
+  public async authenticated({ auth, response }) {
+    const authenticatedUser = auth.user;
+    if (!authenticatedUser) {
+      return response.unauthorized({ message: ResponseMessages.UNAUTHORIZED });
+    }
+    delete authenticatedUser.$attributes.password;
+    return response.ok({
+      code: HttpCodes.SUCCESS,
+      message: 'Record find successfully',
+      data: auth.user,
+    });
+  }
+
   public async logout({ auth, response }: HttpContextContract) {
     await auth.logout();
     return response.ok({
       code: HttpCodes.SUCCESS,
-      message: 'User logged out Successfully',
+      message: 'Logged out Successfully!',
     });
   }
 

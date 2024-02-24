@@ -7,7 +7,20 @@ export default {
   snakeCase: true,
   preferredPutPatch: 'PUT',
   common: {
-    parameters: {},
+    parameters: {
+      paginated: [
+        {
+          in: 'query',
+          name: 'page',
+          schema: { type: 'number', example: 1 },
+        },
+        {
+          in: 'query',
+          name: 'perPage',
+          schema: { type: 'number', example: 15 },
+        },
+      ],
+    },
     headers: {},
   },
   persistAuthorization: true,
