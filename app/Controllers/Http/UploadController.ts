@@ -3,6 +3,7 @@ import { BaseController } from 'App/Controllers/BaseController';
 import Application from '@ioc:Adonis/Core/Application';
 import { cuid } from '@ioc:Adonis/Core/Helpers';
 import Drive from '@ioc:Adonis/Core/Drive';
+import Env from '@ioc:Adonis/Core/Env';
 
 export default class UploadController extends BaseController {
   /**
@@ -25,15 +26,27 @@ export default class UploadController extends BaseController {
     for (const file of receivedFile) {
       if (request.file(file)) {
         image = request.file(file);
-        await image.move(
-          Application.tmpPath(`../../../imagebucket/uploads/${file}`),
-          {
+
+        if (Application.inDev) {
+          await image.move(Application.tmpPath(`uploads/${file}`), {
             name: `${cuid()}.${image.extname}`,
             overwrite: true,
-          }
-        );
-        url = await Drive.getUrl(`/${file}/${image.fileName}`);
-        break;
+          });
+          url = await Drive.getUrl(`/${file}/${image.fileName}`);
+          break;
+        } else {
+          await image.move(
+            Application.tmpPath(
+              `../../../${Env.get('IMAGE_BUCKET')}/uploads/${file}`
+            ),
+            {
+              name: `${cuid()}.${image.extname}`,
+              overwrite: true,
+            }
+          );
+          url = await Drive.getUrl(`/${file}/${image.fileName}`);
+          break;
+        }
       }
     }
 
