@@ -23,8 +23,11 @@ export default class UploadController extends BaseController {
     for (const file of receivedFile) {
       if (request.file(file)) {
         image = request.file(file);
-        await image.move(Application.tmpPath(`uploads/${file}`));
-        url = await Drive.getUrl(`/${file}/${cuid()}.${image.extname}`);
+        await image.move(Application.tmpPath(`uploads/${file}`), {
+          name: `${cuid()}.${image.extname}`,
+          overwrite: true,
+        });
+        url = await Drive.getUrl(`/${file}/${image.fileName}`);
         break;
       }
     }

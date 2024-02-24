@@ -1,12 +1,12 @@
-"use strict";
-import { Readable } from "stream";
-import slugify from "slugify";
+'use strict';
+import { Readable } from 'stream';
+import slugify from 'slugify';
 // import Env from "@ioc:Adonis/Core/Env";
 // import { merge } from 'lodash'
 
-export const STANDARD_DATE_TIME_FORMAT = "yyyy-LL-dd HH:mm:ss";
-export const TIMEZONE_DATE_TIME_FORMAT = "yyyy-LL-dd HH:mm:ss ZZ";
-export const DATE_FORMAT = "yyyy-LL-dd";
+export const STANDARD_DATE_TIME_FORMAT = 'yyyy-LL-dd HH:mm:ss';
+export const TIMEZONE_DATE_TIME_FORMAT = 'yyyy-LL-dd HH:mm:ss ZZ';
+export const DATE_FORMAT = 'yyyy-LL-dd';
 export const UUID_REGEX =
   /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/;
 export const passwordRegex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/;
@@ -25,7 +25,7 @@ export const generateCode = function (
   max: number
 ): Promise<number> {
   return new Promise((resolve, reject) => {
-    if (!min || !max) reject(new Error("Incomplete parameters"));
+    if (!min || !max) reject(new Error('Incomplete parameters'));
     const code = Math.floor(Math.random() * (max - min) + min);
     return resolve(code);
   });
@@ -37,20 +37,20 @@ export const bytesToKbytes = (bytes: number) =>
 export const streamToBuffer = (stream: Readable) =>
   new Promise((resolve, reject) => {
     const chunks: Array<Uint8Array> = [];
-    stream.on("data", (chunk: Uint8Array) => {
+    stream.on('data', (chunk: Uint8Array) => {
       chunks.push(chunk);
     });
-    stream.on("end", () => {
+    stream.on('end', () => {
       resolve(Buffer.concat(chunks));
     });
-    stream.on("error", reject);
+    stream.on('error', reject);
   });
 
-export const nameToSlug = (name: string, options = { replacement: "-" }) =>
+export const nameToSlug = (name: string, options = { replacement: '-' }) =>
   slugify(name, options);
 
 export const nameToCollectionName = (name: string) =>
-  slugify(name, { replacement: "_", lower: true });
+  slugify(name, { replacement: '_', lower: true });
 
 // export const commonEmailProperties = function () {
 //   const APP_NAME = Env.get("APP_NAME");

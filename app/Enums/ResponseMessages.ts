@@ -5,4 +5,4 @@ enum ResponseMessages {
   CONFLICTS = 'Already exists',
 }
 
-export default ResponseMessages
+export default ResponseMessages;

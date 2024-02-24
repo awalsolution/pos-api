@@ -1,8 +1,8 @@
-import { DateTime } from "luxon";
+import { DateTime } from 'luxon';
 
 export const randomCode = (length = 5) => {
-  const digits = "0123456789";
-  let OTP = "";
+  const digits = '0123456789';
+  let OTP = '';
   for (let i = 0; i < length; i++) {
     OTP += digits[Math.floor(Math.random() * 10)];
   }
@@ -16,14 +16,14 @@ export const maxAge = (minute = 5) => {
 };
 
 export const signupOtp = (session, email) => {
-  let signup = session.get("signup");
+  let signup = session.get('signup');
   if (signup) {
     if (signup.id === email && signup.maxAge) {
       if (signup.maxAge >= DateTime.now()) {
         const { age, validFor } = maxAge();
         signup.maxAge = age;
         signup.validFor = validFor;
-        session.put("signup", signup);
+        session.put('signup', signup);
         return signup;
       }
     }
@@ -35,7 +35,7 @@ export const signupOtp = (session, email) => {
     maxAge: age,
     validFor,
   };
-  session.put("signup", signup);
+  session.put('signup', signup);
   return signup;
 };
 

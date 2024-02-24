@@ -1,5 +1,5 @@
-import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
-import { Exception } from "@poppinss/utils";
+import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
+import { Exception } from '@poppinss/utils';
 
 /*
 |--------------------------------------------------------------------------
@@ -14,7 +14,7 @@ import { Exception } from "@poppinss/utils";
 |
 */
 export default class NoLoginException extends Exception {
-  public code = "E_AUTHENTICATION_FAILURE";
+  public code = 'E_AUTHENTICATION_FAILURE';
   public status = 403;
 
   constructor({
