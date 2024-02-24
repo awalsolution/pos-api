@@ -27,26 +27,25 @@ export default class AttributeController extends BaseController {
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Attributes Data is Empty',
+        message: 'Data is Empty',
       });
     }
 
     if (perPage) {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Attributes find Successfully',
+        message: 'Record find Successfully',
         result: await DQ.paginate(page, perPage),
       });
     } else {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Attributes find Successfully',
+        message: 'Record find Successfully',
         result: await DQ.select('*'),
       });
     }
   }
 
-  // find attribute using id
   public async findSingleRecord({ request, response }) {
     try {
       const DQ = await this.MODEL.query()
@@ -56,13 +55,13 @@ export default class AttributeController extends BaseController {
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'Attribute Data is Empty',
+          message: 'Record not found!',
         });
       }
 
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Attribute find successfully',
+        message: 'Record find successfully',
         result: DQ,
       });
     } catch (e) {
@@ -84,7 +83,7 @@ export default class AttributeController extends BaseController {
       if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: `Attribute: "${request.body().name}" already exists!`,
+          message: 'Record already exists!',
         });
       }
 
@@ -95,7 +94,7 @@ export default class AttributeController extends BaseController {
       const DQ = await DM.save();
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: `Attribute: "${request.body().name}" Created Successfully!`,
+        message: 'Created Successfully!',
         result: DQ,
       });
     } catch (e) {
@@ -118,7 +117,7 @@ export default class AttributeController extends BaseController {
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'Attribute does not exists!',
+          message: 'Record does not exists!',
         });
       }
 
@@ -130,7 +129,7 @@ export default class AttributeController extends BaseController {
       if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: `Attribute: "${request.body().name}" already exists!`,
+          message: 'Record already exists!',
         });
       }
 
@@ -139,7 +138,7 @@ export default class AttributeController extends BaseController {
       await DQ.save();
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: `Attribute: "${request.body().name}" Update Successfully!`,
+        message: ' Update Successfully!',
         result: DQ,
       });
     } catch (e) {
@@ -151,21 +150,20 @@ export default class AttributeController extends BaseController {
     }
   }
 
-  // delete attribute using id
   public async destroy({ request, response }) {
     const DQ = await this.MODEL.findBy('id', request.param('id'));
 
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Attribute not found',
+        message: 'Record not found',
       });
     }
 
     await DQ.delete();
     return response.ok({
       code: HttpCodes.SUCCESS,
-      result: { message: 'Attribute deleted successfully!' },
+      message: 'Record deleted successfully!',
     });
   }
 }

@@ -27,7 +27,7 @@ export default class ShopController extends BaseController {
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Shops Data is Empty',
+        message: 'Data is Empty',
       });
     }
 
@@ -35,18 +35,17 @@ export default class ShopController extends BaseController {
       return response.ok({
         code: HttpCodes.SUCCESS,
         result: await DQ.paginate(page, perPage),
-        message: 'Shops find Successfully',
+        message: 'Record find Successfully',
       });
     } else {
       return response.ok({
         code: HttpCodes.SUCCESS,
         result: await DQ.select('*'),
-        message: 'Shops find Successfully',
+        message: 'Record find Successfully',
       });
     }
   }
 
-  // find Shop using id
   public async findSingleRecord({ request, response }) {
     try {
       const DQ = await this.MODEL.query()
@@ -56,13 +55,13 @@ export default class ShopController extends BaseController {
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'Shop Data is Empty',
+          message: 'Data is Empty',
         });
       }
 
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Shop find successfully',
+        message: 'Record find successfully',
         result: DQ,
       });
     } catch (e) {
@@ -84,7 +83,7 @@ export default class ShopController extends BaseController {
       if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: `Shop: "${request.body().shop_name}" already exists!`,
+          message: 'Record already exists!',
         });
       }
 
@@ -101,7 +100,7 @@ export default class ShopController extends BaseController {
       const DQ = await DM.save();
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: `Shop: "${request.body().shop_name}" Created Successfully!`,
+        message: ' Created Successfully!',
         result: DQ,
       });
     } catch (e) {
@@ -123,7 +122,7 @@ export default class ShopController extends BaseController {
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'Shop does not exists!',
+          message: 'Data does not exists!',
         });
       }
       const DE = await this.MODEL.query()
@@ -134,7 +133,7 @@ export default class ShopController extends BaseController {
       if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: `Shop: "${request.body().shop_name}" already exists!`,
+          message: 'Record already exists!',
         });
       }
       DQ.shop_name = request.body().shop_name;
@@ -149,7 +148,7 @@ export default class ShopController extends BaseController {
       await DQ.save();
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: `Shop: "${request.body().shop_name}" Update Successfully!`,
+        message: ' Update Successfully!',
         result: DQ,
       });
     } catch (e) {
@@ -166,7 +165,7 @@ export default class ShopController extends BaseController {
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Shop not found',
+        message: 'Record not found',
       });
     }
     await DQ.delete();
