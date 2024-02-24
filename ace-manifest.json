@@ -1,5 +1,17 @@
 {
   "commands": {
+    "docs:generate": {
+      "settings": {
+        "loadApp": true,
+        "stayAlive": false
+      },
+      "commandPath": "./commands/DocsGenerate",
+      "commandName": "docs:generate",
+      "description": " Generate Swagger docs for production",
+      "args": [],
+      "aliases": [],
+      "flags": []
+    },
     "dump:rcfile": {
       "settings": {},
       "commandPath": "@adonisjs/core/build/commands/DumpRc",
