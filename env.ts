@@ -20,6 +20,7 @@ export default Env.rules({
   APP_KEY: Env.schema.string(),
   APP_NAME: Env.schema.string(),
   DRIVE_DISK: Env.schema.enum(['local'] as const),
+  IMAGE_BUCKET: Env.schema.string(),
   NODE_ENV: Env.schema.enum(['development', 'production', 'test'] as const),
   // MYSQL Connection
   DB_CONNECTION: Env.schema.string(),
