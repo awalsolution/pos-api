@@ -1,15 +1,18 @@
 import { BaseController } from 'App/Controllers/BaseController';
 import HttpCodes from 'App/Enums/HttpCodes';
-import Variation from 'App/Models/product/Variant';
+import Variant from 'App/Models/product/Variant';
 
-export default class VariantsController extends BaseController {
-  public MODEL: typeof Variation;
+export default class VariantController extends BaseController {
+  public MODEL: typeof Variant;
   constructor() {
     super();
-    this.MODEL = Variation;
+    this.MODEL = Variant;
   }
 
-  // find Variation list
+  /**
+   * @findAllRecords
+   * @paramUse(paginated)
+   */
   public async findAllRecords({ request, response }) {
     let DQ = this.MODEL.query();
 
@@ -24,7 +27,7 @@ export default class VariantsController extends BaseController {
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Variations Data is Empty',
+        message: 'Data is Empty',
       });
     }
 
@@ -35,7 +38,7 @@ export default class VariantsController extends BaseController {
           .preload('attributes')
           .preload('images')
           .paginate(page, perPage),
-        message: 'Variation find Successfully',
+        message: 'Record find successfully',
       });
     } else {
       return response.ok({
@@ -43,12 +46,11 @@ export default class VariantsController extends BaseController {
         result: await DQ.preload('products')
           .preload('attributes')
           .preload('images'),
-        message: 'Variation find Successfully',
+        message: 'Record find successfully',
       });
     }
   }
 
-  // find variant using id
   public async findSingleRecord({ request, response }) {
     try {
       const DQ = await this.MODEL.query()
@@ -61,13 +63,13 @@ export default class VariantsController extends BaseController {
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'Product Data is Empty',
+          message: 'Data is Empty',
         });
       }
 
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Variation find Successfully',
+        message: 'Record find Successfully',
         result: DQ,
       });
     } catch (e) {
@@ -87,7 +89,7 @@ export default class VariantsController extends BaseController {
 
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Product Variants find Successfully',
+        message: 'Record find Successfully',
         result: DQ,
       });
     } catch (e) {
@@ -98,7 +100,10 @@ export default class VariantsController extends BaseController {
     }
   }
 
-  // create new variant
+  /**
+   * @create
+   * @requestBody <Variant>
+   */
   public async create({ request, response }) {
     try {
       const DE = await this.MODEL.findBy('sku_id', request.body().sku_id);
@@ -106,7 +111,7 @@ export default class VariantsController extends BaseController {
       if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: 'Variation already exists!',
+          message: 'Record already exists!',
         });
       }
 
@@ -130,7 +135,7 @@ export default class VariantsController extends BaseController {
 
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Variant Created Successfully!',
+        message: 'Record created Successfully!',
         result: DM,
       });
     } catch (e) {
@@ -142,14 +147,17 @@ export default class VariantsController extends BaseController {
     }
   }
 
-  // update product using id
+  /**
+   * @update
+   * @requestBody <Variant>
+   */
   public async update({ request, response }) {
     try {
       const DQ = await this.MODEL.findBy('id', request.param('id'));
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'variant does not exists!',
+          message: 'Data does not exists!',
         });
       }
       DQ.sku_id = request.body().sku_id;
@@ -180,7 +188,7 @@ export default class VariantsController extends BaseController {
       }
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Variant updated successfully!',
+        message: 'Record update successfully!',
         result: DQ,
       });
     } catch (e) {
@@ -192,19 +200,18 @@ export default class VariantsController extends BaseController {
     }
   }
 
-  // delete variant using id
   public async destroy({ request, response }) {
     const DQ = await this.MODEL.findBy('id', request.param('id'));
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Variant not found',
+        message: 'Record not found',
       });
     }
     await DQ.delete();
     return response.ok({
       code: HttpCodes.SUCCESS,
-      result: { message: 'Variant deleted successfully' },
+      message: 'Record deleted successfully',
     });
   }
 }

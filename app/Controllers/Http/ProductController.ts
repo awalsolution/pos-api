@@ -1,16 +1,20 @@
+import Product from 'App/Models/product/Product';
 import { BaseController } from 'App/Controllers/BaseController';
 import HttpCodes from 'App/Enums/HttpCodes';
-import Attribute from 'App/Models/product/Attribute';
 
-export default class AttributesController extends BaseController {
-  public MODEL: typeof Attribute;
+export default class ProductController extends BaseController {
+  public MODEL: typeof Product;
   constructor() {
     super();
-    this.MODEL = Attribute;
+    this.MODEL = Product;
   }
 
-  // find attribute list
-  public async findAllRecords({ request, response }) {
+  /**
+   * @findAllRecords
+   * @paramUse(paginated)
+   */
+  public async findAllRecords({ auth, request, response }) {
+    const currentUser = auth.user!;
     let DQ = this.MODEL.query();
 
     const page = request.input('page');
@@ -18,48 +22,46 @@ export default class AttributesController extends BaseController {
 
     // name filter
     if (request.input('name')) {
-      DQ = DQ.whereILike('name', request.input('name') + '%');
+      DQ = DQ.whereILike('title', request.input('name') + '%');
     }
 
-    if (!DQ) {
-      return response.notFound({
-        code: HttpCodes.NOT_FOUND,
-        message: 'Attributes Data is Empty',
-      });
+    // fetched products with related shops
+    if (!this.isSuperAdmin(currentUser)) {
+      DQ = DQ.where('shop_id', currentUser.shopId!);
     }
 
     if (perPage) {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Attributes find Successfully',
-        result: await DQ.paginate(page, perPage),
+        message: 'Record find Successfully',
+        result: await DQ.preload('shop').paginate(page, perPage),
       });
     } else {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Attributes find Successfully',
-        result: await DQ.select('*'),
+        message: 'Record find Successfully',
+        result: await DQ.preload('shop'),
       });
     }
   }
 
-  // find attribute using id
   public async findSingleRecord({ request, response }) {
     try {
       const DQ = await this.MODEL.query()
         .where('id', request.param('id'))
+        .preload('shop')
         .first();
 
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'Attribute Data is Empty',
+          message: 'Data is Empty',
         });
       }
 
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Attribute find successfully',
+        message: 'Record find Successfully',
         result: DQ,
       });
     } catch (e) {
@@ -70,27 +72,37 @@ export default class AttributesController extends BaseController {
     }
   }
 
-  // create new attribute
-  public async create({ request, response }) {
+  /**
+   * @create
+   * @requestBody <Product>
+   */
+  public async create({ auth, request, response }) {
     try {
-      const DE = await this.MODEL.findBy('name', request.body().name);
-
+      const DE = await this.MODEL.findBy(
+        'product_code',
+        request.body().product_code
+      );
       if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: `Attribute: "${request.body().name}" already exists!`,
+          message: 'Record already exists!',
         });
       }
-
       const DM = new this.MODEL();
+      DM.shopId = auth.user?.shop.id;
+      DM.categoryId = request.body().category_id;
+      DM.product_code = request.body().product_code;
+      DM.title = request.body().title;
+      DM.description = request.body().description;
+      DM.status = request.body().status;
+      DM.product_image = request.body().product_image;
 
-      DM.name = request.body().name;
+      await DM.save();
 
-      const DQ = await DM.save();
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: `Attribute: "${request.body().name}" Created Successfully!`,
-        result: DQ,
+        message: 'Created Successfully!',
+        result: DM,
       });
     } catch (e) {
       console.log(e);
@@ -101,7 +113,10 @@ export default class AttributesController extends BaseController {
     }
   }
 
-  // update attribute using id
+  /**
+   * @update
+   * @requestBody <Product>
+   */
   public async update({ request, response }) {
     try {
       const DQ = await this.MODEL.findBy('id', request.param('id'));
@@ -109,54 +124,47 @@ export default class AttributesController extends BaseController {
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'Attribute does not exists!',
+          message: 'Data does not exists!',
         });
       }
 
-      const DE = await this.MODEL.query()
-        .where('name', 'like', request.body().name)
-        .whereNot('id', request.param('id'))
-        .first();
-
-      if (DE) {
-        return response.conflict({
-          code: HttpCodes.CONFLICTS,
-          message: `Attribute: "${request.body().name}" already exists!`,
-        });
-      }
-
-      DQ.name = request.body().name;
+      DQ.title = request.body().title;
+      DQ.categoryId = request.body().category_id;
+      DQ.product_code = request.body().product_code;
+      DQ.description = request.body().description;
+      DQ.status = request.body().status;
+      DQ.product_image = request.body().product_image;
 
       await DQ.save();
+
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: `Attribute: "${request.body().name}" Update Successfully!`,
+        message: 'Updated Successfully!',
         result: DQ,
       });
     } catch (e) {
       console.log(e);
       return response.internalServerError({
         code: HttpCodes.SERVER_ERROR,
-        message: e.toString(),
+        message: e.message,
       });
     }
   }
 
-  // delete attribute using id
   public async destroy({ request, response }) {
     const DQ = await this.MODEL.findBy('id', request.param('id'));
 
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Attribute not found',
+        message: 'Data not found',
       });
     }
 
     await DQ.delete();
     return response.ok({
       code: HttpCodes.SUCCESS,
-      result: { message: 'Attribute deleted successfully!' },
+      message: 'Record deleted successfully',
     });
   }
 }

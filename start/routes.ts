@@ -19,53 +19,37 @@
 */
 
 import Route from '@ioc:Adonis/Core/Route';
-import Application from '@ioc:Adonis/Core/Application';
-import Drive from '@ioc:Adonis/Core/Drive';
 
-Route.get('/', async () => {
-  return "InSync CRM API's is Started.";
+import AutoSwagger from 'adonis-autoswagger';
+import swagger from 'Config/swagger';
+
+Route.get('/swagger', async () => {
+  return AutoSwagger.docs(Route.toJSON(), swagger);
 });
 
-Route.post('/api/v1/upload', async ({ request, response }) => {
-  const folders = ['categories', 'products', 'shops_logo', 'profile_picture'];
+Route.get('/docs', async () => {
+  return AutoSwagger.ui('/swagger', swagger);
+});
 
-  let image: any = null;
-  let url: string | null = null;
-
-  for (const folder of folders) {
-    if (request.file(folder)) {
-      image = request.file(folder);
-      await image.move(Application.tmpPath(`uploads/${folder}`));
-      url = await Drive.getUrl(`/${folder}/${image.fileName}`);
-      break;
-    }
-  }
-
-  if (!url) {
-    return response.badRequest({
-      code: 400,
-      message: 'Something went wrong! image not uploaded please try again!',
-      data: null,
-    });
-  }
-
+Route.get('/', async ({ response }) => {
   response.ok({
     code: 200,
-    message: 'Image uploaded successfully.',
-    data: url,
+    data: "InSync CRM API's is Started.",
   });
 });
 
-import './routes/user';
-import './routes/shop';
-import './routes/shipment_address';
-import './routes/order';
-import './routes/payment_method';
-import './routes/product/product';
-import './routes/product/category';
-import './routes/product/attribute';
-import './routes/product/variant';
+Route.post('/api/v1/upload', 'UploadController.imageUploader');
+
 import './routes/auth';
+import './routes/order';
+import './routes/shipment_address';
+import './routes/payment_method';
+import './routes/product';
+import './routes/category';
+import './routes/attribute';
+import './routes/variant';
+import './routes/shop';
+import './routes/user';
+import './routes/role';
+import './routes/permission';
 import './routes/menu';
-import './routes/acl/role';
-import './routes/acl/permission';

@@ -9,10 +9,10 @@ export default class PaymentMethodController extends BaseController {
     this.MODEL = PaymentMethod;
   }
 
-  // /**
-  //  * @findAllRecords
-  //  * @paramUse(paginated)
-  //  */
+  /**
+   * @findAllRecords
+   * @paramUse(paginated)
+   */
   public async findAllRecords({ request, response }) {
     let DQ = this.MODEL.query();
 
@@ -72,10 +72,10 @@ export default class PaymentMethodController extends BaseController {
     }
   }
 
-  // /**
-  //  * @create
-  //  * @requestBody <PaymentMethod>
-  //  */
+  /**
+   * @create
+   * @requestBody <PaymentMethod>
+   */
   public async create({ request, response }) {
     try {
       const DE = await this.MODEL.findBy(
@@ -109,10 +109,10 @@ export default class PaymentMethodController extends BaseController {
     }
   }
 
-  // /**
-  //  * @update
-  //  * @requestBody <PaymentMethod>
-  //  */
+  /**
+   * @update
+   * @requestBody <PaymentMethod>
+   */
   public async update({ request, response }) {
     try {
       const DQ = await this.MODEL.findBy('id', request.param('id'));

@@ -1,9 +1,9 @@
 import BaseSeeder from '@ioc:Adonis/Lucid/Seeder';
-import Categories from 'App/Models/product/Categories';
+import Category from 'App/Models/product/Category';
 
 export default class extends BaseSeeder {
   public async run() {
-    await Categories.createMany([
+    await Category.createMany([
       {
         name: 'cloths',
         image: '/uploads/categories/category-01.jpeg',
