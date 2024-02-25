@@ -22,7 +22,7 @@ export default class AuthController extends BaseController {
   public async register({ request, response }: HttpContextContract) {
     try {
       let userExists = await this.MODEL.findBy('email', request.body().email);
-      if (userExists && !userExists.isEmailVerified) {
+      if (userExists && !userExists.is_email_verified) {
         delete userExists.$attributes.password;
 
         return response.conflict({
@@ -35,7 +35,7 @@ export default class AuthController extends BaseController {
       const user = new this.MODEL();
       user.email = request.body().email;
       user.password = request.body().password;
-      user.userType = request.body().user_type;
+      user.user_type = request.body().user_type;
 
       await user.save();
 

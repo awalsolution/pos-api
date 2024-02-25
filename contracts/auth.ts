@@ -1,11 +1,5 @@
-/**
- * Contract source: https://git.io/JOdz5
- *
- * Feel free to let us know via PR, if you find something broken in this
- * file.
- */
-
 import User from 'App/Models/User';
+import Customer from 'App/Models/Customer';
 
 declare module '@ioc:Adonis/Addons/Auth' {
   /*
@@ -36,6 +30,11 @@ declare module '@ioc:Adonis/Addons/Auth' {
     user: {
       implementation: LucidProviderContract<typeof User>;
       config: LucidProviderConfig<typeof User>;
+    };
+
+    customer: {
+      implementation: LucidProviderContract<typeof Customer>;
+      config: LucidProviderConfig<typeof Customer>;
     };
   }
 
@@ -68,6 +67,12 @@ declare module '@ioc:Adonis/Addons/Auth' {
       implementation: OATGuardContract<'user', 'api'>;
       config: OATGuardConfig<'user'>;
       client: OATClientContract<'user'>;
+    };
+
+    customer: {
+      implementation: OATGuardContract<'customer', 'customer'>;
+      config: OATGuardConfig<'customer'>;
+      client: OATClientContract<'customer'>;
     };
   }
 }

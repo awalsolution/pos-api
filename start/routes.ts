@@ -41,6 +41,7 @@ Route.get('/', async ({ response }) => {
 Route.post('/api/v1/upload', 'UploadController.imageUploader');
 
 import './routes/auth';
+import './routes/customer';
 import './routes/order';
 import './routes/shipment_address';
 import './routes/payment_method';

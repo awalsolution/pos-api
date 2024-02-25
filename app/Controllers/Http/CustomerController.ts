@@ -1,22 +1,76 @@
+import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
+import Hash from '@ioc:Adonis/Core/Hash';
 import { BaseController } from 'App/Controllers/BaseController';
-import User from 'App/Models/User';
+import Customer from 'App/Models/Customer';
 import HttpCodes from 'App/Enums/HttpCodes';
+import ResponseMessages from 'App/Enums/ResponseMessages';
 
-export default class UserController extends BaseController {
-  public MODEL: typeof User;
+export default class CustomerController extends BaseController {
+  public MODEL: typeof Customer;
 
   constructor() {
     super();
-    this.MODEL = User;
+    this.MODEL = Customer;
+  }
+
+  /**
+   * @login
+   * @requestBody {"email": "iqbal@gmail.com","password":"123456"}
+   */
+  public async login({ auth, request, response }: HttpContextContract) {
+    try {
+      const email = request.input('email');
+      const password = request.input('password');
+
+      let user = await this.MODEL.findBy('email', email);
+      if (!user) {
+        return response.notFound({
+          code: HttpCodes.NOT_FOUND,
+          message: 'User Not Found',
+        });
+      }
+      const isPasswordValid = await Hash.verify(user.password, password);
+      if (!isPasswordValid) {
+        return response.unauthorized({
+          code: HttpCodes.UNAUTHORIZED,
+          message: 'Invalid Password',
+        });
+      }
+      const DQ = await auth.use('customer').attempt(email, password);
+      return response.ok({
+        code: HttpCodes.SUCCESS,
+        message: 'Login Successfully!',
+        token: DQ.token,
+      });
+    } catch (e) {
+      return response.internalServerError({
+        code: HttpCodes.SERVER_ERROR,
+        message: e.toString(),
+      });
+    }
+  }
+
+  public async authenticated({ auth, response }) {
+    const auth_user = auth.customer;
+    if (!auth_user) {
+      return response.unauthorized({ message: ResponseMessages.UNAUTHORIZED });
+    }
+    delete auth_user.$attributes.password;
+    return response.ok({
+      code: HttpCodes.SUCCESS,
+      message: 'Record find successfully',
+      data: auth.user,
+    });
   }
 
   /**
    * @findAllRecords
    * @paramUse(paginated)
    */
-  public async findAllRecords({ auth, request, response }) {
-    const currentUser = auth.user!;
-    let DQ = this.MODEL.query().whereNotIn('id', [currentUser.id, 1]);
+  public async findAllRecords({ request, response }) {
+    // const currentUser = auth.user!;
+    let DQ = this.MODEL.query();
+    // .whereNotIn('id', [currentUser.id, 1]);
 
     const page = request.input('page');
     const perPage = request.input('perPage');
@@ -26,11 +80,11 @@ export default class UserController extends BaseController {
       DQ = DQ.whereILike('email', request.input('name') + '%');
     }
 
-    if (!this.isSuperAdmin(currentUser)) {
-      if (!this.ischeckAllSuperAdminUser(currentUser)) {
-        DQ = DQ.where('shop_id', currentUser.shopId!);
-      }
-    }
+    // if (!this.isSuperAdmin(currentUser)) {
+    //   if (!this.ischeckAllSuperAdminUser(currentUser)) {
+    //     DQ = DQ.where('shop_id', currentUser.shopId!);
+    //   }
+    // }
 
     if (!DQ) {
       return response.notFound({
@@ -42,41 +96,23 @@ export default class UserController extends BaseController {
     if (perPage) {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        result: await DQ.preload('permissions')
-          .preload('roles', (PQ) => {
-            PQ.preload('permissions');
-          })
-          .preload('user_profile')
-          .preload('shop')
-          .paginate(page, perPage),
+        result: await DQ.preload('customer_profile').paginate(page, perPage),
         message: 'Record find successfully',
       });
     } else {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        result: await DQ.preload('permissions')
-          .preload('roles', (PQ) => {
-            PQ.preload('permissions');
-          })
-          .preload('user_profile')
-          .preload('shop'),
+        result: await DQ.preload('customer_profile'),
         message: 'Record find successfully',
       });
     }
   }
 
-  // find single user by id
   public async findSingleRecord({ request, response }) {
     try {
       const data = await this.MODEL.query()
         .where('id', request.param('id'))
-        .preload('permissions')
-        .preload('roles', (RQ) => {
-          RQ.where('name', '!=', 'super admin') // Exclude the "super admin" role
-            .preload('permissions');
-        })
-        .preload('user_profile')
-        .preload('shop')
+        .preload('customer_profile')
         .first();
 
       if (data) {
@@ -99,10 +135,10 @@ export default class UserController extends BaseController {
 
   /**
    * @create
-   * @requestBody <User>
+   * @requestBody {"first_name":"Iqbal", "last_name":"Hassan", "email":"iqbal@gmail.com", "password":"123456", "user_type":"shop admin", "phone_number":"123456789"}
    */
-  public async create({ auth, request, response }) {
-    const currentUser = auth.user!;
+  public async create({ request, response }) {
+    // const currentUser = auth.user!;
     try {
       let DE = await this.MODEL.findBy('email', request.body().email);
       if (DE && !DE.is_email_verified) {
@@ -115,19 +151,19 @@ export default class UserController extends BaseController {
       }
 
       const DM = new this.MODEL();
-      if (this.isSuperAdmin(currentUser)) {
-        DM.shopId = request.body().shop_id;
-      } else {
-        DM.shopId = currentUser.shopId;
-      }
+      // if (this.isSuperAdmin(currentUser)) {
+      //   DM.shopId = request.body().shop_id;
+      // } else {
+      //   DM.shopId = currentUser.shopId;
+      // }
+
       DM.email = request.body().email;
       DM.status = request.body().status;
       DM.password = request.body().password;
-      DM.user_type = request.body().user_type;
 
       await DM.save();
-      DM.related('roles').sync(request.body().roles);
-      DM.related('user_profile').create({
+      // DM.related('roles').sync(request.body().roles);
+      DM.related('customer_profile').create({
         first_name: request.body().first_name,
         last_name: request.body().last_name,
         phone_number: request.body().phone_number,
@@ -136,7 +172,7 @@ export default class UserController extends BaseController {
       delete DM.$attributes.password;
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Created Successfully!',
+        message: 'Register Successfully!',
         result: DM,
       });
     } catch (e) {
@@ -150,10 +186,10 @@ export default class UserController extends BaseController {
 
   /**
    * @update
-   * @requestBody <User>
+   * @requestBody <Customer>
    */
-  public async update({ auth, request, response }) {
-    const currentUser = auth.user!;
+  public async update({ request, response }) {
+    // const currentUser = auth.user!;
     const DQ = await this.MODEL.findBy('id', request.param('id'));
     if (!DQ) {
       return response.notFound({
@@ -162,15 +198,15 @@ export default class UserController extends BaseController {
       });
     }
 
-    if (this.isSuperAdmin(currentUser)) {
-      DQ.shopId = request.body().shop_id;
-    } else {
-      DQ.shopId = currentUser.shopId;
-    }
+    // if (this.isSuperAdmin(currentUser)) {
+    //   DQ.shopId = request.body().shop_id;
+    // } else {
+    //   DQ.shopId = currentUser.shopId;
+    // }
 
     DQ.email = request.body().email;
     DQ.status = request.body().status;
-    DQ.user_type = request.body().user_type;
+    DQ.password = request.body().password;
 
     await DQ.save();
     // DQ.related('permissions').sync(request.body().permissions);
@@ -184,36 +220,36 @@ export default class UserController extends BaseController {
     });
   }
 
-  /**
-   * @assignPermission
-   * @requestBody {"permissions":[1,2,3,4]}
-   */
-  public async assignPermission({ auth, request, response }) {
-    const currentUser = auth.user!;
-    const DQ = await this.MODEL.findBy('id', request.param('id'));
-    if (!DQ) {
-      return response.notFound({
-        code: HttpCodes.NOT_FOUND,
-        message: 'Data Not Found',
-      });
-    }
+  // /**
+  //  * @assignPermission
+  //  * @requestBody {"permissions":[1,2,3,4]}
+  //  */
+  // public async assignPermission({ auth, request, response }) {
+  //   const currentUser = auth.user!;
+  //   const DQ = await this.MODEL.findBy('id', request.param('id'));
+  //   if (!DQ) {
+  //     return response.notFound({
+  //       code: HttpCodes.NOT_FOUND,
+  //       message: 'Data Not Found',
+  //     });
+  //   }
 
-    if (this.isSuperAdmin(currentUser)) {
-      DQ.shopId = request.body().shop_id;
-    } else {
-      DQ.shopId = currentUser.shopId;
-    }
+  //   if (this.isSuperAdmin(currentUser)) {
+  //     DQ.shopId = request.body().shop_id;
+  //   } else {
+  //     DQ.shopId = currentUser.shopId;
+  //   }
 
-    await DQ.save();
-    DQ.related('permissions').sync(request.body().permissions);
+  //   await DQ.save();
+  //   DQ.related('permissions').sync(request.body().permissions);
 
-    delete DQ.$attributes.password;
-    return response.ok({
-      code: HttpCodes.SUCCESS,
-      message: 'Assigned Permissions successfully.',
-      result: DQ,
-    });
-  }
+  //   delete DQ.$attributes.password;
+  //   return response.ok({
+  //     code: HttpCodes.SUCCESS,
+  //     message: 'Assigned Permissions successfully.',
+  //     result: DQ,
+  //   });
+  // }
 
   /**
    * @profileUpdate
@@ -227,7 +263,7 @@ export default class UserController extends BaseController {
         message: 'Data not found',
       });
     }
-    DQ.related('user_profile').updateOrCreate(
+    DQ.related('customer_profile').updateOrCreate(
       {},
       {
         first_name: request.body().first_name,
@@ -244,7 +280,7 @@ export default class UserController extends BaseController {
     delete DQ.$attributes.password;
     return response.ok({
       code: HttpCodes.SUCCESS,
-      message: 'User Profile Update successfully.',
+      message: 'Update Successfully!',
       result: DQ,
     });
   }
