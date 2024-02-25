@@ -34,7 +34,7 @@ export default class User extends BaseModel {
   public email: string;
 
   @column()
-  public userType: string;
+  public user_type: string;
 
   @column()
   public status: string;
@@ -43,13 +43,19 @@ export default class User extends BaseModel {
   public password: string;
 
   @column()
-  public isPhoneVerified: boolean;
+  public is_email_verified: boolean;
 
   @column()
-  public isEmailVerified: boolean;
+  public email_verified_at: string;
 
   @column()
-  public rememberToken: boolean;
+  public remember_token: boolean;
+
+  @column()
+  public is_phone_verified: boolean;
+
+  @column()
+  public phone_verified_at: string | null;
 
   @column.dateTime({
     autoCreate: true,
