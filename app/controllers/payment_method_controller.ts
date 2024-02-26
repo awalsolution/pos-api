@@ -130,6 +130,7 @@ export default class PaymentMethodController extends BaseController {
       }
 
       DQ.method_title = request.body().method_title
+      DQ.status = request.body().status
 
       await DQ.save()
       return response.ok({

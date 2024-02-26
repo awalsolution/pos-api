@@ -108,7 +108,7 @@ export default class ShipmentAddressController extends BaseController {
    * @update
    * @requestBody <ShipmentAddress>
    */
-  async update({ request, response }: HttpContext) {
+  async update({ auth, request, response }: HttpContext) {
     try {
       const DQ = await this.MODEL.findBy('id', request.param('id'))
 
@@ -119,6 +119,7 @@ export default class ShipmentAddressController extends BaseController {
         })
       }
 
+      DQ.customerId = auth.use('customer').user?.id!
       DQ.type = request.body().type
       DQ.first_name = request.body().first_name
       DQ.last_name = request.body().last_name

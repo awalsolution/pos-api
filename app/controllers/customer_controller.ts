@@ -92,7 +92,6 @@ export default class CustomerController extends BaseController {
       const DM = new this.MODEL()
 
       DM.email = request.body().email
-      DM.status = request.body().status
       DM.password = request.body().password
 
       await DM.save()
