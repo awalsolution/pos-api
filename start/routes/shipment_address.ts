@@ -7,5 +7,5 @@ Route.group(async () => {
   Route.put('/:id', 'ShipmentAddressController.update');
   Route.delete('/:id', 'ShipmentAddressController.destroy');
 })
-  .middleware(['auth:api'])
+  .middleware(['auth:customer'])
   .prefix('/api/v1/shipment-address');
