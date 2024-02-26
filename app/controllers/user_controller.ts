@@ -170,6 +170,7 @@ export default class UserController extends BaseController {
     }
 
     DQ.email = request.body().email
+    DQ.status = request.body().status
 
     await DQ.save()
 

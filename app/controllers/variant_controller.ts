@@ -167,6 +167,7 @@ export default class VariantController extends BaseController {
       DQ.stock_quantity = request.body().stock_quantity
       DQ.stock_status = request.body().stock_status
       DQ.rating = request.body().rating
+
       await DQ.save()
       const images = request.body().images
       for (const image of images) {

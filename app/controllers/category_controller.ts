@@ -35,7 +35,7 @@ export default class CategoryController extends BaseController {
     if (perPage) {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        result: await DQ.paginate(page, perPage),
+        result: await DQ.preload('sub_category').paginate(page, perPage),
         message: 'Record find successfully',
       })
     } else {
@@ -88,6 +88,7 @@ export default class CategoryController extends BaseController {
       const DM = new this.MODEL()
 
       DM.name = request.body().name
+      DM.status = request.body().status
       DM.image = request.body().image
 
       const DQ = await DM.save()
@@ -133,6 +134,7 @@ export default class CategoryController extends BaseController {
       }
       DQ.name = request.body().name
       DQ.image = request.body().image
+      DQ.status = request.body().status
 
       await DQ.save()
       return response.ok({
