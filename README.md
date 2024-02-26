@@ -33,16 +33,16 @@ InSnync CRM API's is developed with Adonisjs and mysql.
    ```
 3. Within the `.env` file, configure the MYSQL\* variables to suit your environment setup.
 
-4. launch `start development` server.
+4. `start development` server.
 
    ```bash
    yarn dev
    ```
 
-5. launch `create build for production` server.
+5. `create build for production` server.
 
    ```bash
-   yarn build
+      yarn build
    ```
 
 6. You won't be able to `login` because there are no users. So, it is time to seed the database.
