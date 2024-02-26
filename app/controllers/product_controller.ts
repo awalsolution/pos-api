@@ -46,6 +46,36 @@ export default class ProductController extends BaseController {
     }
   }
 
+  /**
+   * @findAllRecords
+   * @paramUse(paginated)
+   */
+  async findAllRecordsForFrontend({ request, response }: HttpContext) {
+    let DQ = this.MODEL.query()
+
+    const page = request.input('page')
+    const perPage = request.input('perPage')
+
+    // name filter
+    if (request.input('name')) {
+      DQ = DQ.whereILike('title', request.input('name') + '%')
+    }
+
+    if (perPage) {
+      return response.ok({
+        code: HttpCodes.SUCCESS,
+        message: 'Record find successfully!',
+        result: await DQ.preload('shop').paginate(page, perPage),
+      })
+    } else {
+      return response.ok({
+        code: HttpCodes.SUCCESS,
+        message: 'Record find successfully!',
+        result: await DQ.preload('shop'),
+      })
+    }
+  }
+
   async findSingleRecord({ request, response }: HttpContext) {
     try {
       const DQ = await this.MODEL.query().where('id', request.param('id')).preload('shop').first()

@@ -4,10 +4,11 @@ const ProductController = () => import('#controllers/product_controller')
 
 router
   .group(() => {
-    router.get('/', [ProductController, 'findAllRecords'])
+    router.get('/', [ProductController, 'findAllRecordsForFrontend'])
     router.get('/:id', [ProductController, 'findSingleRecord'])
     router
       .group(() => {
+        router.get('/admin', [ProductController, 'findAllRecords'])
         router.post('/', [ProductController, 'create'])
         router.put('/:id', [ProductController, 'update'])
         router.put('/status/:id', [ProductController, 'updateStatus'])
