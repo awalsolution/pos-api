@@ -1,69 +1,50 @@
-import { DateTime } from 'luxon';
-import {
-  column,
-  BaseModel,
-  belongsTo,
-  BelongsTo,
-  hasMany,
-  HasMany,
-} from '@ioc:Adonis/Lucid/Orm';
-import { STANDARD_DATE_TIME_FORMAT } from 'App/Helpers/utils';
-import User from 'App/Models/User';
-import OrderItem from 'App/Models/OrderItem';
-import PaymentMethod from 'App/Models/PaymentMethod';
-import ShipmentAddress from 'App/Models/ShipmentAddress';
+import { DateTime } from 'luxon'
+import { BaseModel, SnakeCaseNamingStrategy, belongsTo, column, hasMany } from '@adonisjs/lucid/orm'
+import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
+import User from '#models/user'
+import OrderItem from '#models/order_item'
+import ShipmentAddress from '#models/shipment_address'
+import PaymentMethod from '#models/payment_method'
+
+BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
 
 export default class Order extends BaseModel {
   @column({ isPrimary: true })
-  public id: number;
+  declare id: number
 
   @column()
-  public shop_id: number | null;
+  declare user_id: number | null
 
   @column()
-  public user_id: number | null;
+  declare shipment_address_id: number | null
 
   @column()
-  public shipment_address_id: number | null;
+  declare payment_method_id: number | null
 
   @column()
-  public payment_method_id: number | null;
+  declare status: string
 
   @column()
-  public status: string;
+  declare order_key: string
 
   @column()
-  public order_key: string;
+  declare total: string
 
-  @column()
-  public total: string;
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
 
-  @column.dateTime({
-    autoCreate: true,
-    serialize(value: DateTime) {
-      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : '';
-    },
-  })
-  public createdAt: DateTime;
-
-  @column.dateTime({
-    autoCreate: true,
-    autoUpdate: true,
-    serialize(value: DateTime) {
-      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : '';
-    },
-  })
-  public updatedAt: DateTime;
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime
 
   @belongsTo(() => User)
-  public user: BelongsTo<typeof User>;
+  declare user: BelongsTo<typeof User>
 
   @belongsTo(() => ShipmentAddress)
-  public address: BelongsTo<typeof ShipmentAddress>;
+  declare address: BelongsTo<typeof ShipmentAddress>
 
   @belongsTo(() => PaymentMethod)
-  public payment_method: BelongsTo<typeof PaymentMethod>;
+  declare payment_method: BelongsTo<typeof PaymentMethod>
 
   @hasMany(() => OrderItem)
-  public order_items: HasMany<typeof OrderItem>;
+  declare order_items: HasMany<typeof OrderItem>
 }

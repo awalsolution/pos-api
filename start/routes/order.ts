@@ -1,11 +1,18 @@
-import Route from '@ioc:Adonis/Core/Route';
+import router from '@adonisjs/core/services/router'
+import { middleware } from '#start/kernel'
+const OrderController = () => import('#controllers/order_controller')
 
-Route.group(async () => {
-  Route.get('/', 'OrderController.findAllRecords');
-  Route.post('/', 'OrderController.create');
-  Route.get('/:id', 'OrderController.findSingleRecord');
-  Route.group(() => {
-    Route.put('/:id', 'OrderController.update');
-    Route.delete('/:id', 'OrderController.destroy');
-  }).middleware(['auth:api']);
-}).prefix('/api/v1/order');
+router
+  .group(() => {
+    router.get('/', [OrderController, 'findAllRecords'])
+    router.post('/', [OrderController, 'create'])
+    router.get('/:id', [OrderController, 'findSingleRecord'])
+    router.put('/:id', [OrderController, 'update'])
+    router.delete('/:id', [OrderController, 'destroy'])
+  })
+  .use(
+    middleware.auth({
+      guards: ['api'],
+    })
+  )
+  .prefix('/api/v1/order')

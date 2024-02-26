@@ -1,11 +1,18 @@
-import Route from '@ioc:Adonis/Core/Route';
+import router from '@adonisjs/core/services/router'
+import { middleware } from '#start/kernel'
+const PaymentMethodController = () => import('#controllers/payment_method_controller')
 
-Route.group(async () => {
-  Route.get('/', 'PaymentMethodController.findAllRecords');
-  Route.get('/:id', 'PaymentMethodController.findSingleRecord');
-  Route.group(() => {
-    Route.post('/', 'PaymentMethodController.create');
-    Route.put('/:id', 'PaymentMethodController.update');
-    Route.delete('/:id', 'PaymentMethodController.destroy');
-  }).middleware(['auth:api']);
-}).prefix('/api/v1/payment-method');
+router
+  .group(() => {
+    router.get('/', [PaymentMethodController, 'findAllRecords'])
+    router.post('/', [PaymentMethodController, 'create'])
+    router.get('/:id', [PaymentMethodController, 'findSingleRecord'])
+    router.put('/:id', [PaymentMethodController, 'update'])
+    router.delete('/:id', [PaymentMethodController, 'destroy'])
+  })
+  .use(
+    middleware.auth({
+      guards: ['api'],
+    })
+  )
+  .prefix('/api/v1/payment-method')

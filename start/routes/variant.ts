@@ -1,12 +1,19 @@
-import Route from '@ioc:Adonis/Core/Route';
+import router from '@adonisjs/core/services/router'
+import { middleware } from '#start/kernel'
+const VariantController = () => import('#controllers/variant_controller')
 
-Route.group(async () => {
-  Route.get('/', 'VariantController.findAllRecords');
-  Route.get('/:id', 'VariantController.findSingleRecord');
-  Route.get('/findBy/:id', 'VariantController.getVariantsByProduct');
-  Route.group(() => {
-    Route.post('/:id', 'VariantController.create');
-    Route.put('/:id', 'VariantController.update');
-    Route.delete('/:id', 'VariantController.destroy');
-  }).middleware(['auth:api']);
-}).prefix('/api/v1/variant');
+router
+  .group(() => {
+    router.get('/', [VariantController, 'findAllRecords'])
+    router.post('/', [VariantController, 'create'])
+    router.get('/:id', [VariantController, 'findSingleRecord'])
+    router.get('/getVariantsByProduct/:id', [VariantController, 'getVariantsByProduct'])
+    router.put('/:id', [VariantController, 'update'])
+    router.delete('/:id', [VariantController, 'destroy'])
+  })
+  .use(
+    middleware.auth({
+      guards: ['api'],
+    })
+  )
+  .prefix('/api/v1/variant')

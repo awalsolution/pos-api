@@ -1,10 +1,13 @@
+import path from 'node:path'
+import url from 'node:url'
+
 export default {
-  path: __dirname + '/../',
-  title: 'InSync REST Api Dpcs',
+  path: path.dirname(url.fileURLToPath(import.meta.url)) + '/../',
+  title: 'InSync CRM REST API Docs',
   version: '1.0.0',
   tagIndex: 3,
-  ignore: ['/swagger', '/docs', '/uploads/*', '/'],
   snakeCase: true,
+  ignore: ['/swagger', '/docs', '/'],
   preferredPutPatch: 'PUT',
   common: {
     parameters: {
@@ -12,16 +15,16 @@ export default {
         {
           in: 'query',
           name: 'page',
-          schema: { type: 'number', example: 1 },
+          schema: { type: 'integer', example: 1 },
         },
         {
           in: 'query',
           name: 'perPage',
-          schema: { type: 'number', example: 15 },
+          schema: { type: 'integer', example: 10 },
         },
       ],
     },
     headers: {},
   },
   persistAuthorization: true,
-};
+}

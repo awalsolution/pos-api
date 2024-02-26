@@ -1,12 +1,19 @@
-import Route from '@ioc:Adonis/Core/Route';
+import router from '@adonisjs/core/services/router'
+import { middleware } from '#start/kernel'
+const RoleController = () => import('#controllers/role_controller')
 
-Route.group(async () => {
-  Route.get('/', 'RoleController.findAllRecords');
-  Route.post('/', 'RoleController.create');
-  Route.get('/:id', 'RoleController.findSingleRecord');
-  Route.put('/:id', 'RoleController.update');
-  Route.put('/assign-permission/:id', 'RoleController.assignPermission');
-  Route.delete('/:id', 'RoleController.destroy');
-})
-  .middleware(['auth:api'])
-  .prefix('/api/v1/role');
+router
+  .group(() => {
+    router.get('/', [RoleController, 'findAllRecords'])
+    router.post('/', [RoleController, 'create'])
+    router.get('/:id', [RoleController, 'findSingleRecord'])
+    router.put('/:id', [RoleController, 'update'])
+    router.put('/assign-permission/:id', [RoleController, 'assignPermission'])
+    router.delete('/:id', [RoleController, 'destroy'])
+  })
+  .use(
+    middleware.auth({
+      guards: ['api'],
+    })
+  )
+  .prefix('/api/v1/role')

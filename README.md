@@ -14,7 +14,6 @@ InSnync CRM API's is developed with Adonisjs and mysql.
 2. Development
 
 ==> Branch Name: develop
-
 ```
 
 ## How to Install
@@ -40,9 +39,15 @@ InSnync CRM API's is developed with Adonisjs and mysql.
    yarn dev
    ```
 
-5. You won't be able to `login` because there are no users. So, it is time to seed the database.
+5. launch `create build for production` server.
 
-6. To prepare (seed) the database with mock data:
+   ```bash
+   yarn build
+   ```
+
+6. You won't be able to `login` because there are no users. So, it is time to seed the database.
+
+7. To prepare (seed) the database with mock data:
 
    1. First, let's migrate the database.
 
@@ -53,12 +58,19 @@ InSnync CRM API's is developed with Adonisjs and mysql.
    2. Next, Let's seed important tables on the database. Run the index seeder command below to run all configured seeders for the application and fully setup it up in one command:
 
       ```bash
-      node ace db:seed --files="database/seeders/MainSeeder/Index.ts"
+         node ace db:seed
+      ```
+
+      or
+
+      ```bash
+      node ace db:seed --files "./database/seeders/main/index_seeder.ts"
       ```
 
       Please note that this operation could take a couple of minutes.
 
-7. Congratulations. You have successfully set up the InSync.
+8. Get an email and password of a user and log in.
+9. Congratulations. You have successfully set up the InSync.
 
 # Resources
 
