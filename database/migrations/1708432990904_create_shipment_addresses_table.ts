@@ -22,7 +22,7 @@ export default class extends BaseSchema {
       table.string('state').nullable()
       table.string('country').nullable()
 
-      table.unique(['user_id', 'type'])
+      table.unique(['customer_id', 'type'])
 
       table.timestamp('created_at')
       table.timestamp('updated_at')
