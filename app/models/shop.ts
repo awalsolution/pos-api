@@ -15,7 +15,7 @@ export default class Shop extends BaseModel {
   declare shop_phone: string | null
 
   @column()
-  declare status: string
+  declare status: boolean
 
   @column()
   declare address: string | null

@@ -75,10 +75,11 @@ export default class ShipmentAddressController extends BaseController {
    * @create
    * @requestBody <ShipmentAddress>
    */
-  async create({ request, response }: HttpContext) {
+  async create({ auth, request, response }: HttpContext) {
     try {
       const DM = new this.MODEL()
 
+      DM.customerId = auth.use('customer').user?.id!
       DM.type = request.body().type
       DM.first_name = request.body().first_name
       DM.last_name = request.body().last_name

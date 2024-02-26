@@ -198,7 +198,7 @@ export default class VariantController extends BaseController {
 
   /**
    * @updateStatus
-   * @requestBody {"status":"false"}
+   * @requestBody {"status":0}
    */
   async updateStatus({ request, response }: HttpContext) {
     const DQ = await this.MODEL.findBy('id', request.param('id'))
