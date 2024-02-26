@@ -3,6 +3,7 @@ import { BaseModel, column } from '@adonisjs/lucid/orm'
 
 export default class CustomerProfile extends BaseModel {
   @column({ isPrimary: true })
+  // @no-swagger
   declare id: number
 
   @column()
@@ -33,8 +34,10 @@ export default class CustomerProfile extends BaseModel {
   declare profile_picture: string | null
 
   @column.dateTime({ autoCreate: true })
+  // @no-swagger
   declare createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
+  // @no-swagger
   declare updatedAt: DateTime
 }

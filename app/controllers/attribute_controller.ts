@@ -28,26 +28,25 @@ export default class AttributeController extends BaseController {
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Attributes Data is Empty',
+        message: 'Data is Empty',
       })
     }
 
     if (perPage) {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Attributes find Successfully',
+        message: 'Record find Successfully',
         result: await DQ.paginate(page, perPage),
       })
     } else {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Attributes find Successfully',
+        message: 'Record find Successfully',
         result: await DQ.select('*'),
       })
     }
   }
 
-  // find attribute using id
   async findSingleRecord({ request, response }: HttpContext) {
     try {
       const DQ = await this.MODEL.query().where('id', request.param('id')).first()
@@ -55,13 +54,13 @@ export default class AttributeController extends BaseController {
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'Attribute Data is Empty',
+          message: 'Record not found!',
         })
       }
 
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Attribute find successfully',
+        message: 'Record find successfully',
         result: DQ,
       })
     } catch (e) {
@@ -74,18 +73,11 @@ export default class AttributeController extends BaseController {
 
   /**
    * @create
-   * @tag atrribute
-   * @summary create Records
-   * @description create Attribute
    * @requestBody <Attribute>
    */
-  async create({ auth, request, response }: HttpContext) {
-    const currentUser = auth.use('api').user!
+  async create({ request, response }: HttpContext) {
     try {
-      const DE = await this.MODEL.query().where({
-        name: request.body().name,
-        shop_id: currentUser.shopId!,
-      })
+      const DE = await this.MODEL.findBy('name', request.body().name)
 
       if (DE) {
         return response.conflict({
@@ -101,7 +93,7 @@ export default class AttributeController extends BaseController {
       const DQ = await DM.save()
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Record Created Successfully',
+        message: 'Created Successfully!',
         result: DQ,
       })
     } catch (e) {
@@ -113,7 +105,10 @@ export default class AttributeController extends BaseController {
     }
   }
 
-  // update attribute using id
+  /**
+   * @update
+   * @requestBody <Attribute>
+   */
   async update({ request, response }: HttpContext) {
     try {
       const DQ = await this.MODEL.findBy('id', request.param('id'))
@@ -121,7 +116,7 @@ export default class AttributeController extends BaseController {
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'Attribute does not exists!',
+          message: 'Record does not exists!',
         })
       }
 
@@ -133,7 +128,7 @@ export default class AttributeController extends BaseController {
       if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: `Attribute: "${request.body().name}" already exists!`,
+          message: 'Record already exists!',
         })
       }
 
@@ -142,7 +137,7 @@ export default class AttributeController extends BaseController {
       await DQ.save()
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: `Attribute: "${request.body().name}" Update Successfully!`,
+        message: 'Update Successfully!',
         result: DQ,
       })
     } catch (e) {
@@ -154,21 +149,46 @@ export default class AttributeController extends BaseController {
     }
   }
 
-  // delete attribute using id
+  /**
+   * @updateStatus
+   * @requestBody {"status":"false"}
+   */
+  async updateStatus({ request, response }: HttpContext) {
+    const DQ = await this.MODEL.findBy('id', request.param('id'))
+
+    if (!DQ) {
+      return response.notFound({
+        code: HttpCodes.NOT_FOUND,
+        message: 'Data not found!',
+      })
+    }
+
+    DQ.status = request.body().status
+
+    await DQ.save()
+
+    delete DQ.$attributes.password
+    return response.ok({
+      code: HttpCodes.SUCCESS,
+      message: 'Update successfully.',
+      result: DQ,
+    })
+  }
+
   async destroy({ request, response }: HttpContext) {
     const DQ = await this.MODEL.findBy('id', request.param('id'))
 
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Attribute not found',
+        message: 'Record not found',
       })
     }
 
     await DQ.delete()
     return response.ok({
       code: HttpCodes.SUCCESS,
-      message: 'Record deleted successfully',
+      message: 'Record deleted successfully!',
     })
   }
 }

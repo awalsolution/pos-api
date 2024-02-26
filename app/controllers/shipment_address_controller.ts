@@ -28,20 +28,20 @@ export default class ShipmentAddressController extends BaseController {
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Data is Empty',
+        message: 'Data is empty',
       })
     }
 
     if (perPage) {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Record find Successfully',
+        message: 'Record find successfully!',
         result: await DQ.paginate(page, perPage),
       })
     } else {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Record find Successfully',
+        message: 'Record find successfully!',
         result: await DQ.select('*'),
       })
     }
@@ -54,13 +54,13 @@ export default class ShipmentAddressController extends BaseController {
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'Data is Empty',
+          message: 'Data is empty',
         })
       }
 
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Record find successfully',
+        message: 'Record find successfully!',
         result: DQ,
       })
     } catch (e) {
@@ -91,7 +91,7 @@ export default class ShipmentAddressController extends BaseController {
       const DQ = await DM.save()
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Created Successfully!',
+        message: 'Created successfully!',
         result: DQ,
       })
     } catch (e) {
@@ -130,7 +130,7 @@ export default class ShipmentAddressController extends BaseController {
       await DQ.save()
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Update Successfully!',
+        message: 'Update successfully!',
         result: DQ,
       })
     } catch (e) {
@@ -155,7 +155,7 @@ export default class ShipmentAddressController extends BaseController {
     await DQ.delete()
     return response.ok({
       code: HttpCodes.SUCCESS,
-      message: 'Record deleted successfully',
+      message: 'Record deleted successfully!',
     })
   }
 }

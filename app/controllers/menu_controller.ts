@@ -29,7 +29,7 @@ export default class MenuController extends BaseController {
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Menus Data is Empty',
+        message: 'Data is Empty',
       })
     }
 
@@ -37,35 +37,34 @@ export default class MenuController extends BaseController {
       response.ok({
         code: HttpCodes.SUCCESS,
         result: await DQ.preload('permissions').paginate(page, perPage),
-        message: 'Menus find Successfully',
+        message: 'Record find Successfully',
       })
     } else {
       if (!this.ischeckAllSuperAdminUser(currentUser)) {
         response.ok({
           code: HttpCodes.SUCCESS,
-          result: await DQ.where('menu_type', 'public').preload('permissions', (q) => {
-            q.where('type', 'public')
+          result: await DQ.where('menu_type', '').preload('permissions', (q) => {
+            q.where('type', '')
           }),
-          message: 'Menus find Successfully',
+          message: 'Record find Successfully',
         })
       } else {
         response.ok({
           code: HttpCodes.SUCCESS,
           result: await DQ.preload('permissions'),
-          message: 'Menus find Successfully',
+          message: 'Record find successfully!',
         })
       }
     }
   }
 
-  // find Menu using id
   async findSingleRecord({ request, response }: HttpContext) {
     try {
       const DQ = await this.MODEL.query().where('id', request.param('id')).first()
 
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Menu find successfully',
+        message: 'Record find successfully!',
         result: DQ,
       })
     } catch (e) {
@@ -76,7 +75,10 @@ export default class MenuController extends BaseController {
     }
   }
 
-  // create new Menu
+  /**
+   * @create
+   * @requestBody {"menu_name":"Dashboard","menu_type":"public"}
+   */
   async create({ request, response }: HttpContext) {
     try {
       const DE = await this.MODEL.findBy('menu_name', request.body().menu_name)
@@ -84,7 +86,7 @@ export default class MenuController extends BaseController {
       if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: `Menu: "${request.body().menu_name}" already exists!`,
+          message: 'Record already exists!',
         })
       }
       const DM = new this.MODEL()
@@ -95,7 +97,7 @@ export default class MenuController extends BaseController {
       const DQ = await DM.save()
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: `Menu: "${request.body().menu_name}" Created Successfully!`,
+        message: 'Created successfully!',
         result: DQ,
       })
     } catch (e) {
@@ -107,14 +109,17 @@ export default class MenuController extends BaseController {
     }
   }
 
-  // update Menu using id
+  /**
+   * @update
+   * @requestBody {"menu_name":"Dashboard","menu_type":"public"}
+   */
   async update({ request, response }: HttpContext) {
     try {
       const DQ = await this.MODEL.findBy('id', request.param('id'))
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'Menu does not exists!',
+          message: 'Data does not exists!',
         })
       }
       const DE = await this.MODEL.query()
@@ -125,7 +130,7 @@ export default class MenuController extends BaseController {
       if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: `Menu: "${request.body().menu_name}" already exists!`,
+          message: 'Record already exists!',
         })
       }
 
@@ -135,7 +140,7 @@ export default class MenuController extends BaseController {
       await DQ.save()
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: `Menu: "${request.body().Menu_name}" Update Successfully!`,
+        message: 'Update successfully!',
         result: DQ,
       })
     } catch (e) {
@@ -147,19 +152,18 @@ export default class MenuController extends BaseController {
     }
   }
 
-  // delete Menu using id
   async destroy({ request, response }: HttpContext) {
     const DQ = await this.MODEL.findBy('id', request.param('id'))
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Menu not found',
+        message: 'Record not found',
       })
     }
     await DQ.delete()
     return response.ok({
       code: HttpCodes.SUCCESS,
-      message: 'Menu deleted successfully',
+      message: 'Record deleted successfully!',
     })
   }
 }

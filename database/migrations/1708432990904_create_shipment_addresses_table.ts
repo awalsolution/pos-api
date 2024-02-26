@@ -7,10 +7,10 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table
-        .integer('user_id')
+        .integer('customer_id')
         .unsigned()
         .references('id')
-        .inTable('users')
+        .inTable('customers')
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
       table.string('type').nullable()

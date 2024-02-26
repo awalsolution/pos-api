@@ -5,6 +5,7 @@ BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
 
 export default class UserHasPermission extends BaseModel {
   @column({ isPrimary: true })
+  // @no-swagger
   declare id: number
 
   @column()
@@ -14,8 +15,10 @@ export default class UserHasPermission extends BaseModel {
   declare permission_id: number
 
   @column.dateTime({ autoCreate: true })
+  // @no-swagger
   declare createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
+  // @no-swagger
   declare updatedAt: DateTime
 }

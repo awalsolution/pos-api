@@ -6,9 +6,9 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').notNullable()
+      table.increments('shop_id').nullable()
       table.string('email').notNullable().unique()
       table.string('password').notNullable()
-      table.string('user_type').nullable()
       table.boolean('status').notNullable().defaultTo(true)
       table.boolean('remember_token').notNullable().defaultTo(false)
       table.boolean('is_email_verified').notNullable().defaultTo(false)

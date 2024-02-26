@@ -16,9 +16,7 @@ export default class CustomerController extends BaseController {
    * @paramUse(paginated)
    */
   async findAllRecords({ request, response }: HttpContext) {
-    // const currentUser = auth.user!;
     let DQ = this.MODEL.query()
-    // .whereNotIn('id', [currentUser.id, 1]);
 
     const page = request.input('page')
     const perPage = request.input('perPage')
@@ -27,12 +25,6 @@ export default class CustomerController extends BaseController {
     if (request.input('name')) {
       DQ = DQ.whereILike('email', request.input('name') + '%')
     }
-
-    // if (!this.isSuperAdmin(currentUser)) {
-    //   if (!this.ischeckAllSuperAdminUser(currentUser)) {
-    //     DQ = DQ.where('shop_id', currentUser.shopId!);
-    //   }
-    // }
 
     if (!DQ) {
       return response.notFound({
@@ -45,13 +37,13 @@ export default class CustomerController extends BaseController {
       return response.ok({
         code: HttpCodes.SUCCESS,
         result: await DQ.preload('customer_profile').paginate(page, perPage),
-        message: 'Record find successfully',
+        message: 'Record find successfully!',
       })
     } else {
       return response.ok({
         code: HttpCodes.SUCCESS,
         result: await DQ.preload('customer_profile'),
-        message: 'Record find successfully',
+        message: 'Record find successfully!',
       })
     }
   }
@@ -83,10 +75,9 @@ export default class CustomerController extends BaseController {
 
   /**
    * @create
-   * @requestBody {"first_name":"Iqbal", "last_name":"Hassan", "email":"iqbal@gmail.com", "password":"123456", "user_type":"shop admin", "phone_number":"123456789"}
+   * @requestBody {"first_name":"Iqbal", "last_name":"Hassan", "email":"iqbal@gmail.com", "password":"123456","phone_number":"123456789"}
    */
   async create({ request, response }: HttpContext) {
-    // const currentUser = auth.user!;
     try {
       let DE = await this.MODEL.findBy('email', request.body().email)
       if (DE && !DE.is_email_verified) {
@@ -99,18 +90,13 @@ export default class CustomerController extends BaseController {
       }
 
       const DM = new this.MODEL()
-      // if (this.isSuperAdmin(currentUser)) {
-      //   DM.shopId = request.body().shop_id;
-      // } else {
-      //   DM.shopId = currentUser.shopId;
-      // }
 
       DM.email = request.body().email
       DM.status = request.body().status
       DM.password = request.body().password
 
       await DM.save()
-      // DM.related('roles').sync(request.body().roles);
+
       DM.related('customer_profile').create({
         first_name: request.body().first_name,
         last_name: request.body().last_name,
@@ -120,7 +106,7 @@ export default class CustomerController extends BaseController {
       delete DM.$attributes.password
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Register Successfully!',
+        message: 'Register successfully!',
         result: DM,
       })
     } catch (e) {
@@ -137,67 +123,53 @@ export default class CustomerController extends BaseController {
    * @requestBody <Customer>
    */
   async update({ request, response }: HttpContext) {
-    // const currentUser = auth.user!;
     const DQ = await this.MODEL.findBy('id', request.param('id'))
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Data Not Found',
+        message: 'Data not found',
       })
     }
-
-    // if (this.isSuperAdmin(currentUser)) {
-    //   DQ.shopId = request.body().shop_id;
-    // } else {
-    //   DQ.shopId = currentUser.shopId;
-    // }
 
     DQ.email = request.body().email
     DQ.status = request.body().status
     DQ.password = request.body().password
 
     await DQ.save()
-    // DQ.related('permissions').sync(request.body().permissions);
-    // DQ.related('roles').sync(request.body().roles);
 
     delete DQ.$attributes.password
     return response.ok({
       code: HttpCodes.SUCCESS,
-      message: 'Update Successfully!',
+      message: 'Update successfully!',
       result: DQ,
     })
   }
 
-  // /**
-  //  * @assignPermission
-  //  * @requestBody {"permissions":[1,2,3,4]}
-  //  */
-  //  async assignPermission({ auth, request, response }) {
-  //   const currentUser = auth.user!;
-  //   const DQ = await this.MODEL.findBy('id', request.param('id'));
-  //   if (!DQ) {
-  //     return response.notFound({
-  //       code: HttpCodes.NOT_FOUND,
-  //       message: 'Data Not Found',
-  //     });
-  //   }
+  /**
+   * @updateStatus
+   * @requestBody {"status":"false"}
+   */
+  async updateStatus({ request, response }: HttpContext) {
+    const DQ = await this.MODEL.findBy('id', request.param('id'))
 
-  //   if (this.isSuperAdmin(currentUser)) {
-  //     DQ.shopId = request.body().shop_id;
-  //   } else {
-  //     DQ.shopId = currentUser.shopId;
-  //   }
+    if (!DQ) {
+      return response.notFound({
+        code: HttpCodes.NOT_FOUND,
+        message: 'Data not found!',
+      })
+    }
 
-  //   await DQ.save();
-  //   DQ.related('permissions').sync(request.body().permissions);
+    DQ.status = request.body().status
 
-  //   delete DQ.$attributes.password;
-  //   return response.ok({
-  //     code: HttpCodes.SUCCESS,
-  //     message: 'Assigned Permissions successfully.',
-  //     result: DQ,
-  //   });
-  // }
+    await DQ.save()
+
+    delete DQ.$attributes.password
+    return response.ok({
+      code: HttpCodes.SUCCESS,
+      message: 'Update successfully!',
+      result: DQ,
+    })
+  }
 
   /**
    * @profileUpdate
@@ -228,7 +200,7 @@ export default class CustomerController extends BaseController {
     delete DQ.$attributes.password
     return response.ok({
       code: HttpCodes.SUCCESS,
-      message: 'Update Successfully!',
+      message: 'Update successfully!',
       result: DQ,
     })
   }
@@ -244,7 +216,7 @@ export default class CustomerController extends BaseController {
     await DQ.delete()
     return response.ok({
       code: HttpCodes.SUCCESS,
-      message: 'Record deleted successfully',
+      message: 'Record deleted successfully!',
     })
   }
 }

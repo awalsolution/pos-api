@@ -9,6 +9,7 @@ BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
 
 export default class Variant extends BaseModel {
   @column({ isPrimary: true })
+  // @no-swagger
   declare id: number
 
   @column()
@@ -54,9 +55,11 @@ export default class Variant extends BaseModel {
   declare rating: number | null
 
   @column.dateTime({ autoCreate: true })
+  // @no-swagger
   declare createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
+  // @no-swagger
   declare updatedAt: DateTime
 
   @belongsTo(() => Attribute)

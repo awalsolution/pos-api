@@ -6,8 +6,9 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
+      table.integer('shop_id').nullable()
       table
-        .integer('user_id')
+        .integer('customer_id')
         .unsigned()
         .references('id')
         .inTable('users')
@@ -18,6 +19,7 @@ export default class extends BaseSchema {
       table.string('order_key').nullable()
       table.string('total').nullable()
       table.string('status').notNullable().defaultTo('pending')
+
       table.timestamp('created_at')
       table.timestamp('updated_at')
     })

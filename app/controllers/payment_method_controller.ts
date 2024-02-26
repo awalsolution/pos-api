@@ -28,20 +28,20 @@ export default class PaymentMethodController extends BaseController {
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Data is Empty',
+        message: 'Data is empty',
       })
     }
 
     if (perPage) {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Record find Successfully',
+        message: 'Record find successfully!',
         result: await DQ.paginate(page, perPage),
       })
     } else {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Record find Successfully',
+        message: 'Record find successfully!',
         result: await DQ.select('*'),
       })
     }
@@ -54,7 +54,7 @@ export default class PaymentMethodController extends BaseController {
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'Data is Empty',
+          message: 'Data is empty',
         })
       }
 
@@ -82,7 +82,7 @@ export default class PaymentMethodController extends BaseController {
       if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: `Record: "${request.body().method_title}" already exists!`,
+          message: 'Record already exists!',
         })
       }
 
@@ -93,7 +93,7 @@ export default class PaymentMethodController extends BaseController {
       const DQ = await DM.save()
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Created Successfully!',
+        message: 'Created successfully!',
         result: DQ,
       })
     } catch (e) {
@@ -125,7 +125,7 @@ export default class PaymentMethodController extends BaseController {
       if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: `Record: "${request.body().name}" already exists!`,
+          message: 'Record already exists!',
         })
       }
 
@@ -134,7 +134,7 @@ export default class PaymentMethodController extends BaseController {
       await DQ.save()
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Update Successfully!',
+        message: 'Update successfully!',
         result: DQ,
       })
     } catch (e) {
@@ -144,6 +144,32 @@ export default class PaymentMethodController extends BaseController {
         message: e.toString(),
       })
     }
+  }
+
+  /**
+   * @updateStatus
+   * @requestBody {"status":"false"}
+   */
+  async updateStatus({ request, response }: HttpContext) {
+    const DQ = await this.MODEL.findBy('id', request.param('id'))
+
+    if (!DQ) {
+      return response.notFound({
+        code: HttpCodes.NOT_FOUND,
+        message: 'Data not found!',
+      })
+    }
+
+    DQ.status = request.body().status
+
+    await DQ.save()
+
+    delete DQ.$attributes.password
+    return response.ok({
+      code: HttpCodes.SUCCESS,
+      message: 'Update successfully!',
+      result: DQ,
+    })
   }
 
   async destroy({ request, response }: HttpContext) {
@@ -159,7 +185,7 @@ export default class PaymentMethodController extends BaseController {
     await DQ.delete()
     return response.ok({
       code: HttpCodes.SUCCESS,
-      message: 'Record deleted successfully',
+      message: 'Record deleted successfully!',
     })
   }
 }

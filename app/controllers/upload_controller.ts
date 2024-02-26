@@ -39,7 +39,7 @@ export default class UploadController extends BaseController {
 
     response.ok({
       code: 200,
-      message: 'Image uploaded successfully.',
+      message: 'Image uploaded successfully!',
       data: url,
     })
   }

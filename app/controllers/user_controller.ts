@@ -13,10 +13,7 @@ export default class UserController extends BaseController {
 
   /**
    * @findAllRecords
-   * @operationId getUsers
    * @paramUse(paginated)
-   * @description Returns array of producs and it's relations
-   * @responseBody 200 - <User[]>.with(relations)
    */
   async findAllRecords({ auth, request, response }: HttpContext) {
     const currentUser = auth.use('api').user!
@@ -39,7 +36,7 @@ export default class UserController extends BaseController {
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Users Not Found',
+        message: 'Data not found',
       })
     }
 
@@ -53,7 +50,7 @@ export default class UserController extends BaseController {
           .preload('user_profile')
           .preload('shop')
           .paginate(page, perPage),
-        message: 'Users find Successfully',
+        message: 'Record find successfully!',
       })
     } else {
       return response.ok({
@@ -64,7 +61,7 @@ export default class UserController extends BaseController {
           })
           .preload('user_profile')
           .preload('shop'),
-        message: 'Users find Successfully',
+        message: 'Record find successfully!',
       })
     }
   }
@@ -76,7 +73,8 @@ export default class UserController extends BaseController {
         .where('id', request.param('id'))
         .preload('permissions')
         .preload('roles', (RQ) => {
-          RQ.where('name', '!=', 'super admin').preload('permissions')
+          RQ.where('name', '!=', 'super admin') // Exclude the "super admin" role
+            .preload('permissions')
         })
         .preload('user_profile')
         .preload('shop')
@@ -88,28 +86,32 @@ export default class UserController extends BaseController {
 
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'User find Successfully!',
+        message: 'Record find successfully!',
         result: data,
       })
     } catch (e) {
-      return response
-        .status(HttpCodes.SERVER_ERROR)
-        .send({ code: HttpCodes.SERVER_ERROR, message: e.toString() })
+      console.log(e)
+      return response.internalServerError({
+        code: HttpCodes.SERVER_ERROR,
+        message: e.toString(),
+      })
     }
   }
 
-  // create new user
+  /**
+   * @create
+   * @requestBody <User>
+   */
   async create({ auth, request, response }: HttpContext) {
     const currentUser = auth.use('api').user!
     try {
-      let DE = await this.MODEL.query().where('email', request.body().email).first()
-
+      let DE = await this.MODEL.findBy('email', request.body().email)
       if (DE && !DE.is_email_verified) {
         delete DE.$attributes.password
 
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: 'Record already exists',
+          message: 'Record already exists!',
         })
       }
 
@@ -122,6 +124,7 @@ export default class UserController extends BaseController {
       DM.email = request.body().email
       DM.status = request.body().status
       DM.password = request.body().password
+      DM.user_type = request.body().user_type
 
       await DM.save()
       DM.related('roles').sync(request.body().roles)
@@ -134,7 +137,7 @@ export default class UserController extends BaseController {
       delete DM.$attributes.password
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Register Successfully!',
+        message: 'Created successfully!',
         result: DM,
       })
     } catch (e) {
@@ -146,39 +149,49 @@ export default class UserController extends BaseController {
     }
   }
 
-  // update user
-  async update({ request, response }: HttpContext) {
+  /**
+   * @update
+   * @requestBody <User>
+   */
+  async update({ auth, request, response }: HttpContext) {
+    const currentUser = auth.use('api').user!
     const DQ = await this.MODEL.findBy('id', request.param('id'))
-
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'User Not Found',
+        message: 'Data not found',
       })
     }
 
+    if (this.isSuperAdmin(currentUser)) {
+      DQ.shopId = request.body().shop_id
+    } else {
+      DQ.shopId = currentUser.shopId
+    }
+
     DQ.email = request.body().email
-    DQ.status = request.body().status
 
     await DQ.save()
-    DQ.related('roles').sync(request.body().roles)
 
     delete DQ.$attributes.password
     return response.ok({
       code: HttpCodes.SUCCESS,
-      message: 'Update successfully.',
+      message: 'Update successfully!',
       result: DQ,
     })
   }
 
-  // assign permission to user
+  /**
+   * @assignPermission
+   * @requestBody {"permissions":[1,2,3,4]}
+   */
   async assignPermission({ auth, request, response }: HttpContext) {
     const currentUser = auth.use('api').user!
     const DQ = await this.MODEL.findBy('id', request.param('id'))
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'User Not Found',
+        message: 'Data not found',
       })
     }
 
@@ -194,18 +207,21 @@ export default class UserController extends BaseController {
     delete DQ.$attributes.password
     return response.ok({
       code: HttpCodes.SUCCESS,
-      message: 'Assigned Permissions successfully.',
+      message: 'Assigned successfully!',
       result: DQ,
     })
   }
 
-  // update user profile
+  /**
+   * @profileUpdate
+   * @requestBody {"first_name":"Iqbal","last_name":"Hassan","phone_number":"123456789","address":"Johar Town","city":"Lahore","state":"Punjab","country":"Pakistan","profile_picture":"/uploads/profile_picture/user-profile.jpg"}
+   */
   async profileUpdate({ request, response }: HttpContext) {
     const DQ = await this.MODEL.findBy('id', request.param('id'))
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'User Not Found',
+        message: 'Data not found',
       })
     }
     DQ.related('user_profile').updateOrCreate(
@@ -216,6 +232,7 @@ export default class UserController extends BaseController {
         phone_number: request.body().phone_number,
         address: request.body().address,
         city: request.body().city,
+        state: request.body().state,
         country: request.body().country,
         profile_picture: request.body().profile_picture,
       }
@@ -224,24 +241,49 @@ export default class UserController extends BaseController {
     delete DQ.$attributes.password
     return response.ok({
       code: HttpCodes.SUCCESS,
-      message: 'Profile Update successfully.',
+      message: 'Update successfully!',
       result: DQ,
     })
   }
 
-  // delete single user using id
+  /**
+   * @updateStatus
+   * @requestBody {"status":"false"}
+   */
+  async updateStatus({ request, response }: HttpContext) {
+    const DQ = await this.MODEL.findBy('id', request.param('id'))
+
+    if (!DQ) {
+      return response.notFound({
+        code: HttpCodes.NOT_FOUND,
+        message: 'Data not found!',
+      })
+    }
+
+    DQ.status = request.body().status
+
+    await DQ.save()
+
+    delete DQ.$attributes.password
+    return response.ok({
+      code: HttpCodes.SUCCESS,
+      message: 'Update successfully!',
+      result: DQ,
+    })
+  }
+
   async destroy({ request, response }: HttpContext) {
     const DQ = await this.MODEL.findBy('id', request.param('id'))
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'User not found',
+        message: 'Data not found',
       })
     }
     await DQ.delete()
     return response.ok({
       code: HttpCodes.SUCCESS,
-      message: 'Record deleted successfully',
+      message: 'Record deleted successfully!',
     })
   }
 }
