@@ -9,6 +9,7 @@ router
     router.get('/:id', [VariantController, 'findSingleRecord'])
     router.get('/getVariantsByProduct/:id', [VariantController, 'getVariantsByProduct'])
     router.put('/:id', [VariantController, 'update'])
+    router.put('/status/:id', [VariantController, 'updateStatus'])
     router.delete('/:id', [VariantController, 'destroy'])
   })
   .use(

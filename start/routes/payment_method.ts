@@ -8,6 +8,7 @@ router
     router.post('/', [PaymentMethodController, 'create'])
     router.get('/:id', [PaymentMethodController, 'findSingleRecord'])
     router.put('/:id', [PaymentMethodController, 'update'])
+    router.put('/status/:id', [PaymentMethodController, 'updateStatus'])
     router.delete('/:id', [PaymentMethodController, 'destroy'])
   })
   .use(

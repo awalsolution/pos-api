@@ -8,6 +8,7 @@ router
     router.post('/', [ShopController, 'create'])
     router.get('/:id', [ShopController, 'findSingleRecord'])
     router.put('/:id', [ShopController, 'update'])
+    router.put('/status/:id', [ShopController, 'updateStatus'])
     router.delete('/:id', [ShopController, 'destroy'])
   })
   .use(

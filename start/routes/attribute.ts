@@ -8,6 +8,7 @@ router
     router.post('/', [AttributeController, 'create'])
     router.get('/:id', [AttributeController, 'findSingleRecord'])
     router.put('/:id', [AttributeController, 'update'])
+    router.put('/status/:id', [AttributeController, 'updateStatus'])
     router.delete('/:id', [AttributeController, 'destroy'])
   })
   .use(

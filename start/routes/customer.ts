@@ -8,6 +8,7 @@ router
       .group(() => {
         router.get('/', [CustomerController, 'findAllRecords'])
         router.post('/', [CustomerController, 'create'])
+        router.put('/status/:id', [CustomerController, 'updateStatus'])
         router.delete('/:id', [CustomerController, 'destroy'])
       })
       .use(

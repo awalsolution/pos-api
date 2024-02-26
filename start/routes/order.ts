@@ -8,6 +8,7 @@ router
     router.post('/', [OrderController, 'create'])
     router.get('/:id', [OrderController, 'findSingleRecord'])
     router.put('/:id', [OrderController, 'update'])
+    router.put('/status/:id', [OrderController, 'updateStatus'])
     router.delete('/:id', [OrderController, 'destroy'])
   })
   .use(
