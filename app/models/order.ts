@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import { BaseModel, SnakeCaseNamingStrategy, belongsTo, column, hasMany } from '@adonisjs/lucid/orm'
 import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
-import User from '#models/user'
+import Customer from '#models/customer'
 import OrderItem from '#models/order_item'
 import ShipmentAddress from '#models/shipment_address'
 import PaymentMethod from '#models/payment_method'
@@ -10,10 +10,11 @@ BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
 
 export default class Order extends BaseModel {
   @column({ isPrimary: true })
+  // @no-swagger
   declare id: number
 
   @column()
-  declare user_id: number | null
+  declare customerId: number | null
 
   @column()
   declare shipment_address_id: number | null
@@ -31,13 +32,15 @@ export default class Order extends BaseModel {
   declare total: string
 
   @column.dateTime({ autoCreate: true })
+  // @no-swagger
   declare createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
+  // @no-swagger
   declare updatedAt: DateTime
 
-  @belongsTo(() => User)
-  declare user: BelongsTo<typeof User>
+  @belongsTo(() => Customer)
+  declare customer: BelongsTo<typeof Customer>
 
   @belongsTo(() => ShipmentAddress)
   declare address: BelongsTo<typeof ShipmentAddress>

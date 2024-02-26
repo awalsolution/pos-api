@@ -30,6 +30,7 @@ const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
 
 export default class User extends compose(BaseModel, AuthFinder) {
   @column({ isPrimary: true })
+  // @no-swagger
   declare id: number
 
   @column()
@@ -45,7 +46,7 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare user_type: string | null
 
   @column()
-  declare status: string
+  declare status: boolean
 
   @column()
   declare remember_token: boolean | null
@@ -63,9 +64,11 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare phone_verified_at: DateTime
 
   @column.dateTime({ autoCreate: true })
+  // @no-swagger
   declare createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
+  // @no-swagger
   declare updatedAt: DateTime | null
 
   static admin_token = DbAccessTokensProvider.forModel(User)

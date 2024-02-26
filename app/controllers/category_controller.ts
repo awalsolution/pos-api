@@ -28,21 +28,21 @@ export default class CategoryController extends BaseController {
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Category Data is Empty',
+        message: 'Data is Empty',
       })
     }
 
     if (perPage) {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        result: await DQ.preload('sub_category').paginate(page, perPage),
-        message: 'Records find Successfully',
+        result: await DQ.paginate(page, perPage),
+        message: 'Record find successfully',
       })
     } else {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        result: await DQ.preload('sub_category'),
-        message: 'Records find Successfully',
+        result: await DQ.select('*'),
+        message: 'Record find successfully',
       })
     }
   }
@@ -54,13 +54,13 @@ export default class CategoryController extends BaseController {
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'Category Data is Empty',
+          message: 'Data is Empty',
         })
       }
 
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Category find successfully',
+        message: 'Record find successfully',
         result: DQ,
       })
     } catch (e) {
@@ -71,27 +71,29 @@ export default class CategoryController extends BaseController {
     }
   }
 
-  // create new Category
+  /**
+   * @create
+   * @requestBody <Category>
+   */
   async create({ request, response }: HttpContext) {
     try {
-      const DE = await this.MODEL.query().where('name', request.body().name)
+      const DE = await this.MODEL.findBy('name', request.body().name)
 
-      if (!DE) {
+      if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: 'Record already exists!',
+          message: 'Data already exists!',
         })
       }
       const DM = new this.MODEL()
 
       DM.name = request.body().name
-      DM.parent_id = request.body()?.parent_id
       DM.image = request.body().image
 
       const DQ = await DM.save()
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Record Created Successfully',
+        message: 'Created successfully!',
         result: DQ,
       })
     } catch (e) {
@@ -103,7 +105,10 @@ export default class CategoryController extends BaseController {
     }
   }
 
-  // update category using id
+  /**
+   * @update
+   * @requestBody <Category>
+   */
   async update({ request, response }: HttpContext) {
     try {
       const DQ = await this.MODEL.findBy('id', request.param('id'))
@@ -111,7 +116,7 @@ export default class CategoryController extends BaseController {
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'category does not exists!',
+          message: 'Record not exists!',
         })
       }
 
@@ -123,17 +128,16 @@ export default class CategoryController extends BaseController {
       if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: `Category: "${request.body().name}" already exists!`,
+          message: 'Record already exists!',
         })
       }
       DQ.name = request.body().name
-      DQ.parent_id = request.body()?.parent_id
       DQ.image = request.body().image
 
       await DQ.save()
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: `category: "${request.body().name}" Update Successfully!`,
+        message: 'Update successfully!',
         result: DQ,
       })
     } catch (e) {
@@ -145,19 +149,44 @@ export default class CategoryController extends BaseController {
     }
   }
 
-  // delete category using id
+  /**
+   * @updateStatus
+   * @requestBody {"status":0}
+   */
+  async updateStatus({ request, response }: HttpContext) {
+    const DQ = await this.MODEL.findBy('id', request.param('id'))
+
+    if (!DQ) {
+      return response.notFound({
+        code: HttpCodes.NOT_FOUND,
+        message: 'Data not found!',
+      })
+    }
+
+    DQ.status = request.body().status
+
+    await DQ.save()
+
+    delete DQ.$attributes.password
+    return response.ok({
+      code: HttpCodes.SUCCESS,
+      message: 'Update successfully!',
+      result: DQ,
+    })
+  }
+
   async destroy({ request, response }: HttpContext) {
     const DQ = await this.MODEL.findBy('id', request.param('id'))
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Category not found',
+        message: 'Record not found',
       })
     }
     await DQ.delete()
     return response.ok({
       code: HttpCodes.SUCCESS,
-      message: 'Record deleted successfully',
+      message: 'Record deleted successfully!',
     })
   }
 }

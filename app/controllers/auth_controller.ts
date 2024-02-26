@@ -16,7 +16,7 @@ export default class AuthController extends BaseController {
 
   /**
    * @register
-   * @requestBody {"email": "iqbal@gmail.com","password":"123456","user_type":"customer"}
+   * @requestBody {"first_name":"Iqbal", "last_name":"Hassan", "email":"iqbal@gmail.com", "password":"123456", "user_type":"shop admin", "phone_number":"123456789"}
    */
   async register({ request, response }: HttpContext) {
     try {
@@ -50,7 +50,7 @@ export default class AuthController extends BaseController {
       delete user.$attributes.password
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Register Successfully!',
+        message: 'Register successfully!',
         result: user,
       })
     } catch (e) {
@@ -71,11 +71,11 @@ export default class AuthController extends BaseController {
       const { email, password } = request.only(['email', 'password'])
       const user = await this.MODEL.verifyCredentials(email, password)
       const token = await this.MODEL.admin_token.create(user, ['*'], {
-        name: 'login_token',
+        name: 'admin_login_token',
       })
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Login Successfully!',
+        message: 'Login successfully!',
         data: token,
       })
     } catch (e) {
@@ -95,7 +95,7 @@ export default class AuthController extends BaseController {
     delete authenticatedUser.$attributes.password
     return response.ok({
       code: HttpCodes.SUCCESS,
-      message: 'User find Successfully',
+      message: 'Record find successfully!',
       result: authenticatedUser,
     })
   }
@@ -105,13 +105,13 @@ export default class AuthController extends BaseController {
     await this.MODEL.admin_token.delete(currentUser, currentUser.currentAccessToken.identifier)
     return response.ok({
       code: HttpCodes.SUCCESS,
-      message: 'User logged out Successfully',
+      message: 'Logout successfully!',
     })
   }
 
   /**
    * @customerRegister
-   * @requestBody {"email": "iqbal@gmail.com","password":"123456","user_type":"customer"}
+   * @requestBody {"first_name":"Iqbal", "last_name":"Hassan", "email":"iqbal@gmail.com", "password":"123456","phone_number":"123456789"}
    */
   async customerRegister({ request, response }: HttpContext) {
     try {
@@ -128,7 +128,6 @@ export default class AuthController extends BaseController {
       const customer = new Customer()
       customer.email = request.body().email
       customer.password = request.body().password
-      customer.user_type = request.body().user_type
 
       await customer.save()
 
@@ -141,7 +140,7 @@ export default class AuthController extends BaseController {
       delete customer.$attributes.password
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Register Successfully!',
+        message: 'Register successfully!',
         result: customer,
       })
     } catch (e) {
@@ -162,11 +161,11 @@ export default class AuthController extends BaseController {
       const { email, password } = request.only(['email', 'password'])
       const customer = await Customer.verifyCredentials(email, password)
       const token = await Customer.customer_token.create(customer, ['*'], {
-        name: 'login_token',
+        name: 'customer_login_token',
       })
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Login Successfully!',
+        message: 'Login successfully!',
         data: token,
       })
     } catch (e) {
@@ -186,7 +185,7 @@ export default class AuthController extends BaseController {
     delete authenticatedUser.$attributes.password
     return response.ok({
       code: HttpCodes.SUCCESS,
-      message: 'User find Successfully',
+      message: 'Record find successfully!',
       result: authenticatedUser,
     })
   }
@@ -196,7 +195,7 @@ export default class AuthController extends BaseController {
     await Customer.customer_token.delete(currentUser, currentUser.currentAccessToken.identifier)
     return response.ok({
       code: HttpCodes.SUCCESS,
-      message: 'Logged out Successfully',
+      message: 'Logout successfully!',
     })
   }
 

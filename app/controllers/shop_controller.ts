@@ -28,7 +28,7 @@ export default class ShopController extends BaseController {
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Shops Data is Empty',
+        message: 'Data is empty',
       })
     }
 
@@ -36,18 +36,17 @@ export default class ShopController extends BaseController {
       return response.ok({
         code: HttpCodes.SUCCESS,
         result: await DQ.paginate(page, perPage),
-        message: 'Shops find Successfully',
+        message: 'Record find successfully!',
       })
     } else {
       return response.ok({
         code: HttpCodes.SUCCESS,
         result: await DQ.select('*'),
-        message: 'Shops find Successfully',
+        message: 'Record find successfully!',
       })
     }
   }
 
-  // find Shop using id
   async findSingleRecord({ request, response }: HttpContext) {
     try {
       const DQ = await this.MODEL.query().where('id', request.param('id')).first()
@@ -55,13 +54,13 @@ export default class ShopController extends BaseController {
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'Shop Data is Empty',
+          message: 'Data is empty',
         })
       }
 
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Shop find successfully',
+        message: 'Record find successfully!',
         result: DQ,
       })
     } catch (e) {
@@ -72,7 +71,10 @@ export default class ShopController extends BaseController {
     }
   }
 
-  // create new shop
+  /**
+   * @create
+   * @requestBody <Shop>
+   */
   async create({ request, response }: HttpContext) {
     try {
       const DE = await this.MODEL.findBy('shop_name', request.body().shop_name)
@@ -80,7 +82,7 @@ export default class ShopController extends BaseController {
       if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: `Shop: "${request.body().shop_name}" already exists!`,
+          message: 'Record already exists!',
         })
       }
 
@@ -97,7 +99,7 @@ export default class ShopController extends BaseController {
       const DQ = await DM.save()
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: `Shop: "${request.body().shop_name}" Created Successfully!`,
+        message: ' Created successfully!',
         result: DQ,
       })
     } catch (e) {
@@ -109,14 +111,17 @@ export default class ShopController extends BaseController {
     }
   }
 
-  // update shop using id
+  /**
+   * @update
+   * @requestBody <Shop>
+   */
   async update({ request, response }: HttpContext) {
     try {
       const DQ = await this.MODEL.findBy('id', request.param('id'))
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'Shop does not exists!',
+          message: 'Data does not exists!',
         })
       }
       const DE = await this.MODEL.query()
@@ -127,7 +132,7 @@ export default class ShopController extends BaseController {
       if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: `Shop: "${request.body().shop_name}" already exists!`,
+          message: 'Record already exists!',
         })
       }
       DQ.shop_name = request.body().shop_name
@@ -142,7 +147,7 @@ export default class ShopController extends BaseController {
       await DQ.save()
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: `Shop: "${request.body().shop_name}" Update Successfully!`,
+        message: 'Update successfully!',
         result: DQ,
       })
     } catch (e) {
@@ -154,19 +159,44 @@ export default class ShopController extends BaseController {
     }
   }
 
-  // delete shop using id
+  /**
+   * @updateStatus
+   * @requestBody {"status":0}
+   */
+  async updateStatus({ request, response }: HttpContext) {
+    const DQ = await this.MODEL.findBy('id', request.param('id'))
+
+    if (!DQ) {
+      return response.notFound({
+        code: HttpCodes.NOT_FOUND,
+        message: 'Data not found!',
+      })
+    }
+
+    DQ.status = request.body().status
+
+    await DQ.save()
+
+    delete DQ.$attributes.password
+    return response.ok({
+      code: HttpCodes.SUCCESS,
+      message: 'Update successfully!',
+      result: DQ,
+    })
+  }
+
   async destroy({ request, response }: HttpContext) {
     const DQ = await this.MODEL.findBy('id', request.param('id'))
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Shop not found',
+        message: 'Record not found',
       })
     }
     await DQ.delete()
     return response.ok({
       code: HttpCodes.SUCCESS,
-      message: 'Record deleted successfully',
+      message: 'Record deleted successfully!',
     })
   }
 }

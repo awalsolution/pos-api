@@ -34,13 +34,13 @@ export default class RoleController extends BaseController {
       return response.ok({
         code: HttpCodes.SUCCESS,
         result: await DQ.preload('shop').paginate(page, perPage),
-        message: 'Roles Found Successfully',
+        message: 'Record find successfully!',
       })
     } else {
       return response.ok({
         code: HttpCodes.SUCCESS,
         result: await DQ.preload('permissions'),
-        message: 'Roles Found Successfully',
+        message: 'Record find successfully!',
       })
     }
   }
@@ -56,13 +56,13 @@ export default class RoleController extends BaseController {
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'Role does not exists!',
+          message: 'Data does not exists!',
         })
       }
 
       return response.send({
         code: HttpCodes.SUCCESS,
-        message: 'Role find Successfully!',
+        message: 'Record find successfully!',
         result: DQ,
       })
     } catch (e) {
@@ -73,18 +73,19 @@ export default class RoleController extends BaseController {
     }
   }
 
-  // create new Role
+  /**
+   * @create
+   * @requestBody <Role>
+   */
   async create({ auth, request, response }: HttpContext) {
     const currentUser = auth.use('api').user!
     try {
-      const DE = await this.MODEL.query()
-        .where({ name: request.body().name, shop_id: currentUser.shopId! })
-        .first()
+      const DE = await this.MODEL.findBy('name', request.body().name)
 
       if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: 'Record already exists!',
+          message: 'Data already exists!',
         })
       }
 
@@ -101,7 +102,7 @@ export default class RoleController extends BaseController {
       const DQ = await DM.save()
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Record Created Successfully',
+        message: 'Created successfully!',
         result: DQ,
       })
     } catch (e) {
@@ -113,7 +114,10 @@ export default class RoleController extends BaseController {
     }
   }
 
-  // update Role using id
+  /**
+   * @update
+   * @requestBody <Role>
+   */
   async update({ auth, request, response }: HttpContext) {
     const currentUser = auth.use('api').user!
     try {
@@ -121,7 +125,7 @@ export default class RoleController extends BaseController {
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'Role does not exists!',
+          message: 'Data does not exists!',
         })
       }
       const DE = await this.MODEL.query()
@@ -147,7 +151,7 @@ export default class RoleController extends BaseController {
       await DQ.save()
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Role updated Successfully!',
+        message: 'Updated successfully!',
         result: DQ,
       })
     } catch (e) {
@@ -159,14 +163,17 @@ export default class RoleController extends BaseController {
     }
   }
 
-  // assign permission to role
+  /**
+   * @assignPermission
+   * @requestBody {"permissions":[1,2,3,4]}
+   */
   async assignPermission({ request, response }: HttpContext) {
     try {
       const DQ = await this.MODEL.findBy('id', request.param('id'))
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'Role does not exists!',
+          message: 'Data does not exists!',
         })
       }
 
@@ -174,7 +181,7 @@ export default class RoleController extends BaseController {
       await DQ.save()
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Operation Successfully!',
+        message: 'Record successfully!',
         result: DQ,
       })
     } catch (e) {
@@ -192,13 +199,13 @@ export default class RoleController extends BaseController {
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Role not found',
+        message: 'Data not found',
       })
     }
     await DQ.delete()
     return response.ok({
       code: HttpCodes.SUCCESS,
-      message: 'Record deleted successfully',
+      message: 'Record deleted successfully!',
     })
   }
 }

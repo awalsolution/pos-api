@@ -7,10 +7,10 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table
-        .integer('user_id')
+        .integer('customer_id')
         .unsigned()
         .references('id')
-        .inTable('users')
+        .inTable('customers')
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
       table.string('type').nullable()
@@ -22,7 +22,7 @@ export default class extends BaseSchema {
       table.string('state').nullable()
       table.string('country').nullable()
 
-      table.unique(['user_id', 'type'])
+      table.unique(['customer_id', 'type'])
 
       table.timestamp('created_at')
       table.timestamp('updated_at')

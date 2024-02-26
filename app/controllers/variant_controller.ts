@@ -18,7 +18,7 @@ export default class VariantController extends BaseController {
     let DQ = this.MODEL.query()
 
     const page = request.input('page')
-    const pageSize = request.input('pageSize')
+    const perPage = request.input('perPage')
 
     // name filter
     if (request.input('name')) {
@@ -28,29 +28,28 @@ export default class VariantController extends BaseController {
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Variations Data is Empty',
+        message: 'Data is empty',
       })
     }
 
-    if (pageSize) {
+    if (perPage) {
       return response.ok({
         code: HttpCodes.SUCCESS,
         result: await DQ.preload('products')
           .preload('attributes')
           .preload('images')
-          .paginate(page, pageSize),
-        message: 'Variation find Successfully',
+          .paginate(page, perPage),
+        message: 'Record find successfully!',
       })
     } else {
       return response.ok({
         code: HttpCodes.SUCCESS,
         result: await DQ.preload('products').preload('attributes').preload('images'),
-        message: 'Variation find Successfully',
+        message: 'Record find successfully!',
       })
     }
   }
 
-  // find variant using id
   async findSingleRecord({ request, response }: HttpContext) {
     try {
       const DQ = await this.MODEL.query()
@@ -63,13 +62,13 @@ export default class VariantController extends BaseController {
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'Product Data is Empty',
+          message: 'Data is Empty',
         })
       }
 
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Variation find Successfully',
+        message: 'Record find successfully!',
         result: DQ,
       })
     } catch (e) {
@@ -89,7 +88,7 @@ export default class VariantController extends BaseController {
 
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Product Variants find Successfully',
+        message: 'Record find successfully!',
         result: DQ,
       })
     } catch (e) {
@@ -100,7 +99,10 @@ export default class VariantController extends BaseController {
     }
   }
 
-  // create new variant
+  /**
+   * @create
+   * @requestBody <Variant>
+   */
   async create({ request, response }: HttpContext) {
     try {
       const DE = await this.MODEL.findBy('sku_id', request.body().sku_id)
@@ -108,7 +110,7 @@ export default class VariantController extends BaseController {
       if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: 'Variation already exists!',
+          message: 'Record already exists!',
         })
       }
 
@@ -132,7 +134,7 @@ export default class VariantController extends BaseController {
 
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Variant Created Successfully!',
+        message: 'Created successfully!',
         result: DM,
       })
     } catch (e) {
@@ -144,14 +146,17 @@ export default class VariantController extends BaseController {
     }
   }
 
-  // update product using id
+  /**
+   * @update
+   * @requestBody <Variant>
+   */
   async update({ request, response }: HttpContext) {
     try {
       const DQ = await this.MODEL.findBy('id', request.param('id'))
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'variant does not exists!',
+          message: 'Data does not exists!',
         })
       }
       DQ.sku_id = request.body().sku_id
@@ -179,7 +184,7 @@ export default class VariantController extends BaseController {
       }
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Variant updated successfully!',
+        message: 'Update successfully!',
         result: DQ,
       })
     } catch (e) {
@@ -191,19 +196,44 @@ export default class VariantController extends BaseController {
     }
   }
 
-  // delete variant using id
+  /**
+   * @updateStatus
+   * @requestBody {"status":0}
+   */
+  async updateStatus({ request, response }: HttpContext) {
+    const DQ = await this.MODEL.findBy('id', request.param('id'))
+
+    if (!DQ) {
+      return response.notFound({
+        code: HttpCodes.NOT_FOUND,
+        message: 'Data not found!',
+      })
+    }
+
+    DQ.status = request.body().status
+
+    await DQ.save()
+
+    delete DQ.$attributes.password
+    return response.ok({
+      code: HttpCodes.SUCCESS,
+      message: 'Update successfully!',
+      result: DQ,
+    })
+  }
+
   async destroy({ request, response }: HttpContext) {
     const DQ = await this.MODEL.findBy('id', request.param('id'))
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Variant not found',
+        message: 'Record not found',
       })
     }
     await DQ.delete()
     return response.ok({
       code: HttpCodes.SUCCESS,
-      message: 'Record deleted successfully',
+      message: 'Record deleted successfully!',
     })
   }
 }

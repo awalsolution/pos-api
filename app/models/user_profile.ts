@@ -4,6 +4,7 @@ import { BaseModel, SnakeCaseNamingStrategy, column } from '@adonisjs/lucid/orm'
 BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
 export default class UserProfile extends BaseModel {
   @column({ isPrimary: true })
+  // @no-swagger
   declare id: number
 
   @column()
@@ -34,8 +35,10 @@ export default class UserProfile extends BaseModel {
   declare profile_picture: string | null
 
   @column.dateTime({ autoCreate: true })
+  // @no-swagger
   declare createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
+  // @no-swagger
   declare updatedAt: DateTime
 }

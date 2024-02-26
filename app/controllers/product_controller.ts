@@ -34,19 +34,18 @@ export default class ProductController extends BaseController {
     if (perPage) {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Products find Successfully',
+        message: 'Record find successfully!',
         result: await DQ.preload('shop').paginate(page, perPage),
       })
     } else {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Products find Successfully',
+        message: 'Record find successfully!',
         result: await DQ.preload('shop'),
       })
     }
   }
 
-  // find Product using id
   async findSingleRecord({ request, response }: HttpContext) {
     try {
       const DQ = await this.MODEL.query().where('id', request.param('id')).preload('shop').first()
@@ -54,13 +53,13 @@ export default class ProductController extends BaseController {
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'Product Data is Empty',
+          message: 'Data is Empty',
         })
       }
 
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Product find Successfully',
+        message: 'Record find successfully!',
         result: DQ,
       })
     } catch (e) {
@@ -71,17 +70,13 @@ export default class ProductController extends BaseController {
     }
   }
 
-  // create new product
+  /**
+   * @create
+   * @requestBody <Product>
+   */
   async create({ auth, request, response }: HttpContext) {
-    const currentUser = auth.use('api').user!
     try {
-      const DE = await this.MODEL.query()
-        .where({
-          product_code: request.body().product_code,
-          shop_id: currentUser.shopId!,
-        })
-        .first()
-
+      const DE = await this.MODEL.findBy('product_code', request.body().product_code)
       if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
@@ -89,7 +84,7 @@ export default class ProductController extends BaseController {
         })
       }
       const DM = new this.MODEL()
-      DM.shopId = currentUser.shop.id
+      DM.shopId = auth.use('api').user?.shop.id
       DM.categoryId = request.body().category_id
       DM.product_code = request.body().product_code
       DM.title = request.body().title
@@ -101,7 +96,7 @@ export default class ProductController extends BaseController {
 
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Record Created Successfully',
+        message: 'Created successfully!',
         result: DM,
       })
     } catch (e) {
@@ -113,7 +108,10 @@ export default class ProductController extends BaseController {
     }
   }
 
-  // update product using id
+  /**
+   * @update
+   * @requestBody <Product>
+   */
   async update({ request, response }: HttpContext) {
     try {
       const DQ = await this.MODEL.findBy('id', request.param('id'))
@@ -121,7 +119,7 @@ export default class ProductController extends BaseController {
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'Product does not exists!',
+          message: 'Data does not exists!',
         })
       }
 
@@ -136,7 +134,7 @@ export default class ProductController extends BaseController {
 
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Product updated successfully!',
+        message: 'Updated successfully!',
         result: DQ,
       })
     } catch (e) {
@@ -148,21 +146,46 @@ export default class ProductController extends BaseController {
     }
   }
 
-  // delete product using id
+  /**
+   * @updateStatus
+   * @requestBody {"status":0}
+   */
+  async updateStatus({ request, response }: HttpContext) {
+    const DQ = await this.MODEL.findBy('id', request.param('id'))
+
+    if (!DQ) {
+      return response.notFound({
+        code: HttpCodes.NOT_FOUND,
+        message: 'Data not found!',
+      })
+    }
+
+    DQ.status = request.body().status
+
+    await DQ.save()
+
+    delete DQ.$attributes.password
+    return response.ok({
+      code: HttpCodes.SUCCESS,
+      message: 'Update successfully!',
+      result: DQ,
+    })
+  }
+
   async destroy({ request, response }: HttpContext) {
     const DQ = await this.MODEL.findBy('id', request.param('id'))
 
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Product not found',
+        message: 'Data not found',
       })
     }
 
     await DQ.delete()
     return response.ok({
       code: HttpCodes.SUCCESS,
-      message: 'Record deleted successfully',
+      message: 'Record deleted successfully!',
     })
   }
 }

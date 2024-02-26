@@ -12,7 +12,7 @@ router
   })
   .use(
     middleware.auth({
-      guards: ['api'],
+      guards: ['customer'],
     })
   )
   .prefix('/api/v1/shipment-address')

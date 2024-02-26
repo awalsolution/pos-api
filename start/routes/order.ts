@@ -5,14 +5,19 @@ const OrderController = () => import('#controllers/order_controller')
 router
   .group(() => {
     router.get('/', [OrderController, 'findAllRecords'])
-    router.post('/', [OrderController, 'create'])
     router.get('/:id', [OrderController, 'findSingleRecord'])
-    router.put('/:id', [OrderController, 'update'])
+    router.post('/', [OrderController, 'create'])
     router.delete('/:id', [OrderController, 'destroy'])
+    router
+      .group(() => {
+        router.put('/:id', [OrderController, 'update'])
+        router.put('/status/:id', [OrderController, 'updateStatus'])
+      })
+      .use(
+        middleware.auth({
+          guards: ['api'],
+        })
+      )
   })
-  .use(
-    middleware.auth({
-      guards: ['api'],
-    })
-  )
+
   .prefix('/api/v1/order')

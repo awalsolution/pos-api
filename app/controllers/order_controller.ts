@@ -35,13 +35,13 @@ export default class OrderController extends BaseController {
     if (perPage) {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Record find Successfully',
+        message: 'Record find successfully!',
         result: await DQ.paginate(page, perPage),
       })
     } else {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Record find Successfully',
+        message: 'Record find successfully!',
         result: await DQ.select('*'),
       })
     }
@@ -60,7 +60,7 @@ export default class OrderController extends BaseController {
 
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Record find successfully',
+        message: 'Record find successfully!',
         result: DQ,
       })
     } catch (e) {
@@ -75,20 +75,21 @@ export default class OrderController extends BaseController {
    * @create
    * @requestBody <Order>
    */
-  async create({ request, response }: HttpContext) {
+  async create({ auth, request, response }: HttpContext) {
+    const currentCustomer = auth.use('customer').user!
     try {
       const DE = await this.MODEL.findBy('order_key', request.body().order_key)
 
       if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: `Record: "${request.body().order_key}" already exists!`,
+          message: 'Record already exists!',
         })
       }
 
       const DM = new this.MODEL()
 
-      DM.user_id = request.body().user_id
+      DM.customerId = currentCustomer.id
       DM.shipment_address_id = request.body().shipment_address_id
       DM.payment_method_id = request.body().payment_method_id
       DM.total = request.body().total
@@ -100,7 +101,7 @@ export default class OrderController extends BaseController {
 
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Created Successfully!',
+        message: 'Created successfully!',
         result: DQ,
       })
     } catch (e) {
@@ -127,7 +128,6 @@ export default class OrderController extends BaseController {
         })
       }
 
-      DQ.user_id = request.body().user_id
       DQ.shipment_address_id = request.body().shipment_address_id
       DQ.payment_method_id = request.body().payment_method_id
       DQ.total = request.body().total
@@ -137,7 +137,7 @@ export default class OrderController extends BaseController {
       await DQ.save()
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Update Successfully!',
+        message: 'Update successfully!',
         result: DQ,
       })
     } catch (e) {
@@ -147,6 +147,32 @@ export default class OrderController extends BaseController {
         message: e.toString(),
       })
     }
+  }
+
+  /**
+   * @updateStatus
+   * @requestBody {"status":"pending"}
+   */
+  async updateStatus({ request, response }: HttpContext) {
+    const DQ = await this.MODEL.findBy('id', request.param('id'))
+
+    if (!DQ) {
+      return response.notFound({
+        code: HttpCodes.NOT_FOUND,
+        message: 'Data not found!',
+      })
+    }
+
+    DQ.status = request.body().status
+
+    await DQ.save()
+
+    delete DQ.$attributes.password
+    return response.ok({
+      code: HttpCodes.SUCCESS,
+      message: 'Update successfully!',
+      result: DQ,
+    })
   }
 
   async destroy({ request, response }: HttpContext) {
@@ -162,7 +188,7 @@ export default class OrderController extends BaseController {
     await DQ.delete()
     return response.ok({
       code: HttpCodes.SUCCESS,
-      message: 'Record deleted successfully',
+      message: 'Record deleted successfully!',
     })
   }
 }

@@ -15,6 +15,7 @@ BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
 
 export default class Role extends BaseModel {
   @column({ isPrimary: true })
+  // @no-swagger
   declare id: number
 
   @column()
@@ -24,9 +25,11 @@ export default class Role extends BaseModel {
   declare name: string
 
   @column.dateTime({ autoCreate: true })
+  // @no-swagger
   declare createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
+  // @no-swagger
   declare updatedAt: DateTime
 
   // relation

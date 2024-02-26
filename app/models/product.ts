@@ -7,6 +7,7 @@ BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
 
 export default class Product extends BaseModel {
   @column({ isPrimary: true })
+  // @no-swagger
   declare id: number
 
   @column()
@@ -34,9 +35,11 @@ export default class Product extends BaseModel {
   declare product_image: string | null
 
   @column.dateTime({ autoCreate: true })
+  // @no-swagger
   declare createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
+  // @no-swagger
   declare updatedAt: DateTime
 
   @belongsTo(() => Shop)

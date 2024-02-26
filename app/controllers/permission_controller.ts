@@ -29,30 +29,29 @@ export default class PermissionController extends BaseController {
       return response.ok({
         code: HttpCodes.SUCCESS,
         result: await DQ.preload('menus').paginate(page, perPage),
-        message: 'Permissions Found Successfully',
+        message: 'Record find successfully!',
       })
     } else {
       return response.ok({
         code: HttpCodes.SUCCESS,
         result: await DQ.select('*'),
-        message: 'Permissions Found Successfully',
+        message: 'Record find successfully!',
       })
     }
   }
 
-  // find single permission using id
   async findSingleRecord({ request, response }: HttpContext) {
     try {
       const DQ = await this.MODEL.findBy('id', request.param('id'))
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'Permission does not exists!',
+          message: 'Data does not exists!',
         })
       }
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Permission find Successfully!',
+        message: 'Record find successfully!',
         result: DQ,
       })
     } catch (e) {
@@ -63,14 +62,17 @@ export default class PermissionController extends BaseController {
     }
   }
 
-  // create new permission
+  /**
+   * @create
+   * @requestBody <Permission>
+   */
   async create({ request, response }: HttpContext) {
     try {
       const DE = await this.MODEL.findBy('name', request.body().name)
       if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: `Permission ${request.input('name')} already exists!`,
+          message: 'Data already exists!',
         })
       }
       const DM = new this.MODEL()
@@ -82,7 +84,7 @@ export default class PermissionController extends BaseController {
       const DQ = await DM.save()
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Permission Created Successfully!',
+        message: 'Created successfully!',
         result: DQ,
       })
     } catch (e) {
@@ -94,14 +96,17 @@ export default class PermissionController extends BaseController {
     }
   }
 
-  // update existing permission
+  /**
+   * @update
+   * @requestBody <Permission>
+   */
   async update({ request, response }: HttpContext) {
     try {
       const DQ = await this.MODEL.findBy('id', request.param('id'))
       if (!DQ) {
         return response.notFound({
           code: HttpCodes.NOT_FOUND,
-          message: 'Permission does not exists!',
+          message: 'Data does not exists!',
         })
       }
       const permissionExists = await this.MODEL.query()
@@ -112,7 +117,7 @@ export default class PermissionController extends BaseController {
       if (permissionExists) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
-          message: `${request.body().name} permission already exist!`,
+          message: 'Data already exist!',
         })
       }
 
@@ -123,7 +128,7 @@ export default class PermissionController extends BaseController {
       await DQ.save()
       return response.ok({
         code: HttpCodes.SUCCESS,
-        message: 'Permission Updated Successfully!',
+        message: 'Updated successfully!',
         result: DQ,
       })
     } catch (e) {
@@ -134,19 +139,18 @@ export default class PermissionController extends BaseController {
     }
   }
 
-  // delete single permission using id
   async destroy({ request, response }: HttpContext) {
     const DQ = await this.MODEL.findBy('id', request.param('id'))
     if (!DQ) {
       return response.notFound({
         code: HttpCodes.NOT_FOUND,
-        message: 'Permission not found',
+        message: 'Data not found',
       })
     }
     await DQ.delete()
     return response.ok({
       code: HttpCodes.SUCCESS,
-      message: 'Record deleted successfully',
+      message: 'Record deleted successfully!',
     })
   }
 }
