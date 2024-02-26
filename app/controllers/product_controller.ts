@@ -47,7 +47,7 @@ export default class ProductController extends BaseController {
   }
 
   /**
-   * @findAllRecords
+   * @findAllRecordsForFrontend
    * @paramUse(paginated)
    */
   async findAllRecordsForFrontend({ request, response }: HttpContext) {
