@@ -71,7 +71,7 @@ export default class AuthController extends BaseController {
       const { email, password } = request.only(['email', 'password'])
       const user = await this.MODEL.verifyCredentials(email, password)
       const token = await this.MODEL.admin_token.create(user, ['*'], {
-        name: 'login_token',
+        name: 'admin_login_token',
       })
       return response.ok({
         code: HttpCodes.SUCCESS,
@@ -161,7 +161,7 @@ export default class AuthController extends BaseController {
       const { email, password } = request.only(['email', 'password'])
       const customer = await Customer.verifyCredentials(email, password)
       const token = await Customer.customer_token.create(customer, ['*'], {
-        name: 'login_token',
+        name: 'customer_login_token',
       })
       return response.ok({
         code: HttpCodes.SUCCESS,
