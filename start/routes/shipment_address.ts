@@ -1,11 +1,18 @@
-import Route from '@ioc:Adonis/Core/Route';
+import router from '@adonisjs/core/services/router'
+import { middleware } from '#start/kernel'
+const ShipmentAddressController = () => import('#controllers/shipment_address_controller')
 
-Route.group(async () => {
-  Route.get('/', 'ShipmentAddressController.findAllRecords');
-  Route.post('/', 'ShipmentAddressController.create');
-  Route.get('/:id', 'ShipmentAddressController.findSingleRecord');
-  Route.put('/:id', 'ShipmentAddressController.update');
-  Route.delete('/:id', 'ShipmentAddressController.destroy');
-})
-  .middleware(['auth:customer'])
-  .prefix('/api/v1/shipment-address');
+router
+  .group(() => {
+    router.get('/', [ShipmentAddressController, 'findAllRecords'])
+    router.post('/', [ShipmentAddressController, 'create'])
+    router.get('/:id', [ShipmentAddressController, 'findSingleRecord'])
+    router.put('/:id', [ShipmentAddressController, 'update'])
+    router.delete('/:id', [ShipmentAddressController, 'destroy'])
+  })
+  .use(
+    middleware.auth({
+      guards: ['api'],
+    })
+  )
+  .prefix('/api/v1/shipment-address')

@@ -1,13 +1,20 @@
-import Route from '@ioc:Adonis/Core/Route';
+import router from '@adonisjs/core/services/router'
+import { middleware } from '#start/kernel'
+const UserController = () => import('#controllers/user_controller')
 
-Route.group(async () => {
-  Route.get('/', 'UserController.findAllRecords');
-  Route.post('/', 'UserController.create');
-  Route.get('/:id', 'UserController.findSingleRecord');
-  Route.put('/:id', 'UserController.update');
-  Route.put('/assign-permission/:id', 'UserController.assignPermission');
-  Route.put('/profile/:id', 'UserController.profileUpdate');
-  Route.delete('/:id', 'UserController.destroy');
-})
-  .middleware(['auth:api'])
-  .prefix('/api/v1/user');
+router
+  .group(() => {
+    router.get('/', [UserController, 'findAllRecords'])
+    router.post('/', [UserController, 'create'])
+    router.get('/:id', [UserController, 'findSingleRecord'])
+    router.put('/:id', [UserController, 'update'])
+    router.put('/assign-permission/:id', [UserController, 'assignPermission'])
+    router.put('/profile/:id', [UserController, 'profileUpdate'])
+    router.delete('/:id', [UserController, 'destroy'])
+  })
+  .use(
+    middleware.auth({
+      guards: ['api'],
+    })
+  )
+  .prefix('/api/v1/user')

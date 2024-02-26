@@ -1,17 +1,30 @@
-import Route from '@ioc:Adonis/Core/Route';
+import router from '@adonisjs/core/services/router'
+import { middleware } from '#start/kernel'
+const CustomerController = () => import('#controllers/customer_controller')
 
-Route.group(async () => {
-  Route.post('/register', 'CustomerController.create');
-  Route.post('/login', 'CustomerController.login');
-  Route.group(() => {
-    Route.get('/', 'CustomerController.findAllRecords');
-    Route.post('/', 'CustomerController.create');
-    Route.delete('/:id', 'CustomerController.destroy');
-  }).middleware(['auth:api']);
-  Route.group(() => {
-    Route.get('/authenticated', 'CustomerController.authenticated');
-    Route.get('/:id', 'CustomerController.findSingleRecord');
-    Route.put('/:id', 'CustomerController.update');
-    Route.put('/profile/:id', 'CustomerController.profileUpdate');
-  }).middleware(['auth:customer']);
-}).prefix('/api/v1/customer');
+router
+  .group(() => {
+    router
+      .group(() => {
+        router.get('/', [CustomerController, 'findAllRecords'])
+        router.post('/', [CustomerController, 'create'])
+        router.delete('/:id', [CustomerController, 'destroy'])
+      })
+      .use(
+        middleware.auth({
+          guards: ['api'],
+        })
+      )
+    router
+      .group(() => {
+        router.get('/:id', [CustomerController, 'findSingleRecord'])
+        router.put('/:id', [CustomerController, 'update'])
+        router.put('/profile/:id', [CustomerController, 'profileUpdate'])
+      })
+      .use(
+        middleware.auth({
+          guards: ['customer'],
+        })
+      )
+  })
+  .prefix('/api/v1/customer')

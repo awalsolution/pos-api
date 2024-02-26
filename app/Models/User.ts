@@ -1,85 +1,92 @@
-import { DateTime } from 'luxon';
-import Hash from '@ioc:Adonis/Core/Hash';
+import { DateTime } from 'luxon'
+import { withAuthFinder } from '@adonisjs/auth'
+import hash from '@adonisjs/core/services/hash'
+import { compose } from '@adonisjs/core/helpers'
+import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
 import {
-  column,
-  beforeSave,
   BaseModel,
-  ManyToMany,
-  manyToMany,
-  hasOne,
-  HasOne,
   beforeFind,
-  afterFetch,
-  ModelQueryBuilderContract,
   belongsTo,
-  BelongsTo,
-} from '@ioc:Adonis/Lucid/Orm';
-import Permission from 'App/Models/Acl/Permission';
-import Role from 'App/Models/Acl/Role';
-import UserProfile from 'App/Models/UserProfile';
-import Shop from 'App/Models/Shop';
-import { STANDARD_DATE_TIME_FORMAT } from 'App/Helpers/utils';
+  column,
+  hasOne,
+  manyToMany,
+  SnakeCaseNamingStrategy,
+} from '@adonisjs/lucid/orm'
+import type { BelongsTo, HasOne, ManyToMany } from '@adonisjs/lucid/types/relations'
+import type { ModelQueryBuilderContract } from '@adonisjs/lucid/types/model'
+import UserProfile from '#models/user_profile'
+import Permission from '#models/permission'
+import Shop from '#models/shop'
+import Role from '#models/role'
 
-type UserQuery = ModelQueryBuilderContract<typeof User>;
-type RoleQuery = ModelQueryBuilderContract<typeof Role>;
+BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
+type UserQuery = ModelQueryBuilderContract<typeof User>
+type RoleQuery = ModelQueryBuilderContract<typeof Role>
 
-export default class User extends BaseModel {
+const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
+  uids: ['email'],
+  passwordColumnName: 'password',
+})
+
+export default class User extends compose(BaseModel, AuthFinder) {
   @column({ isPrimary: true })
-  public id: number;
+  declare id: number
 
   @column()
-  public shopId: number | undefined;
+  declare shopId: number | null
 
   @column()
-  public email: string;
-
-  @column()
-  public user_type: string;
-
-  @column()
-  public status: string;
+  declare email: string
 
   @column({ serializeAs: null })
-  public password: string;
+  declare password: string
 
   @column()
-  public is_email_verified: boolean;
+  declare user_type: string | null
 
   @column()
-  public email_verified_at: string;
+  declare status: string
 
   @column()
-  public remember_token: boolean;
+  declare remember_token: boolean | null
 
   @column()
-  public is_phone_verified: boolean;
+  declare is_email_verified: boolean
 
   @column()
-  public phone_verified_at: string | null;
+  declare email_verified_at: DateTime
 
-  @column.dateTime({
-    autoCreate: true,
-    serialize(value: DateTime) {
-      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : '';
-    },
-  })
-  public createdAt: DateTime;
+  @column()
+  declare is_phone_verified: boolean
 
-  @column.dateTime({
-    autoCreate: true,
-    autoUpdate: true,
-    serialize(value: DateTime) {
-      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : '';
-    },
-  })
-  public updatedAt: DateTime;
+  @column()
+  declare phone_verified_at: DateTime
 
-  @beforeSave()
-  public static async hashPassword(user: User) {
-    if (user.$dirty.password) {
-      user.password = await Hash.make(user.password);
-    }
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+
+  static admin_token = DbAccessTokensProvider.forModel(User)
+
+  @beforeFind()
+  static preloadListUserRoles(query: UserQuery) {
+    query
+      .preload('permissions')
+      .preload('roles', (rolesQuery: RoleQuery) => {
+        rolesQuery.preload('permissions')
+      })
+      .preload('user_profile')
+      .preload('shop')
   }
+
+  // relations
+  @hasOne(() => UserProfile)
+  declare user_profile: HasOne<typeof UserProfile>
+
+  @belongsTo(() => Shop)
+  declare shop: BelongsTo<typeof Shop>
 
   @manyToMany(() => Role, {
     pivotTable: 'user_has_roles',
@@ -88,7 +95,7 @@ export default class User extends BaseModel {
     relatedKey: 'id',
     pivotRelatedForeignKey: 'role_id',
   })
-  public roles: ManyToMany<typeof Role>;
+  declare roles: ManyToMany<typeof Role>
 
   @manyToMany(() => Permission, {
     pivotTable: 'user_has_permissions',
@@ -97,30 +104,5 @@ export default class User extends BaseModel {
     relatedKey: 'id',
     pivotRelatedForeignKey: 'permission_id',
   })
-  public permissions: ManyToMany<typeof Permission>;
-
-  @hasOne(() => UserProfile)
-  public user_profile: HasOne<typeof UserProfile>;
-
-  @belongsTo(() => Shop)
-  public shop: BelongsTo<typeof Shop>;
-
-  @beforeFind()
-  public static preloadListUserRoles(query: UserQuery) {
-    query
-      .preload('permissions')
-      .preload('roles', (rolesQuery: RoleQuery) => {
-        rolesQuery.preload('permissions');
-      })
-      .preload('user_profile')
-      .preload('shop');
-  }
-  // 'name', '!=', 'super admin').preload('permissions'
-  // delete password for fetched user
-  @afterFetch()
-  public static deletePasswordList(users: User[]) {
-    users.forEach((user) => {
-      delete user.$attributes.password;
-    });
-  }
+  declare permissions: ManyToMany<typeof Permission>
 }

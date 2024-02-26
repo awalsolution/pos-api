@@ -1,73 +1,63 @@
-import { DateTime } from 'luxon';
-import Hash from '@ioc:Adonis/Core/Hash';
-import {
-  column,
-  beforeSave,
-  BaseModel,
-  hasOne,
-  HasOne,
-} from '@ioc:Adonis/Lucid/Orm';
-import { STANDARD_DATE_TIME_FORMAT } from 'App/Helpers/utils';
-import CustomerProfile from 'App/Models/CustomerProfile';
+import { DateTime } from 'luxon'
+import { withAuthFinder } from '@adonisjs/auth'
+import hash from '@adonisjs/core/services/hash'
+import { compose } from '@adonisjs/core/helpers'
+import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
+import { BaseModel, column, hasOne, SnakeCaseNamingStrategy } from '@adonisjs/lucid/orm'
+import type { HasOne } from '@adonisjs/lucid/types/relations'
+import CustomerProfile from '#models/customer_profile'
 
-export default class Customer extends BaseModel {
+BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
+const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
+  uids: ['email'],
+  passwordColumnName: 'password',
+})
+
+export default class Customer extends compose(BaseModel, AuthFinder) {
   @column({ isPrimary: true })
-  public id: number;
+  declare id: number
 
   @column()
-  public shop_id: number | null;
+  declare shop_id: number | null
 
   @column()
-  public email: string;
+  declare email: string
 
   @column()
-  public user_type: string;
+  declare user_type: string
 
   @column()
-  public status: boolean;
+  declare status: boolean
 
   @column({ serializeAs: null })
-  public password: string;
+  declare password: string
 
   @column()
-  public is_email_verified: boolean;
+  declare is_email_verified: boolean
 
   @column()
-  public email_verified_at: string;
+  declare email_verified_at: string
 
   @column()
-  public rememberToken: boolean;
+  declare remember_token: boolean
 
   @column()
-  public is_phone_verified: boolean;
+  declare is_phone_verified: boolean
 
   @column()
-  public phone_verified_at: string | null;
+  declare phone_verified_at: string | null
 
-  @column.dateTime({
-    autoCreate: true,
-    serialize(value: DateTime) {
-      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : '';
-    },
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime
+
+  static customer_token = DbAccessTokensProvider.forModel(Customer, {
+    table: 'customer_auth_tokens',
+    type: 'auth_token',
   })
-  public createdAt: DateTime;
-
-  @column.dateTime({
-    autoCreate: true,
-    autoUpdate: true,
-    serialize(value: DateTime) {
-      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : '';
-    },
-  })
-  public updatedAt: DateTime;
-
-  @beforeSave()
-  public static async hashPassword(customer: Customer) {
-    if (customer.$dirty.password) {
-      customer.password = await Hash.make(customer.password);
-    }
-  }
 
   @hasOne(() => CustomerProfile)
-  public customer_profile: HasOne<typeof CustomerProfile>;
+  declare customer_profile: HasOne<typeof CustomerProfile>
 }

@@ -1,49 +1,39 @@
-import { DateTime } from 'luxon';
-import { column, BaseModel } from '@ioc:Adonis/Lucid/Orm';
-import { STANDARD_DATE_TIME_FORMAT } from 'App/Helpers/utils';
+import { DateTime } from 'luxon'
+import { BaseModel, SnakeCaseNamingStrategy, column } from '@adonisjs/lucid/orm'
+
+BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
 
 export default class Shop extends BaseModel {
   @column({ isPrimary: true })
-  public id: number;
+  declare id: number
 
   @column()
-  public shop_name: string;
+  declare shop_name: string
 
   @column()
-  public shop_phone: string | null;
+  declare shop_phone: string | null
 
   @column()
-  public status: string;
+  declare status: string
 
   @column()
-  public address: string | null;
+  declare address: string | null
 
   @column()
-  public city: string | null;
+  declare city: string | null
 
   @column()
-  public state: string | null;
+  declare state: string | null
 
   @column()
-  public country: string | null;
+  declare country: string | null
 
   @column()
-  public shop_logo: string | null;
+  declare shop_logo: string | null
 
-  @column.dateTime({
-    autoCreate: true,
-    serialize(value: DateTime) {
-      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : '';
-    },
-  })
-  public createdAt: DateTime;
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
 
-  @column.dateTime({
-    autoCreate: true,
-    autoUpdate: true,
-    serialize(value: DateTime) {
-      return value ? value.toFormat(STANDARD_DATE_TIME_FORMAT) : '';
-    },
-  })
-  public updatedAt: DateTime;
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime
 }
