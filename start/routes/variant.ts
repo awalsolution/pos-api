@@ -5,16 +5,19 @@ const VariantController = () => import('#controllers/variant_controller')
 router
   .group(() => {
     router.get('/', [VariantController, 'findAllRecords'])
-    router.post('/', [VariantController, 'create'])
     router.get('/:id', [VariantController, 'findSingleRecord'])
     router.get('/getVariantsByProduct/:id', [VariantController, 'getVariantsByProduct'])
-    router.put('/:id', [VariantController, 'update'])
-    router.put('/status/:id', [VariantController, 'updateStatus'])
-    router.delete('/:id', [VariantController, 'destroy'])
+    router
+      .group(() => {
+        router.post('/', [VariantController, 'create'])
+        router.put('/:id', [VariantController, 'update'])
+        router.put('/status/:id', [VariantController, 'updateStatus'])
+        router.delete('/:id', [VariantController, 'destroy'])
+      })
+      .use(
+        middleware.auth({
+          guards: ['api'],
+        })
+      )
   })
-  .use(
-    middleware.auth({
-      guards: ['api'],
-    })
-  )
   .prefix('/api/v1/variant')
