@@ -5,7 +5,8 @@ const ProductController = () => import('#controllers/product_controller')
 router
   .group(() => {
     router.get('/', [ProductController, 'findAllRecordsForFrontend'])
-    router.get('/:id', [ProductController, 'findSingleRecord'])
+    // router.get('/:id', [ProductController, 'findSingleRecord'])
+    router.get('/:product_id/variants', [ProductController, 'findSingleRecord'])
     router
       .group(() => {
         router.get('/admin', [ProductController, 'findAllRecords'])

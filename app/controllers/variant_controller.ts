@@ -35,8 +35,8 @@ export default class VariantController extends BaseController {
     if (perPage) {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        result: await DQ.preload('products')
-          .preload('attributes')
+        result: await DQ.preload('attributes')
+          // .preload('products')
           .preload('images')
           .paginate(page, perPage),
         message: 'Record find successfully!',
@@ -44,7 +44,8 @@ export default class VariantController extends BaseController {
     } else {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        result: await DQ.preload('products').preload('attributes').preload('images'),
+        result: await DQ.preload('attributes').preload('images'),
+        // .preload('products'),
         message: 'Record find successfully!',
       })
     }
@@ -54,7 +55,7 @@ export default class VariantController extends BaseController {
     try {
       const DQ = await this.MODEL.query()
         .where('id', request.param('id'))
-        .preload('products')
+        // .preload('products')
         .preload('attributes')
         .preload('images')
         .first()

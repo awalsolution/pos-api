@@ -35,7 +35,10 @@ export default class ProductController extends BaseController {
       return response.ok({
         code: HttpCodes.SUCCESS,
         message: 'Record find successfully!',
-        result: await DQ.preload('shop').paginate(page, perPage),
+        result: await DQ.preload('shop')
+          .preload('category', (q) => q.preload('sub_category'))
+          .preload('variants', (q) => q.preload('attributes').preload('images'))
+          .paginate(page, perPage),
       })
     } else {
       return response.ok({
@@ -62,10 +65,13 @@ export default class ProductController extends BaseController {
     }
 
     if (perPage) {
-      return response.ok({
+      response.ok({
         code: HttpCodes.SUCCESS,
         message: 'Record find successfully!',
-        result: await DQ.preload('shop').paginate(page, perPage),
+        result: await DQ.preload('shop')
+          .preload('category', (q) => q.preload('sub_category'))
+          .preload('variants', (q) => q.preload('attributes').preload('images'))
+          .paginate(page, perPage),
       })
     } else {
       return response.ok({
@@ -78,7 +84,12 @@ export default class ProductController extends BaseController {
 
   async findSingleRecord({ request, response }: HttpContext) {
     try {
-      const DQ = await this.MODEL.query().where('id', request.param('id')).preload('shop').first()
+      const DQ = await this.MODEL.query()
+        .where('id', request.param('product_id'))
+        .preload('shop')
+        .preload('category', (q) => q.preload('sub_category'))
+        .preload('variants', (q) => q.preload('attributes').preload('images'))
+        .first()
 
       if (!DQ) {
         return response.notFound({
