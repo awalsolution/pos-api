@@ -122,10 +122,17 @@ export default class CategoryController extends BaseController {
   async create({ auth, request, response }: HttpContext) {
     const currentUser = auth.use('api').user!
     try {
+      let currentShopId: number
+      if (this.ischeckAllSuperAdminUser(currentUser)) {
+        currentShopId = request.body().shop_id
+      } else {
+        currentShopId = currentUser.shopId!
+      }
+
       const DE = await this.MODEL.query()
         .where({
           name: request.body().name,
-          shop_id: currentUser.shopId!,
+          shop_id: currentShopId,
         })
         .first()
 
