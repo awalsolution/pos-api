@@ -50,6 +50,18 @@ export default class extends BaseSeeder {
       { menuId: 4, name: 'can view variant create', type: 'public' },
       { menuId: 4, name: 'can view variant update', type: 'public' },
       { menuId: 4, name: 'can view variant delete', type: 'public' },
+      { menuId: 5, name: 'can view order menu', type: 'public' },
+      { menuId: 5, name: 'can view order create', type: 'public' },
+      { menuId: 5, name: 'can view order update', type: 'public' },
+      { menuId: 5, name: 'can view order delete', type: 'public' },
+      { menuId: 6, name: 'can view payment-method menu', type: 'public' },
+      { menuId: 6, name: 'can view payment-method create', type: 'public' },
+      { menuId: 6, name: 'can view payment-method update', type: 'public' },
+      { menuId: 6, name: 'can view payment-method delete', type: 'public' },
+      { menuId: 7, name: 'can view customer menu', type: 'public' },
+      { menuId: 7, name: 'can view customer create', type: 'public' },
+      { menuId: 7, name: 'can view customer update', type: 'public' },
+      { menuId: 7, name: 'can view customer delete', type: 'public' },
     ])
   }
 }
