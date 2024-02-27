@@ -2,7 +2,6 @@ import { DateTime } from 'luxon'
 import { BaseModel, SnakeCaseNamingStrategy, belongsTo, column, hasMany } from '@adonisjs/lucid/orm'
 import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 import Attribute from '#models/attribute'
-import Product from '#models/product'
 import VariantImage from '#models/variant_image'
 
 BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
@@ -64,9 +63,6 @@ export default class Variant extends BaseModel {
 
   @belongsTo(() => Attribute)
   declare attributes: BelongsTo<typeof Attribute>
-
-  @belongsTo(() => Product)
-  declare products: BelongsTo<typeof Product>
 
   @hasMany(() => VariantImage)
   declare images: HasMany<typeof VariantImage>

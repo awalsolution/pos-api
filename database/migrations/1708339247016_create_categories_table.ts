@@ -8,6 +8,13 @@ export default class extends BaseSchema {
       table.increments('id')
       table.string('name').notNullable()
       table
+        .integer('shop_id')
+        .unsigned()
+        .references('id')
+        .inTable('shops')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE')
+      table
         .integer('parent_id')
         .unsigned()
         .references('id')
@@ -17,7 +24,7 @@ export default class extends BaseSchema {
       table.string('image').nullable()
       table.boolean('status').notNullable().defaultTo(true)
 
-      table.unique(['name', 'parent_id'])
+      table.unique(['shop_id', 'name'])
 
       table.timestamp('created_at')
       table.timestamp('updated_at')
