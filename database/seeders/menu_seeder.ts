@@ -20,6 +20,18 @@ export default class extends BaseSeeder {
         menu_name: 'Products',
         menu_type: 'public',
       },
+      {
+        menu_name: 'Order',
+        menu_type: 'public',
+      },
+      {
+        menu_name: 'Payment Method',
+        menu_type: 'public',
+      },
+      {
+        menu_name: 'Customer',
+        menu_type: 'public',
+      },
     ])
   }
 }
