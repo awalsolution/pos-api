@@ -16,6 +16,8 @@ router
           guards: ['api'],
         })
       )
+      .prefix('/client')
+
     router
       .group(() => {
         router.get('/:id', [CustomerController, 'findSingleRecord'])
@@ -27,5 +29,6 @@ router
           guards: ['customer'],
         })
       )
+      .prefix('/customer')
   })
-  .prefix('/api/v1/customer')
+  .prefix('/api/v1/')

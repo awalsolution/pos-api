@@ -11,10 +11,10 @@ export default class CategoryController extends BaseController {
   }
 
   /**
-   * @findAllRecords
+   * @findAllRecordsForFrontend
    * @paramUse(paginated)
    */
-  async findAllRecords({ request, response }: HttpContext) {
+  async findAllRecordsForFrontend({ request, response }: HttpContext) {
     let DQ = this.MODEL.query()
 
     const page = request.input('page')
@@ -35,7 +35,51 @@ export default class CategoryController extends BaseController {
     if (perPage) {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        result: await DQ.preload('sub_category').paginate(page, perPage),
+        result: await DQ.preload('shop').preload('sub_category').paginate(page, perPage),
+        message: 'Record find successfully',
+      })
+    } else {
+      return response.ok({
+        code: HttpCodes.SUCCESS,
+        result: await DQ.select('*'),
+        message: 'Record find successfully',
+      })
+    }
+  }
+
+  /**
+   * @findAllRecords
+   * @paramUse(paginated)
+   */
+  async findAllRecords({ auth, request, response }: HttpContext) {
+    const currentUser = auth.use('api').user!
+    let DQ = this.MODEL.query()
+
+    const page = request.input('page')
+    const perPage = request.input('perPage')
+
+    // name filter
+    if (request.input('name')) {
+      DQ = DQ.whereILike('name', request.input('name') + '%')
+    }
+
+    if (!this.isSuperAdmin(currentUser)) {
+      if (!this.ischeckAllSuperAdminUser(currentUser)) {
+        DQ = DQ.where('shop_id', currentUser?.shopId!)
+      }
+    }
+
+    if (!DQ) {
+      return response.notFound({
+        code: HttpCodes.NOT_FOUND,
+        message: 'Data is Empty',
+      })
+    }
+
+    if (perPage) {
+      return response.ok({
+        code: HttpCodes.SUCCESS,
+        result: await DQ.preload('shop').preload('sub_category').paginate(page, perPage),
         message: 'Record find successfully',
       })
     } else {

@@ -171,6 +171,7 @@ export default class UserController extends BaseController {
 
     DQ.email = request.body().email
     DQ.status = request.body().status
+    DQ.related('roles').sync(request.body().roles)
 
     await DQ.save()
 

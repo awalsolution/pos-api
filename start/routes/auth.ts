@@ -17,6 +17,7 @@ router
       })
       .prefix('/auth')
 
+    // frontend
     router
       .group(() => {
         router.post('/register', [AuthController, 'customerRegister'])
