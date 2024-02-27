@@ -119,7 +119,8 @@ export default class CategoryController extends BaseController {
    * @create
    * @requestBody <Category>
    */
-  async create({ request, response }: HttpContext) {
+  async create({ auth, request, response }: HttpContext) {
+    const currentUser = auth.use('api').user!
     try {
       const DE = await this.MODEL.findBy('name', request.body().name)
 
@@ -130,7 +131,11 @@ export default class CategoryController extends BaseController {
         })
       }
       const DM = new this.MODEL()
-
+      if (this.isSuperAdmin(currentUser)) {
+        DM.shopId = request.body().shop_id
+      } else {
+        DM.shopId = currentUser.shopId!
+      }
       DM.name = request.body().name
       DM.status = request.body().status
       DM.image = request.body().image
