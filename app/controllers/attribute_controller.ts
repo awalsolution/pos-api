@@ -11,10 +11,11 @@ export default class AttributeController extends BaseController {
   }
 
   /**
-   * @findAllRecords
+   * @findAllRecordForFrontend
    * @paramUse(paginated)
    */
-  async findAllRecords({ request, response }: HttpContext) {
+  async findAllRecordForFrontend({ request, response }: HttpContext) {
+    console.log('first')
     let DQ = this.MODEL.query()
 
     const page = request.input('page')
@@ -36,7 +37,51 @@ export default class AttributeController extends BaseController {
       return response.ok({
         code: HttpCodes.SUCCESS,
         message: 'Record find Successfully',
-        result: await DQ.paginate(page, perPage),
+        result: await DQ.preload('shop').paginate(page, perPage),
+      })
+    } else {
+      return response.ok({
+        code: HttpCodes.SUCCESS,
+        message: 'Record find Successfully',
+        result: await DQ.select('*'),
+      })
+    }
+  }
+
+  /**
+   * @findAllRecords
+   * @paramUse(paginated)
+   */
+  async findAllRecords({ auth, request, response }: HttpContext) {
+    const currentUser = auth.use('api').user!
+    let DQ = this.MODEL.query()
+
+    const page = request.input('page')
+    const perPage = request.input('perPage')
+
+    // name filter
+    if (request.input('name')) {
+      DQ = DQ.whereILike('name', request.input('name') + '%')
+    }
+
+    if (!this.isSuperAdmin(currentUser)) {
+      if (!this.ischeckAllSuperAdminUser(currentUser)) {
+        DQ = DQ.where('shop_id', currentUser?.shopId!)
+      }
+    }
+
+    if (!DQ) {
+      return response.notFound({
+        code: HttpCodes.NOT_FOUND,
+        message: 'Data is Empty',
+      })
+    }
+
+    if (perPage) {
+      return response.ok({
+        code: HttpCodes.SUCCESS,
+        message: 'Record find Successfully',
+        result: await DQ.preload('shop').paginate(page, perPage),
       })
     } else {
       return response.ok({
@@ -48,6 +93,7 @@ export default class AttributeController extends BaseController {
   }
 
   async findSingleRecord({ request, response }: HttpContext) {
+    console.log('first')
     try {
       const DQ = await this.MODEL.query().where('id', request.param('id')).first()
 
@@ -89,6 +135,7 @@ export default class AttributeController extends BaseController {
       const DM = new this.MODEL()
 
       DM.name = request.body().name
+      DM.status = request.body().status
 
       const DQ = await DM.save()
       return response.ok({
@@ -133,6 +180,7 @@ export default class AttributeController extends BaseController {
       }
 
       DQ.name = request.body().name
+      DQ.status = request.body().status
 
       await DQ.save()
       return response.ok({

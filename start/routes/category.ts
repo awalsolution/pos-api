@@ -4,10 +4,12 @@ const CategoryController = () => import('#controllers/category_controller')
 
 router
   .group(() => {
-    router.get('/', [CategoryController, 'findAllRecords'])
-    router.get('/:id', [CategoryController, 'findSingleRecord'])
+    router.get('/customer', [CategoryController, 'findAllRecordsForFrontend'])
+    router.get('/customer/:id', [CategoryController, 'findSingleRecord'])
     router
       .group(() => {
+        router.get('/', [CategoryController, 'findAllRecords'])
+        router.get('/:id', [CategoryController, 'findSingleRecord'])
         router.post('/', [CategoryController, 'create'])
         router.put('/:id', [CategoryController, 'update'])
         router.put('/status/:id', [CategoryController, 'updateStatus'])

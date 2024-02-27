@@ -4,10 +4,12 @@ const AttributeController = () => import('#controllers/attribute_controller')
 
 router
   .group(() => {
-    router.get('/', [AttributeController, 'findAllRecords'])
-    router.get('/:id', [AttributeController, 'findSingleRecord'])
+    router.get('/customer', [AttributeController, 'findAllRecordForFrontend'])
+    router.get('/customer/:id', [AttributeController, 'findSingleRecord'])
     router
       .group(() => {
+        router.get('/', [AttributeController, 'findAllRecords'])
+        router.get('/:id', [AttributeController, 'findSingleRecord'])
         router.post('/', [AttributeController, 'create'])
         router.put('/:id', [AttributeController, 'update'])
         router.put('/status/:id', [AttributeController, 'updateStatus'])

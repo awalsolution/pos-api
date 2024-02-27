@@ -47,11 +47,18 @@ export default class Customer extends compose(BaseModel, AuthFinder) {
   @column()
   declare phone_verified_at: string | null
 
-  @column.dateTime({ autoCreate: true })
+  @column.dateTime({
+    autoCreate: true,
+    serialize: (value) => value?.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY),
+  })
   // @no-swagger
   declare createdAt: DateTime
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  @column.dateTime({
+    autoCreate: true,
+    autoUpdate: true,
+    serialize: (value) => value?.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY),
+  })
   // @no-swagger
   declare updatedAt: DateTime
 
