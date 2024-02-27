@@ -119,7 +119,7 @@ export default class ProductController extends BaseController {
       DM.product_code = request.body().product_code
       DM.title = request.body().title
       DM.description = request.body().description
-      DM.product_image = request.body().product_image
+      DM.thumbnail = request.body().thumbnail
 
       await DM.save()
 
@@ -157,7 +157,7 @@ export default class ProductController extends BaseController {
       DQ.product_code = request.body().product_code
       DQ.description = request.body().description
       DQ.status = request.body().status
-      DQ.product_image = request.body().product_image
+      DQ.thumbnail = request.body().thumbnail
 
       await DQ.save()
 

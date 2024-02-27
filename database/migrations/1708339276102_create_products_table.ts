@@ -25,7 +25,7 @@ export default class extends BaseSchema {
       table.string('slug').notNullable()
       table.boolean('status').notNullable().defaultTo(true)
       table.string('description').nullable()
-      table.string('product_image').nullable()
+      table.string('thumbnail').nullable()
 
       table.unique(['shop_id', 'title', 'slug'])
 

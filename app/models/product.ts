@@ -32,7 +32,7 @@ export default class Product extends BaseModel {
   declare description: string | null
 
   @column()
-  declare product_image: string | null
+  declare thumbnail: string | null
 
   @column.dateTime({ autoCreate: true })
   // @no-swagger
