@@ -15,7 +15,6 @@ export default class AttributeController extends BaseController {
    * @paramUse(paginated)
    */
   async findAllRecordForFrontend({ request, response }: HttpContext) {
-    console.log('first')
     let DQ = this.MODEL.query()
 
     const page = request.input('page')
@@ -93,7 +92,6 @@ export default class AttributeController extends BaseController {
   }
 
   async findSingleRecord({ request, response }: HttpContext) {
-    console.log('first')
     try {
       const DQ = await this.MODEL.query().where('id', request.param('id')).first()
 

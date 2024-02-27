@@ -33,7 +33,7 @@ export default class BaseController {
 
   async allPermissions(user?: User) {
     let rolePermissions: string[] = []
-    console.log(user)
+    // console.log(user)
     if (user?.roles) {
       for (const role of user.roles) {
         rolePermissions = [...role.permissions.map((permission) => permission.name)]

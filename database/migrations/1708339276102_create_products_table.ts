@@ -22,12 +22,12 @@ export default class extends BaseSchema {
         .onDelete('CASCADE')
       table.string('product_code').notNullable().unique()
       table.string('title').notNullable()
-      table.string('slug').notNullable()
+      // table.string('slug').notNullable()
       table.boolean('status').notNullable().defaultTo(true)
       table.string('description').nullable()
       table.string('thumbnail').nullable()
 
-      table.unique(['shop_id', 'title', 'slug'])
+      table.unique(['shop_id', 'title', 'product_code'])
 
       table.timestamp('created_at')
       table.timestamp('updated_at')

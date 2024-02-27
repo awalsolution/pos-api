@@ -24,8 +24,8 @@ export default class Product extends BaseModel {
   @column()
   declare title: string
 
-  @column()
-  declare slug: string
+  // @column()
+  // declare slug: string
 
   @column()
   declare status: boolean

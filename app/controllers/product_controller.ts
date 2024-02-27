@@ -125,7 +125,7 @@ export default class ProductController extends BaseController {
         })
       }
       const DM = new this.MODEL()
-      DM.shopId = auth.use('api').user?.shop.id
+      DM.shopId = auth.use('api').user?.shop?.id
       DM.categoryId = request.body().category_id
       DM.product_code = request.body().product_code
       DM.title = request.body().title
