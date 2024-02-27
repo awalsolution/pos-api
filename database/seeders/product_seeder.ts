@@ -11,7 +11,7 @@ export default class extends BaseSeeder {
         title: 'Product 01',
         slug: 'product-01',
         description: 'this is shop 01 product 01 long description',
-        product_image: '/uploads/products/product-01.png',
+        thumbnail: '/uploads/products/product-01.png',
       },
       {
         shopId: 1,
@@ -20,7 +20,7 @@ export default class extends BaseSeeder {
         title: 'Product 02',
         slug: 'product-02',
         description: 'this is shop 01 product 02 long description',
-        product_image: '/uploads/products/product-02.png',
+        thumbnail: '/uploads/products/product-02.png',
       },
       {
         shopId: 1,
@@ -29,7 +29,7 @@ export default class extends BaseSeeder {
         title: 'Product 03',
         slug: 'product-03',
         description: 'this is shop 01 product 03 long description',
-        product_image: '/uploads/products/product-03.png',
+        thumbnail: '/uploads/products/product-03.png',
       },
       {
         shopId: 2,
@@ -38,7 +38,7 @@ export default class extends BaseSeeder {
         title: 'Product 01',
         slug: 'product-01',
         description: 'this is shop 02 product 01 long description',
-        product_image: '/uploads/products/product-04.png',
+        thumbnail: '/uploads/products/product-04.png',
       },
       {
         shopId: 2,
@@ -47,7 +47,7 @@ export default class extends BaseSeeder {
         title: 'Product 02',
         slug: 'product-02',
         description: 'this is shop 02 product 02 long description',
-        product_image: '/uploads/products/product-05.png',
+        thumbnail: '/uploads/products/product-05.png',
       },
       {
         shopId: 2,
@@ -56,7 +56,7 @@ export default class extends BaseSeeder {
         title: 'Product 03',
         slug: 'product-03',
         description: 'this is shop 02 product 03 long description',
-        product_image: '/uploads/products/product-01.png',
+        thumbnail: '/uploads/products/product-01.png',
       },
       {
         shopId: 3,
@@ -65,7 +65,7 @@ export default class extends BaseSeeder {
         title: 'Product 01',
         slug: 'product-01',
         description: 'this is shop 03 product 01 long description',
-        product_image: '/uploads/products/product-02.png',
+        thumbnail: '/uploads/products/product-02.png',
       },
       {
         shopId: 3,
@@ -74,7 +74,7 @@ export default class extends BaseSeeder {
         title: 'Product 02',
         slug: 'product-02',
         description: 'this is shop 02 product 02 long description',
-        product_image: '/uploads/products/product-03.png',
+        thumbnail: '/uploads/products/product-03.png',
       },
       {
         shopId: 3,
@@ -83,7 +83,7 @@ export default class extends BaseSeeder {
         title: 'Product 03',
         slug: 'product-03',
         description: 'this is shop 02 product 03 long description',
-        product_image: '/uploads/products/product-04.png',
+        thumbnail: '/uploads/products/product-04.png',
       },
     ])
   }
