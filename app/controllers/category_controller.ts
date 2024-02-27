@@ -122,7 +122,12 @@ export default class CategoryController extends BaseController {
   async create({ auth, request, response }: HttpContext) {
     const currentUser = auth.use('api').user!
     try {
-      const DE = await this.MODEL.findBy('name', request.body().name)
+      const DE = await this.MODEL.query()
+        .where({
+          name: request.body().name,
+          shop_id: currentUser.shopId!,
+        })
+        .first()
 
       if (DE) {
         return response.conflict({
