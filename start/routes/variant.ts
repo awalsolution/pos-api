@@ -6,7 +6,7 @@ router
   .group(() => {
     router.get('/', [VariantController, 'findAllRecords'])
     router.get('/:id', [VariantController, 'findSingleRecord'])
-    router.get('/getVariantsByProduct/:id', [VariantController, 'getVariantsByProduct'])
+    router.get('/findBy/:id', [VariantController, 'getVariantsByProduct'])
     router
       .group(() => {
         router.post('/', [VariantController, 'create'])
