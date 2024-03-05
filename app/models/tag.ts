@@ -1,30 +1,27 @@
 import { DateTime } from 'luxon'
-import { BaseModel, SnakeCaseNamingStrategy, belongsTo, column, hasMany } from '@adonisjs/lucid/orm'
-import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
-import Shop from '#models/shop'
+import {
+  BaseModel,
+  SnakeCaseNamingStrategy,
+  belongsTo,
+  column,
+  manyToMany,
+} from '@adonisjs/lucid/orm'
+import type { BelongsTo, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Product from '#models/product'
+import Shop from '#models/shop'
 
 BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
 
-export default class Category extends BaseModel {
+export default class Tag extends BaseModel {
   @column({ isPrimary: true })
   // @no-swagger
   declare id: number
 
   @column()
-  declare shopId: number | undefined
-
-  @column()
   declare name: string
 
   @column()
-  declare parent_id: number | null
-
-  @column()
-  declare thumbnail: string
-
-  @column()
-  declare status: boolean
+  declare slug: string | null
 
   @column.dateTime({
     autoCreate: true,
@@ -41,12 +38,16 @@ export default class Category extends BaseModel {
   // @no-swagger
   declare updatedAt: DateTime
 
-  @hasMany(() => Product)
-  declare products: HasMany<typeof Product>
-
-  @hasMany(() => Category, { foreignKey: 'parent_id' })
-  declare sub_category: HasMany<typeof Category>
-
   @belongsTo(() => Shop)
   declare shop: BelongsTo<typeof Shop>
+
+  @manyToMany(() => Product, {
+    pivotTable: 'product_tags',
+    pivotTimestamps: true,
+    localKey: 'id',
+    pivotForeignKey: 'tag_id',
+    relatedKey: 'id',
+    pivotRelatedForeignKey: 'product_id ',
+  })
+  declare products: ManyToMany<typeof Product>
 }

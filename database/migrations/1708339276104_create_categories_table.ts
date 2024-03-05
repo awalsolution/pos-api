@@ -1,7 +1,7 @@
 import { BaseSchema } from '@adonisjs/lucid/schema'
 
 export default class extends BaseSchema {
-  protected tableName = 'products'
+  protected tableName = 'categories'
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
@@ -14,20 +14,18 @@ export default class extends BaseSchema {
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
       table
-        .integer('category_id')
+        .integer('parent_id')
         .unsigned()
         .references('id')
         .inTable('categories')
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
-      table.string('product_code').notNullable().unique()
-      table.string('title').notNullable()
-      // table.string('slug').notNullable()
-      table.boolean('status').notNullable().defaultTo(true)
-      table.string('description').nullable()
+      table.string('name').notNullable()
+      table.string('slug').nullable()
       table.string('thumbnail').nullable()
+      table.boolean('status').notNullable().defaultTo(true)
 
-      table.unique(['shop_id', 'title', 'product_code'])
+      table.unique(['shop_id', 'name'])
 
       table.timestamp('created_at')
       table.timestamp('updated_at')

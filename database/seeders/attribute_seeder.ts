@@ -9,12 +9,24 @@ export default class extends BaseSeeder {
         name: 'color',
       },
       {
+        shopId: 1,
+        name: 'size',
+      },
+      {
+        shopId: 2,
+        name: 'color',
+      },
+      {
         shopId: 2,
         name: 'size',
       },
       {
         shopId: 3,
         name: 'color',
+      },
+      {
+        shopId: 3,
+        name: 'size',
       },
     ])
   }

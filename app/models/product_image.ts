@@ -3,13 +3,13 @@ import { BaseModel, SnakeCaseNamingStrategy, column } from '@adonisjs/lucid/orm'
 
 BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
 
-export default class VariantImage extends BaseModel {
+export default class ProductImage extends BaseModel {
   @column({ isPrimary: true })
   // @no-swagger
   declare id: number
 
   @column()
-  declare variantId: number | undefined
+  declare productId: number | undefined
 
   @column()
   declare url: string | null

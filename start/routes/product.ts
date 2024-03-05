@@ -13,6 +13,9 @@ router
         router.put('/:id', [ProductController, 'update'])
         router.put('/status/:id', [ProductController, 'updateStatus'])
         router.delete('/:id', [ProductController, 'destroy'])
+        router.post('/:id/attribute', [ProductController, 'storeAttribute'])
+        router.get('/:id/attribute', [ProductController, 'findAttributeByProduct'])
+        router.delete('/attribute/:id', [ProductController, 'destroyAttribute'])
       })
       .use(
         middleware.auth({

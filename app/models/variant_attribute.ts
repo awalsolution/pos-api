@@ -3,7 +3,7 @@ import { BaseModel, SnakeCaseNamingStrategy, column } from '@adonisjs/lucid/orm'
 
 BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
 
-export default class VariantImage extends BaseModel {
+export default class VariantAttribute extends BaseModel {
   @column({ isPrimary: true })
   // @no-swagger
   declare id: number
@@ -12,11 +12,10 @@ export default class VariantImage extends BaseModel {
   declare variantId: number | undefined
 
   @column()
-  declare url: string | null
+  declare attributeId: number | undefined
 
-  @column()
-  declare name: string | null
-
+  // @column()
+  // declare option: string | null
   @column.dateTime({
     autoCreate: true,
     serialize: (value) => value?.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY),

@@ -2,6 +2,7 @@ import BaseController from '#controllers/base_controller'
 import { HttpContext } from '@adonisjs/core/http'
 import HttpCodes from '#enums/http_codes'
 import Product from '#models/product'
+import ProductAttribute from '#models/product_attribute'
 
 export default class ProductController extends BaseController {
   declare MODEL: typeof Product
@@ -36,7 +37,7 @@ export default class ProductController extends BaseController {
         code: HttpCodes.SUCCESS,
         message: 'Record find successfully!',
         result: await DQ.preload('shop')
-          .preload('category', (q) => q.preload('sub_category'))
+          .preload('categories')
           .preload('variants', (q) => q.preload('attributes').preload('images'))
           .paginate(page, perPage),
       })
@@ -69,7 +70,7 @@ export default class ProductController extends BaseController {
         code: HttpCodes.SUCCESS,
         message: 'Record find successfully!',
         result: await DQ.preload('shop')
-          .preload('category', (q) => q.preload('sub_category'))
+          .preload('categories')
           .preload('variants', (q) => q.preload('attributes').preload('images'))
           .paginate(page, perPage),
       })
@@ -87,7 +88,7 @@ export default class ProductController extends BaseController {
       const DQ = await this.MODEL.query()
         .where('id', request.param('product_id'))
         .preload('shop')
-        .preload('category', (q) => q.preload('sub_category'))
+        .preload('categories')
         .preload('variants', (q) => q.preload('attributes').preload('images'))
         .first()
 
@@ -116,19 +117,25 @@ export default class ProductController extends BaseController {
    * @requestBody <Product>
    */
   async create({ auth, request, response }: HttpContext) {
+    const currentUser = auth.use('api').user!
     try {
-      const DE = await this.MODEL.findBy('product_code', request.body().product_code)
+      const DE = await this.MODEL.findBy('sku', request.body().sku)
       if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
           message: 'Record already exists!',
         })
       }
+
       const DM = new this.MODEL()
-      DM.shopId = auth.use('api').user?.shop?.id
-      DM.categoryId = request.body().category_id
-      DM.product_code = request.body().product_code
-      DM.title = request.body().title
+      if (this.isSuperAdmin(currentUser)) {
+        DM.shopId = request.body().shop_id
+      } else {
+        DM.shopId = currentUser.shopId
+      }
+
+      DM.name = request.body().name
+      DM.sku = request.body().sku
       DM.description = request.body().description
       DM.thumbnail = request.body().thumbnail
 
@@ -141,6 +148,83 @@ export default class ProductController extends BaseController {
       })
     } catch (e) {
       console.log(e)
+      return response.internalServerError({
+        code: HttpCodes.SERVER_ERROR,
+        message: e.toString(),
+      })
+    }
+  }
+
+  /**
+   * @storeAttribute
+   * @requestBody <Product>
+   */
+  async storeAttribute({ request, response }: HttpContext) {
+    try {
+      const requestData = request.body().attributes
+
+      let data = []
+
+      for (const item of requestData) {
+        for (const subItem of item.option) {
+          try {
+            const createdData = await ProductAttribute.create({
+              productId: request.param('id'),
+              attributeId: item.name,
+              option: subItem,
+            })
+            data.push(createdData)
+          } catch (error) {
+            if (error.code === 'ER_DUP_ENTRY') {
+              return response.conflict({
+                code: HttpCodes.CONFLICTS,
+                message: 'Record already exists!',
+                result: data,
+              })
+            } else {
+              return response.internalServerError({
+                code: HttpCodes.SERVER_ERROR,
+                message: 'Some thing went worng! try again',
+              })
+            }
+          }
+        }
+      }
+
+      return response.ok({
+        code: HttpCodes.SUCCESS,
+        message: 'Created successfully!',
+        result: data,
+      })
+    } catch (e) {
+      console.log(e)
+      return response.internalServerError({
+        code: HttpCodes.SERVER_ERROR,
+        message: e.toString(),
+      })
+    }
+  }
+
+  async findAttributeByProduct({ request, response }: HttpContext) {
+    try {
+      const DQ = await this.MODEL.query()
+        .where('id', request.param('id'))
+        .preload('attributes', (q) => q.preload('attribute'))
+        .first()
+
+      if (!DQ) {
+        return response.notFound({
+          code: HttpCodes.NOT_FOUND,
+          message: 'Data is Empty',
+        })
+      }
+
+      return response.ok({
+        code: HttpCodes.SUCCESS,
+        message: 'Record find successfully!',
+        result: DQ,
+      })
+    } catch (e) {
       return response.internalServerError({
         code: HttpCodes.SERVER_ERROR,
         message: e.toString(),
@@ -163,9 +247,6 @@ export default class ProductController extends BaseController {
         })
       }
 
-      DQ.title = request.body().title
-      DQ.categoryId = request.body().category_id
-      DQ.product_code = request.body().product_code
       DQ.description = request.body().description
       DQ.status = request.body().status
       DQ.thumbnail = request.body().thumbnail
@@ -223,6 +304,24 @@ export default class ProductController extends BaseController {
     }
 
     await DQ.delete()
+    return response.ok({
+      code: HttpCodes.SUCCESS,
+      message: 'Record deleted successfully!',
+    })
+  }
+
+  async destroyAttribute({ request, response }: HttpContext) {
+    const DQ = await ProductAttribute.findOrFail(request.param('id'))
+
+    if (!DQ) {
+      return response.notFound({
+        code: HttpCodes.NOT_FOUND,
+        message: 'Data not found',
+      })
+    }
+
+    await DQ.delete()
+
     return response.ok({
       code: HttpCodes.SUCCESS,
       message: 'Record deleted successfully!',

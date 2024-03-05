@@ -1,19 +1,32 @@
 import { BaseSchema } from '@adonisjs/lucid/schema'
 
 export default class extends BaseSchema {
-  protected tableName = 'variant_images'
+  protected tableName = 'default_attributes'
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table
-        .integer('variant_id')
+        .integer('product_id')
         .unsigned()
         .references('id')
-        .inTable('variants')
+        .inTable('products')
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
-      table.string('images').nullable()
+      table
+        .integer('name')
+        .unsigned()
+        .references('id')
+        .inTable('attributes')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE')
+      table
+        .integer('option')
+        .unsigned()
+        .references('id')
+        .inTable('variant_attributes')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE')
 
       table.timestamp('created_at')
       table.timestamp('updated_at')

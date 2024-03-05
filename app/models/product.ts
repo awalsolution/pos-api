@@ -1,9 +1,19 @@
 import { DateTime } from 'luxon'
-import { BaseModel, SnakeCaseNamingStrategy, belongsTo, column, hasMany } from '@adonisjs/lucid/orm'
-import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
+import {
+  BaseModel,
+  SnakeCaseNamingStrategy,
+  belongsTo,
+  column,
+  hasMany,
+  manyToMany,
+} from '@adonisjs/lucid/orm'
+import type { BelongsTo, HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Shop from '#models/shop'
-import Variant from '#models/variant'
+import ProductImage from '#models/product_image'
 import Category from '#models/category'
+import Variant from '#models/variant'
+import Tag from '#models/tag'
+import ProductAttribute from '#models/product_attribute'
 
 BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
 
@@ -13,25 +23,64 @@ export default class Product extends BaseModel {
   declare id: number
 
   @column()
-  declare shopId: number | undefined
+  declare shopId: number | null
 
   @column()
-  declare categoryId: number | undefined
+  declare name: string
 
   @column()
-  declare product_code: string
+  declare slug: string | null
 
   @column()
-  declare title: string
-
-  // @column()
-  // declare slug: string
+  declare type: string
 
   @column()
-  declare status: boolean
+  declare status: string
+
+  @column()
+  declare featured: boolean
 
   @column()
   declare description: string | null
+
+  @column()
+  declare sku: string
+
+  @column()
+  declare price: number
+
+  @column()
+  declare regular_price: number | null
+
+  @column()
+  declare sale_price: number | null
+
+  @column()
+  declare on_sale: Boolean
+
+  @column()
+  declare date_on_sale_from: DateTime | null
+
+  @column()
+  declare date_on_sale_to: DateTime | null
+
+  @column()
+  declare total_sales: number
+
+  @column()
+  declare stock_quantity: number | null
+
+  @column()
+  declare stock_status: string
+
+  @column()
+  declare reviews_allowed: boolean
+
+  @column()
+  declare average_rating: string | null
+
+  @column()
+  declare rating_count: string | null
 
   @column()
   declare thumbnail: string | null
@@ -54,8 +103,31 @@ export default class Product extends BaseModel {
   @belongsTo(() => Shop)
   declare shop: BelongsTo<typeof Shop>
 
-  @belongsTo(() => Category)
-  declare category: BelongsTo<typeof Category>
+  @hasMany(() => ProductImage)
+  declare images: HasMany<typeof ProductImage>
+
+  @hasMany(() => ProductAttribute)
+  declare attributes: HasMany<typeof ProductAttribute>
+
+  @manyToMany(() => Category, {
+    pivotTable: 'product_categories',
+    pivotTimestamps: true,
+    localKey: 'id',
+    pivotForeignKey: 'product_id',
+    relatedKey: 'id',
+    pivotRelatedForeignKey: 'category_id',
+  })
+  declare categories: ManyToMany<typeof Category>
+
+  @manyToMany(() => Tag, {
+    pivotTable: 'product_tags',
+    pivotTimestamps: true,
+    localKey: 'id',
+    pivotForeignKey: 'product_id',
+    relatedKey: 'id',
+    pivotRelatedForeignKey: 'tag_id',
+  })
+  declare tags: ManyToMany<typeof Tag>
 
   @hasMany(() => Variant)
   declare variants: HasMany<typeof Variant>
