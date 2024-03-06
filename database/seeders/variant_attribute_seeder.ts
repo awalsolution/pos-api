@@ -1,5 +1,5 @@
 import { BaseSeeder } from '@adonisjs/lucid/seeders'
-import VariantAttribute from '#models/variant_attribute'
+import VariantAttribute from '#models/variant_combination'
 
 export default class extends BaseSeeder {
   async run() {

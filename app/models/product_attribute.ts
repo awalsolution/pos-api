@@ -1,7 +1,5 @@
 import { DateTime } from 'luxon'
-import { BaseModel, SnakeCaseNamingStrategy, belongsTo, column } from '@adonisjs/lucid/orm'
-import Attribute from './attribute.js'
-import type { BelongsTo } from '@adonisjs/lucid/types/relations'
+import { BaseModel, SnakeCaseNamingStrategy, column } from '@adonisjs/lucid/orm'
 
 BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
 
@@ -14,7 +12,7 @@ export default class ProductAttribute extends BaseModel {
   declare productId: number | null
 
   @column()
-  declare attributeId: number | null
+  declare name: string | null
 
   @column()
   declare option: string | null
@@ -33,7 +31,4 @@ export default class ProductAttribute extends BaseModel {
   })
   // @no-swagger
   declare updatedAt: DateTime
-
-  @belongsTo(() => Attribute)
-  declare attribute: BelongsTo<typeof Attribute>
 }

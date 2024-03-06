@@ -1,14 +1,8 @@
 import { DateTime } from 'luxon'
-import {
-  BaseModel,
-  SnakeCaseNamingStrategy,
-  column,
-  hasMany,
-  manyToMany,
-} from '@adonisjs/lucid/orm'
-import type { HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
+import { BaseModel, SnakeCaseNamingStrategy, column, hasMany } from '@adonisjs/lucid/orm'
+import type { HasMany } from '@adonisjs/lucid/types/relations'
 import VariantImage from '#models/variant_image'
-import Attribute from './attribute.js'
+// import Attribute from './attribute.js'
 
 BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
 
@@ -18,13 +12,19 @@ export default class Variant extends BaseModel {
   declare id: number
 
   @column()
-  declare productId: number | undefined
+  declare productId: number | null
 
   @column()
-  declare sku: string
+  declare sku: string | null
 
   @column()
-  declare price: number
+  declare color: string | null
+
+  @column()
+  declare size: string | null
+
+  @column()
+  declare price: number | null
 
   @column()
   declare regular_price: number | null
@@ -69,15 +69,15 @@ export default class Variant extends BaseModel {
   declare updatedAt: DateTime
 
   @hasMany(() => VariantImage)
-  declare images: HasMany<typeof VariantImage>
+  declare gallery: HasMany<typeof VariantImage>
 
-  @manyToMany(() => Attribute, {
-    pivotTable: 'variant_attributes',
-    pivotTimestamps: true,
-    localKey: 'id',
-    pivotForeignKey: 'variant_id ',
-    relatedKey: 'id',
-    pivotRelatedForeignKey: 'attribute_id',
-  })
-  declare attributes: ManyToMany<typeof Attribute>
+  // @manyToMany(() => Attribute, {
+  //   pivotTable: 'variant_attributes',
+  //   pivotTimestamps: true,
+  //   localKey: 'id',
+  //   pivotForeignKey: 'variant_id ',
+  //   relatedKey: 'id',
+  //   pivotRelatedForeignKey: 'attribute_id',
+  // })
+  // declare attributes: ManyToMany<typeof Attribute>
 }

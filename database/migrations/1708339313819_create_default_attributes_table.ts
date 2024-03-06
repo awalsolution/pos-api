@@ -20,13 +20,6 @@ export default class extends BaseSchema {
         .inTable('attributes')
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
-      table
-        .integer('option')
-        .unsigned()
-        .references('id')
-        .inTable('variant_attributes')
-        .onUpdate('CASCADE')
-        .onDelete('CASCADE')
 
       table.timestamp('created_at')
       table.timestamp('updated_at')

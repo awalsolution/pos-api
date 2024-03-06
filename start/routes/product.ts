@@ -13,9 +13,11 @@ router
         router.put('/:id', [ProductController, 'update'])
         router.put('/status/:id', [ProductController, 'updateStatus'])
         router.delete('/:id', [ProductController, 'destroy'])
-        router.post('/:id/attribute', [ProductController, 'storeAttribute'])
-        router.get('/:id/attribute', [ProductController, 'findAttributeByProduct'])
+        router.post('/:product_id/attribute', [ProductController, 'storeAttribute'])
+        router.get('/:product_id/attribute', [ProductController, 'findAttributeByProduct'])
         router.delete('/attribute/:id', [ProductController, 'destroyAttribute'])
+        router.get('/:product_id/variant-generate', [ProductController, 'generateVariants'])
+        router.get('/:product_id/variant', [ProductController, 'findSingleRecord'])
       })
       .use(
         middleware.auth({

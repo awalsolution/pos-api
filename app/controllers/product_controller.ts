@@ -3,6 +3,7 @@ import { HttpContext } from '@adonisjs/core/http'
 import HttpCodes from '#enums/http_codes'
 import Product from '#models/product'
 import ProductAttribute from '#models/product_attribute'
+import Variant from '#models/variant'
 
 export default class ProductController extends BaseController {
   declare MODEL: typeof Product
@@ -38,7 +39,8 @@ export default class ProductController extends BaseController {
         message: 'Record find successfully!',
         result: await DQ.preload('shop')
           .preload('categories')
-          .preload('variants', (q) => q.preload('attributes').preload('images'))
+          .preload('gallery')
+          .preload('variants', (q) => q.preload('gallery'))
           .paginate(page, perPage),
       })
     } else {
@@ -71,7 +73,8 @@ export default class ProductController extends BaseController {
         message: 'Record find successfully!',
         result: await DQ.preload('shop')
           .preload('categories')
-          .preload('variants', (q) => q.preload('attributes').preload('images'))
+          .preload('gallery')
+          .preload('variants', (q) => q.preload('gallery'))
           .paginate(page, perPage),
       })
     } else {
@@ -87,9 +90,10 @@ export default class ProductController extends BaseController {
     try {
       const DQ = await this.MODEL.query()
         .where('id', request.param('product_id'))
-        .preload('shop')
+        .preload('shop', (qs) => qs.select(['shop_name']))
+        .preload('gallery', (q) => q.select(['url']))
         .preload('categories')
-        .preload('variants', (q) => q.preload('attributes').preload('images'))
+        .preload('variants', (q) => q.preload('gallery', (qs) => qs.select(['url'])))
         .first()
 
       if (!DQ) {
@@ -140,6 +144,12 @@ export default class ProductController extends BaseController {
       DM.thumbnail = request.body().thumbnail
 
       await DM.save()
+      if (request.body().gallery) {
+        const gallery = request.body().gallery
+        for (const item of gallery) {
+          await DM.related('gallery').create(item)
+        }
+      }
 
       return response.ok({
         code: HttpCodes.SUCCESS,
@@ -161,16 +171,25 @@ export default class ProductController extends BaseController {
    */
   async storeAttribute({ request, response }: HttpContext) {
     try {
+      const DQ = await this.MODEL.query().where('id', request.param('product_id')).first()
+
+      if (!DQ) {
+        return response.notFound({
+          code: HttpCodes.NOT_FOUND,
+          message: 'Data not found',
+        })
+      }
       const requestData = request.body().attributes
+      console.log(requestData)
 
       let data = []
 
       for (const item of requestData) {
-        for (const subItem of item.option) {
+        for (const subItem of item.options) {
           try {
             const createdData = await ProductAttribute.create({
-              productId: request.param('id'),
-              attributeId: item.name,
+              productId: request.param('product_id'),
+              name: item.name,
               option: subItem,
             })
             data.push(createdData)
@@ -191,10 +210,13 @@ export default class ProductController extends BaseController {
         }
       }
 
+      const combinationData = await this.generateAttributeCombinations(requestData)
+      DQ.related('attribute_combination').createMany(combinationData)
+
       return response.ok({
         code: HttpCodes.SUCCESS,
         message: 'Created successfully!',
-        result: data,
+        result: null,
       })
     } catch (e) {
       console.log(e)
@@ -205,11 +227,32 @@ export default class ProductController extends BaseController {
     }
   }
 
+  async generateAttributeCombinations(data: any) {
+    const cartesian = (a: string[][]) =>
+      a.reduce((acc, curr) => acc.flatMap((b) => curr.map((c) => b.concat([c]))), [
+        [],
+      ] as string[][])
+
+    const combinations = cartesian(data.map((attr: any) => attr.options))
+
+    const result: { [key: string]: string }[] = []
+
+    combinations.forEach((combo) => {
+      const comboObj: { [key: string]: string } = {}
+      data.forEach((attribute: any, index: any) => {
+        comboObj[attribute.name] = combo[index]
+      })
+      result.push(comboObj)
+    })
+    console.log(result)
+    return result
+  }
+
   async findAttributeByProduct({ request, response }: HttpContext) {
     try {
       const DQ = await this.MODEL.query()
-        .where('id', request.param('id'))
-        .preload('attributes', (q) => q.preload('attribute'))
+        .where('id', request.param('product_id'))
+        .preload('product_attribute')
         .first()
 
       if (!DQ) {
@@ -252,6 +295,13 @@ export default class ProductController extends BaseController {
       DQ.thumbnail = request.body().thumbnail
 
       await DQ.save()
+
+      if (request.body().gallery) {
+        const gallery = request.body().gallery
+        for (const item of gallery) {
+          await DQ.related('gallery').create({ url: item.url })
+        }
+      }
 
       return response.ok({
         code: HttpCodes.SUCCESS,
@@ -326,5 +376,43 @@ export default class ProductController extends BaseController {
       code: HttpCodes.SUCCESS,
       message: 'Record deleted successfully!',
     })
+  }
+
+  async generateVariants({ request, response }: HttpContext) {
+    try {
+      const product = await this.MODEL.query()
+        .where('id', request.param('product_id'))
+        .preload('attribute_combination', (q) => q.select(['color', 'size']))
+        .first()
+
+      if (!product) {
+        return response.notFound({
+          code: HttpCodes.NOT_FOUND,
+          message: 'Product not found',
+        })
+      }
+
+      const data = await Promise.all(
+        product.attribute_combination.map(async (item) => {
+          const res = await Variant.create({
+            productId: item.productId,
+            color: item.color,
+            size: item.size,
+          })
+          return res
+        })
+      )
+
+      return response.ok({
+        code: HttpCodes.SUCCESS,
+        message: 'Generated successfully!',
+        data: data,
+      })
+    } catch (e) {
+      return response.internalServerError({
+        code: HttpCodes.SERVER_ERROR,
+        message: e.toString(),
+      })
+    }
   }
 }

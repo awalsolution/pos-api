@@ -14,9 +14,6 @@ export default class VariantImage extends BaseModel {
   @column()
   declare url: string | null
 
-  @column()
-  declare name: string | null
-
   @column.dateTime({
     autoCreate: true,
     serialize: (value) => value?.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY),

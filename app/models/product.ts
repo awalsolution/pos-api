@@ -14,6 +14,7 @@ import Category from '#models/category'
 import Variant from '#models/variant'
 import Tag from '#models/tag'
 import ProductAttribute from '#models/product_attribute'
+import AttributeCombination from '#models/attribute_combination'
 
 BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
 
@@ -104,10 +105,13 @@ export default class Product extends BaseModel {
   declare shop: BelongsTo<typeof Shop>
 
   @hasMany(() => ProductImage)
-  declare images: HasMany<typeof ProductImage>
+  declare gallery: HasMany<typeof ProductImage>
 
   @hasMany(() => ProductAttribute)
-  declare attributes: HasMany<typeof ProductAttribute>
+  declare product_attribute: HasMany<typeof ProductAttribute>
+
+  @hasMany(() => AttributeCombination)
+  declare attribute_combination: HasMany<typeof AttributeCombination>
 
   @manyToMany(() => Category, {
     pivotTable: 'product_categories',
