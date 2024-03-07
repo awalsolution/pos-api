@@ -1,30 +1,24 @@
 import { DateTime } from 'luxon'
-import { BaseModel, SnakeCaseNamingStrategy, belongsTo, column } from '@adonisjs/lucid/orm'
-import type { BelongsTo } from '@adonisjs/lucid/types/relations'
-import Shop from '#models/shop'
+import { BaseModel, SnakeCaseNamingStrategy, column } from '@adonisjs/lucid/orm'
 
 BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
 
-export default class Category extends BaseModel {
+export default class AttributeCombination extends BaseModel {
   @column({ isPrimary: true })
   // @no-swagger
   declare id: number
 
   @column()
-  declare shopId: number | undefined
+  declare productId: number | null
 
   @column()
-  declare name: string
+  declare color: string | null
 
   @column()
-  declare parent_id: number | null
+  declare size: string | null
 
-  @column()
-  declare thumbnail: string
-
-  @column()
-  declare status: boolean
-
+  // @column()
+  // declare option: string | null
   @column.dateTime({
     autoCreate: true,
     serialize: (value) => value?.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY),
@@ -39,7 +33,4 @@ export default class Category extends BaseModel {
   })
   // @no-swagger
   declare updatedAt: DateTime
-
-  @belongsTo(() => Shop)
-  declare shop: BelongsTo<typeof Shop>
 }

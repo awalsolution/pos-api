@@ -2,6 +2,8 @@ import BaseController from '#controllers/base_controller'
 import { HttpContext } from '@adonisjs/core/http'
 import HttpCodes from '#enums/http_codes'
 import Product from '#models/product'
+import ProductAttribute from '#models/product_attribute'
+import Variant from '#models/variant'
 
 export default class ProductController extends BaseController {
   declare MODEL: typeof Product
@@ -36,41 +38,9 @@ export default class ProductController extends BaseController {
         code: HttpCodes.SUCCESS,
         message: 'Record find successfully!',
         result: await DQ.preload('shop')
-          .preload('category', (q) => q.preload('sub_category'))
-          .preload('variants', (q) => q.preload('attributes').preload('images'))
-          .paginate(page, perPage),
-      })
-    } else {
-      return response.ok({
-        code: HttpCodes.SUCCESS,
-        message: 'Record find successfully!',
-        result: await DQ.preload('shop'),
-      })
-    }
-  }
-
-  /**
-   * @findAllRecordsForFrontend
-   * @paramUse(paginated)
-   */
-  async findAllRecordsForFrontend({ request, response }: HttpContext) {
-    let DQ = this.MODEL.query()
-
-    const page = request.input('page')
-    const perPage = request.input('perPage')
-
-    // name filter
-    if (request.input('name')) {
-      DQ = DQ.whereILike('title', request.input('name') + '%')
-    }
-
-    if (perPage) {
-      response.ok({
-        code: HttpCodes.SUCCESS,
-        message: 'Record find successfully!',
-        result: await DQ.preload('shop')
-          .preload('category', (q) => q.preload('sub_category'))
-          .preload('variants', (q) => q.preload('attributes').preload('images'))
+          .preload('category')
+          .preload('gallery')
+          .preload('variants', (q) => q.preload('gallery'))
           .paginate(page, perPage),
       })
     } else {
@@ -86,9 +56,11 @@ export default class ProductController extends BaseController {
     try {
       const DQ = await this.MODEL.query()
         .where('id', request.param('product_id'))
-        .preload('shop')
-        .preload('category', (q) => q.preload('sub_category'))
-        .preload('variants', (q) => q.preload('attributes').preload('images'))
+        .preload('shop', (qs) => qs.select(['shop_name']))
+        .preload('gallery', (q) => q.select(['url']))
+        .preload('category')
+        .preload('product_attribute', (qs) => qs.select(['name', 'option']))
+        .preload('variants', (q) => q.preload('gallery', (qs) => qs.select(['url'])))
         .first()
 
       if (!DQ) {
@@ -116,23 +88,35 @@ export default class ProductController extends BaseController {
    * @requestBody <Product>
    */
   async create({ auth, request, response }: HttpContext) {
+    const currentUser = auth.use('api').user!
     try {
-      const DE = await this.MODEL.findBy('product_code', request.body().product_code)
+      const DE = await this.MODEL.findBy('sku', request.body().sku)
       if (DE) {
         return response.conflict({
           code: HttpCodes.CONFLICTS,
           message: 'Record already exists!',
         })
       }
+
       const DM = new this.MODEL()
-      DM.shopId = auth.use('api').user?.shop?.id
-      DM.categoryId = request.body().category_id
-      DM.product_code = request.body().product_code
-      DM.title = request.body().title
+      if (this.isSuperAdmin(currentUser)) {
+        DM.shopId = request.body().shop_id
+      } else {
+        DM.shopId = currentUser.shopId
+      }
+
+      DM.name = request.body().name
+      DM.sku = request.body().sku
       DM.description = request.body().description
       DM.thumbnail = request.body().thumbnail
 
       await DM.save()
+      if (request.body().gallery) {
+        const gallery = request.body().gallery
+        for (const item of gallery) {
+          await DM.related('gallery').create(item)
+        }
+      }
 
       return response.ok({
         code: HttpCodes.SUCCESS,
@@ -141,6 +125,116 @@ export default class ProductController extends BaseController {
       })
     } catch (e) {
       console.log(e)
+      return response.internalServerError({
+        code: HttpCodes.SERVER_ERROR,
+        message: e.toString(),
+      })
+    }
+  }
+
+  /**
+   * @storeAttribute
+   * @requestBody <Product>
+   */
+  async storeAttribute({ request, response }: HttpContext) {
+    try {
+      const DQ = await this.MODEL.query().where('id', request.param('product_id')).first()
+
+      if (!DQ) {
+        return response.notFound({
+          code: HttpCodes.NOT_FOUND,
+          message: 'Data not found',
+        })
+      }
+      const requestData = request.body().attributes
+      console.log(requestData)
+
+      let data = []
+
+      for (const item of requestData) {
+        for (const subItem of item.options) {
+          try {
+            const createdData = await ProductAttribute.create({
+              productId: request.param('product_id'),
+              name: item.name,
+              option: subItem,
+            })
+            data.push(createdData)
+          } catch (error) {
+            if (error.code === 'ER_DUP_ENTRY') {
+              return response.conflict({
+                code: HttpCodes.CONFLICTS,
+                message: 'Record already exists!',
+                result: data,
+              })
+            } else {
+              return response.internalServerError({
+                code: HttpCodes.SERVER_ERROR,
+                message: 'Some thing went worng! try again',
+              })
+            }
+          }
+        }
+      }
+
+      const combinationData = await this.generateAttributeCombinations(requestData)
+      DQ.related('attribute_combination').createMany(combinationData)
+
+      return response.ok({
+        code: HttpCodes.SUCCESS,
+        message: 'Created successfully!',
+        result: null,
+      })
+    } catch (e) {
+      console.log(e)
+      return response.internalServerError({
+        code: HttpCodes.SERVER_ERROR,
+        message: e.toString(),
+      })
+    }
+  }
+
+  async generateAttributeCombinations(data: any) {
+    const cartesian = (a: string[][]) =>
+      a.reduce((acc, curr) => acc.flatMap((b) => curr.map((c) => b.concat([c]))), [
+        [],
+      ] as string[][])
+
+    const combinations = cartesian(data.map((attr: any) => attr.options))
+
+    const result: { [key: string]: string }[] = []
+
+    combinations.forEach((combo) => {
+      const comboObj: { [key: string]: string } = {}
+      data.forEach((attribute: any, index: any) => {
+        comboObj[attribute.name] = combo[index]
+      })
+      result.push(comboObj)
+    })
+    console.log(result)
+    return result
+  }
+
+  async findAttributeByProduct({ request, response }: HttpContext) {
+    try {
+      const DQ = await this.MODEL.query()
+        .where('id', request.param('product_id'))
+        .preload('product_attribute')
+        .first()
+
+      if (!DQ) {
+        return response.notFound({
+          code: HttpCodes.NOT_FOUND,
+          message: 'Data is Empty',
+        })
+      }
+
+      return response.ok({
+        code: HttpCodes.SUCCESS,
+        message: 'Record find successfully!',
+        result: DQ,
+      })
+    } catch (e) {
       return response.internalServerError({
         code: HttpCodes.SERVER_ERROR,
         message: e.toString(),
@@ -163,14 +257,19 @@ export default class ProductController extends BaseController {
         })
       }
 
-      DQ.title = request.body().title
-      DQ.categoryId = request.body().category_id
-      DQ.product_code = request.body().product_code
       DQ.description = request.body().description
       DQ.status = request.body().status
+      DQ.categoryId = request.body().category_id
       DQ.thumbnail = request.body().thumbnail
 
       await DQ.save()
+
+      if (request.body().gallery) {
+        const gallery = request.body().gallery
+        for (const item of gallery) {
+          await DQ.related('gallery').updateOrCreate({}, { url: item.url })
+        }
+      }
 
       return response.ok({
         code: HttpCodes.SUCCESS,
@@ -227,5 +326,61 @@ export default class ProductController extends BaseController {
       code: HttpCodes.SUCCESS,
       message: 'Record deleted successfully!',
     })
+  }
+
+  async destroyAttribute({ request, response }: HttpContext) {
+    const DQ = await ProductAttribute.findOrFail(request.param('id'))
+
+    if (!DQ) {
+      return response.notFound({
+        code: HttpCodes.NOT_FOUND,
+        message: 'Data not found',
+      })
+    }
+
+    await DQ.delete()
+
+    return response.ok({
+      code: HttpCodes.SUCCESS,
+      message: 'Record deleted successfully!',
+    })
+  }
+
+  async generateVariants({ request, response }: HttpContext) {
+    try {
+      const product = await this.MODEL.query()
+        .where('id', request.param('product_id'))
+        .preload('attribute_combination', (q) => q.select(['color', 'size']))
+        .first()
+
+      if (!product) {
+        return response.notFound({
+          code: HttpCodes.NOT_FOUND,
+          message: 'Product not found',
+        })
+      }
+
+      const data = await Promise.all(
+        product.attribute_combination.map(async (item) => {
+          const res = await Variant.create({
+            productId: item.productId,
+            color: item.color,
+            size: item.size,
+          })
+          return res
+        })
+      )
+
+      return response.ok({
+        code: HttpCodes.SUCCESS,
+        message: 'Generated successfully!',
+        data: data,
+      })
+    } catch (e) {
+      return response.internalServerError({
+        code: HttpCodes.SERVER_ERROR,
+        message: e.toString(),
+      })
+    }
   }
 }

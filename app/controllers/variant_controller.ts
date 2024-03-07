@@ -35,17 +35,13 @@ export default class VariantController extends BaseController {
     if (perPage) {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        result: await DQ.preload('attributes')
-          // .preload('products')
-          .preload('images')
-          .paginate(page, perPage),
+        result: await DQ.preload('gallery').paginate(page, perPage),
         message: 'Record find successfully!',
       })
     } else {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        result: await DQ.preload('attributes').preload('images'),
-        // .preload('products'),
+        result: await DQ.preload('gallery'),
         message: 'Record find successfully!',
       })
     }
@@ -55,9 +51,7 @@ export default class VariantController extends BaseController {
     try {
       const DQ = await this.MODEL.query()
         .where('id', request.param('id'))
-        // .preload('products')
-        .preload('attributes')
-        .preload('images')
+        .preload('gallery')
         .first()
 
       if (!DQ) {
@@ -84,8 +78,7 @@ export default class VariantController extends BaseController {
     try {
       const DQ = await this.MODEL.query()
         .where('product_id', request.param('id'))
-        .preload('attributes')
-        .preload('images')
+        .preload('gallery')
 
       return response.ok({
         code: HttpCodes.SUCCESS,
@@ -117,20 +110,16 @@ export default class VariantController extends BaseController {
 
       const DM = new this.MODEL()
       DM.productId = request.param('id')
-      DM.attributeId = request.body().attribute_id
-      DM.sku_id = request.body().sku_id
-      DM.attribute_value = request.body().attribute_value
       DM.price = request.body().price
       DM.regular_price = request.body().regular_price
       DM.status = request.body().status
       DM.stock_quantity = request.body().stock_quantity
       DM.stock_status = request.body().stock_status
-      DM.rating = request.body().rating
 
       await DM.save()
-      const images = request.body().images
-      for (const image of images) {
-        await DM.related('images').create(image)
+      const gallery = request.body().gallery
+      for (const item of gallery) {
+        await DM.related('gallery').create(item)
       }
 
       return response.ok({
@@ -160,30 +149,21 @@ export default class VariantController extends BaseController {
           message: 'Data does not exists!',
         })
       }
-      DQ.sku_id = request.body().sku_id
-      DQ.attribute_value = request.body().attribute_value
+
+      DQ.sku = request.body().sku
       DQ.price = request.body().price
       DQ.regular_price = request.body().regular_price
       DQ.status = request.body().status
       DQ.stock_quantity = request.body().stock_quantity
       DQ.stock_status = request.body().stock_status
-      DQ.rating = request.body().rating
+      DQ.thumbnail = request.body().thumbnail
 
       await DQ.save()
-      const images = request.body().images
-      for (const image of images) {
-        if (image.id) {
-          const existImg = await DQ.related('images').query().where('id', image.id).first()
-
-          if (existImg) {
-            // update image
-            existImg.merge(image)
-          }
-        } else {
-          // Create new image
-          await DQ.related('images').create(image)
-        }
+      const gallery = request.body().gallery
+      for (const item of gallery) {
+        await DQ.related('gallery').create(item)
       }
+
       return response.ok({
         code: HttpCodes.SUCCESS,
         message: 'Update successfully!',

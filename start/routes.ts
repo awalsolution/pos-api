@@ -30,6 +30,7 @@ router.get('/docs', async () => {
 
 router.post('/api/v1/upload', [UploadController, 'imageUploader'])
 
+import '#start/store/routes'
 import '#start/routes/auth'
 import '#start/routes/customer'
 import '#start/routes/user'

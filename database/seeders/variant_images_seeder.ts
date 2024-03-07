@@ -6,67 +6,67 @@ export default class extends BaseSeeder {
     await VariantImage.createMany([
       {
         variantId: 1,
-        images: '/uploads/products/product-01.png',
+        url: '/uploads/products/r3os2cmjybc22ncnimqftpdb.jpg',
       },
       {
         variantId: 1,
-        images: '/uploads/products/product-02.png',
+        url: '/uploads/products/arlxpp9r6dyivhnhfarq3ttz.jpg',
       },
       {
         variantId: 1,
-        images: '/uploads/products/product-03.png',
+        url: '/uploads/products/u0ttkloy9wkfxp5fbt259kjn.jpg',
       },
       {
         variantId: 1,
-        images: '/uploads/products/product-04.png',
+        url: '/uploads/products/ydi0wdaon9cuhfcidsw14p1w.jpg',
       },
       {
         variantId: 2,
-        images: '/uploads/products/product-01.png',
+        url: '/uploads/products/r3os2cmjybc22ncnimqftpdb.jpg',
       },
       {
         variantId: 2,
-        images: '/uploads/products/product-02.png',
+        url: '/uploads/products/arlxpp9r6dyivhnhfarq3ttz.jpg',
       },
       {
         variantId: 2,
-        images: '/uploads/products/product-03.png',
+        url: '/uploads/products/u0ttkloy9wkfxp5fbt259kjn.jpg',
       },
       {
         variantId: 2,
-        images: '/uploads/products/product-04.png',
+        url: '/uploads/products/ydi0wdaon9cuhfcidsw14p1w.jpg',
       },
       {
         variantId: 3,
-        images: '/uploads/products/product-01.png',
+        url: '/uploads/products/r3os2cmjybc22ncnimqftpdb.jpg',
       },
       {
         variantId: 3,
-        images: '/uploads/products/product-02.png',
+        url: '/uploads/products/arlxpp9r6dyivhnhfarq3ttz.jpg',
       },
       {
         variantId: 3,
-        images: '/uploads/products/product-03.png',
+        url: '/uploads/products/u0ttkloy9wkfxp5fbt259kjn.jpg',
       },
       {
         variantId: 3,
-        images: '/uploads/products/product-04.png',
+        url: '/uploads/products/ydi0wdaon9cuhfcidsw14p1w.jpg',
       },
       {
         variantId: 4,
-        images: '/uploads/products/product-01.png',
+        url: '/uploads/products/r3os2cmjybc22ncnimqftpdb.jpg',
       },
       {
         variantId: 4,
-        images: '/uploads/products/product-02.png',
+        url: '/uploads/products/arlxpp9r6dyivhnhfarq3ttz.jpg',
       },
       {
         variantId: 4,
-        images: '/uploads/products/product-03.png',
+        url: '/uploads/products/u0ttkloy9wkfxp5fbt259kjn.jpg',
       },
       {
         variantId: 4,
-        images: '/uploads/products/product-04.png',
+        url: '/uploads/products/ydi0wdaon9cuhfcidsw14p1w.jpg',
       },
     ])
   }

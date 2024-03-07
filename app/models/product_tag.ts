@@ -1,18 +1,16 @@
 import { DateTime } from 'luxon'
-import { BaseModel, SnakeCaseNamingStrategy, column } from '@adonisjs/lucid/orm'
+import { BaseModel, column } from '@adonisjs/lucid/orm'
 
-BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
-
-export default class VariantImage extends BaseModel {
+export default class ProductTag extends BaseModel {
   @column({ isPrimary: true })
   // @no-swagger
   declare id: number
 
   @column()
-  declare variantId: number | undefined
+  declare productId: number | undefined
 
   @column()
-  declare url: string | null
+  declare tagId: number | undefined
 
   @column.dateTime({
     autoCreate: true,
