@@ -11,43 +11,6 @@ export default class AttributeController extends BaseController {
   }
 
   /**
-   * @findAllRecordForFrontend
-   * @paramUse(paginated)
-   */
-  async findAllRecordForFrontend({ request, response }: HttpContext) {
-    let DQ = this.MODEL.query()
-
-    const page = request.input('page')
-    const perPage = request.input('perPage')
-
-    // name filter
-    if (request.input('name')) {
-      DQ = DQ.whereILike('name', request.input('name') + '%')
-    }
-
-    if (!DQ) {
-      return response.notFound({
-        code: HttpCodes.NOT_FOUND,
-        message: 'Data is Empty',
-      })
-    }
-
-    if (perPage) {
-      return response.ok({
-        code: HttpCodes.SUCCESS,
-        message: 'Record find Successfully',
-        result: await DQ.preload('shop').paginate(page, perPage),
-      })
-    } else {
-      return response.ok({
-        code: HttpCodes.SUCCESS,
-        message: 'Record find Successfully',
-        result: await DQ.select('*'),
-      })
-    }
-  }
-
-  /**
    * @findAllRecords
    * @paramUse(paginated)
    */
