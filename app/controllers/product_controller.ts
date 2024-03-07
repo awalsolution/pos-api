@@ -57,10 +57,10 @@ export default class ProductController extends BaseController {
       const DQ = await this.MODEL.query()
         .where('id', request.param('product_id'))
         .preload('shop', (qs) => qs.select(['shop_name']))
-        .preload('gallery', (q) => q.select(['url']))
+        .preload('gallery', (q) => q.select(['id', 'url']))
         .preload('category')
         .preload('product_attribute', (qs) => qs.select(['name', 'option']))
-        .preload('variants', (q) => q.preload('gallery', (qs) => qs.select(['url'])))
+        .preload('variants', (q) => q.preload('gallery', (s) => s.select(['id', 'url'])))
         .first()
 
       if (!DQ) {
@@ -265,6 +265,7 @@ export default class ProductController extends BaseController {
       await DQ.save()
 
       const gallery = request.body().gallery
+
       for (const image of gallery) {
         if (image.id) {
           const existImg = await DQ.related('gallery').query().where('id', image.id).first()
@@ -278,12 +279,6 @@ export default class ProductController extends BaseController {
           await DQ.related('gallery').create(image)
         }
       }
-      // if (request.body().gallery) {
-      //   const gallery = request.body().gallery
-      //   for (const item of gallery) {
-      //     await DQ.related('gallery').create({ url: item.url })
-      //   }
-      // }
 
       return response.ok({
         code: HttpCodes.SUCCESS,
