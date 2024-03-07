@@ -52,7 +52,7 @@ router
           guards: ['customer'],
         })
       )
-      .prefix('/api/v1/shipment-address')
+      .prefix('/shipment-address')
     // product
     router
       .group(() => {
