@@ -13,6 +13,13 @@ export default class extends BaseSchema {
         .inTable('shops')
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
+      table
+        .integer('category_id')
+        .unsigned()
+        .references('id')
+        .inTable('categories')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE')
       table.string('name').notNullable()
       table.string('slug').nullable()
       table.string('type').notNullable().defaultTo('variable')

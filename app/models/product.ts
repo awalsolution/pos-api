@@ -27,6 +27,9 @@ export default class Product extends BaseModel {
   declare shopId: number | null
 
   @column()
+  declare categoryId: number | null
+
+  @column()
   declare name: string
 
   @column()
@@ -104,6 +107,9 @@ export default class Product extends BaseModel {
   @belongsTo(() => Shop)
   declare shop: BelongsTo<typeof Shop>
 
+  @belongsTo(() => Category)
+  declare category: BelongsTo<typeof Category>
+
   @hasMany(() => ProductImage)
   declare gallery: HasMany<typeof ProductImage>
 
@@ -112,16 +118,6 @@ export default class Product extends BaseModel {
 
   @hasMany(() => AttributeCombination)
   declare attribute_combination: HasMany<typeof AttributeCombination>
-
-  @manyToMany(() => Category, {
-    pivotTable: 'product_categories',
-    pivotTimestamps: true,
-    localKey: 'id',
-    pivotForeignKey: 'product_id',
-    relatedKey: 'id',
-    pivotRelatedForeignKey: 'category_id',
-  })
-  declare categories: ManyToMany<typeof Category>
 
   @manyToMany(() => Tag, {
     pivotTable: 'product_tags',

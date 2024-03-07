@@ -38,41 +38,7 @@ export default class ProductController extends BaseController {
         code: HttpCodes.SUCCESS,
         message: 'Record find successfully!',
         result: await DQ.preload('shop')
-          .preload('categories')
-          .preload('gallery')
-          .preload('variants', (q) => q.preload('gallery'))
-          .paginate(page, perPage),
-      })
-    } else {
-      return response.ok({
-        code: HttpCodes.SUCCESS,
-        message: 'Record find successfully!',
-        result: await DQ.preload('shop'),
-      })
-    }
-  }
-
-  /**
-   * @findAllRecordsForFrontend
-   * @paramUse(paginated)
-   */
-  async findAllRecordsForFrontend({ request, response }: HttpContext) {
-    let DQ = this.MODEL.query()
-
-    const page = request.input('page')
-    const perPage = request.input('perPage')
-
-    // name filter
-    if (request.input('name')) {
-      DQ = DQ.whereILike('title', request.input('name') + '%')
-    }
-
-    if (perPage) {
-      response.ok({
-        code: HttpCodes.SUCCESS,
-        message: 'Record find successfully!',
-        result: await DQ.preload('shop')
-          .preload('categories')
+          .preload('category')
           .preload('gallery')
           .preload('variants', (q) => q.preload('gallery'))
           .paginate(page, perPage),
@@ -92,7 +58,8 @@ export default class ProductController extends BaseController {
         .where('id', request.param('product_id'))
         .preload('shop', (qs) => qs.select(['shop_name']))
         .preload('gallery', (q) => q.select(['url']))
-        .preload('categories')
+        .preload('category')
+        .preload('product_attribute', (qs) => qs.select(['name', 'option']))
         .preload('variants', (q) => q.preload('gallery', (qs) => qs.select(['url'])))
         .first()
 
@@ -292,6 +259,7 @@ export default class ProductController extends BaseController {
 
       DQ.description = request.body().description
       DQ.status = request.body().status
+      DQ.categoryId = request.body().category_id
       DQ.thumbnail = request.body().thumbnail
 
       await DQ.save()
@@ -299,7 +267,7 @@ export default class ProductController extends BaseController {
       if (request.body().gallery) {
         const gallery = request.body().gallery
         for (const item of gallery) {
-          await DQ.related('gallery').create({ url: item.url })
+          await DQ.related('gallery').updateOrCreate({}, { url: item.url })
         }
       }
 

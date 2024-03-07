@@ -1,8 +1,7 @@
 import { DateTime } from 'luxon'
-import { BaseModel, SnakeCaseNamingStrategy, belongsTo, column, hasMany } from '@adonisjs/lucid/orm'
-import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
+import { BaseModel, SnakeCaseNamingStrategy, belongsTo, column } from '@adonisjs/lucid/orm'
+import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 import Shop from '#models/shop'
-import Product from '#models/product'
 
 BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
 
@@ -40,12 +39,6 @@ export default class Category extends BaseModel {
   })
   // @no-swagger
   declare updatedAt: DateTime
-
-  @hasMany(() => Product)
-  declare products: HasMany<typeof Product>
-
-  @hasMany(() => Category, { foreignKey: 'parent_id' })
-  declare sub_category: HasMany<typeof Category>
 
   @belongsTo(() => Shop)
   declare shop: BelongsTo<typeof Shop>
