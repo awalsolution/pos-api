@@ -117,9 +117,11 @@ export default class VariantController extends BaseController {
       DM.stock_status = request.body().stock_status
 
       await DM.save()
-      const gallery = request.body().gallery
-      for (const item of gallery) {
-        await DM.related('gallery').create(item)
+      if (request.body().gallery) {
+        const gallery = request.body().gallery
+        for (const item of gallery) {
+          await DQ.related('gallery').updateOrCreate({}, { url: item.url })
+        }
       }
 
       return response.ok({
@@ -159,9 +161,12 @@ export default class VariantController extends BaseController {
       DQ.thumbnail = request.body().thumbnail
 
       await DQ.save()
-      const gallery = request.body().gallery
-      for (const item of gallery) {
-        await DQ.related('gallery').create(item)
+
+      if (request.body().gallery) {
+        const gallery = request.body().gallery
+        for (const item of gallery) {
+          await DQ.related('gallery').updateOrCreate({}, { url: item.url })
+        }
       }
 
       return response.ok({
