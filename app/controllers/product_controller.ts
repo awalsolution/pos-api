@@ -264,12 +264,26 @@ export default class ProductController extends BaseController {
 
       await DQ.save()
 
-      if (request.body().gallery) {
-        const gallery = request.body().gallery
-        for (const item of gallery) {
-          await DQ.related('gallery').create({ url: item.url })
+      const gallery = request.body().gallery
+      for (const image of gallery) {
+        if (image.id) {
+          const existImg = await DQ.related('gallery').query().where('id', image.id).first()
+
+          if (existImg) {
+            // update image
+            existImg.merge(image)
+          }
+        } else {
+          // Create new image
+          await DQ.related('gallery').create(image)
         }
       }
+      // if (request.body().gallery) {
+      //   const gallery = request.body().gallery
+      //   for (const item of gallery) {
+      //     await DQ.related('gallery').create({ url: item.url })
+      //   }
+      // }
 
       return response.ok({
         code: HttpCodes.SUCCESS,
