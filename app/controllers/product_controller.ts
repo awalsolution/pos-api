@@ -211,7 +211,6 @@ export default class ProductController extends BaseController {
       })
       result.push(comboObj)
     })
-    console.log(result)
     return result
   }
 
