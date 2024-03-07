@@ -165,7 +165,7 @@ export default class VariantController extends BaseController {
       if (request.body().gallery) {
         const gallery = request.body().gallery
         for (const item of gallery) {
-          await DQ.related('gallery').updateOrCreate({}, { url: item.url })
+          await DQ.related('gallery').create({ url: item.url })
         }
       }
 
