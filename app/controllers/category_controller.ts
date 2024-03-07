@@ -35,7 +35,7 @@ export default class CategoryController extends BaseController {
     if (perPage) {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        result: await DQ.preload('shop').preload('sub_category').paginate(page, perPage),
+        result: await DQ.preload('shop').paginate(page, perPage),
         message: 'Record find successfully',
       })
     } else {
@@ -79,7 +79,7 @@ export default class CategoryController extends BaseController {
     if (perPage) {
       return response.ok({
         code: HttpCodes.SUCCESS,
-        result: await DQ.preload('shop').preload('sub_category').paginate(page, perPage),
+        result: await DQ.preload('shop').paginate(page, perPage),
         message: 'Record find successfully',
       })
     } else {
@@ -148,9 +148,10 @@ export default class CategoryController extends BaseController {
       } else {
         DM.shopId = currentUser.shopId!
       }
+
       DM.name = request.body().name
       DM.status = request.body().status
-      DM.image = request.body().image
+      DM.thumbnail = request.body().thumbnail
 
       const DQ = await DM.save()
       return response.ok({
@@ -193,8 +194,9 @@ export default class CategoryController extends BaseController {
           message: 'Record already exists!',
         })
       }
+
       DQ.name = request.body().name
-      DQ.image = request.body().image
+      DQ.thumbnail = request.body().thumbnail
       DQ.status = request.body().status
 
       await DQ.save()
