@@ -18,8 +18,5 @@ export default class IndexSeeder extends BaseSeeder {
     await this.runSeeder(await import('#database/seeders/attribute_seeder'))
     await this.runSeeder(await import('#database/seeders/product_seeder'))
     await this.runSeeder(await import('#database/seeders/product_images_seeder'))
-    // await this.runSeeder(await import('#database/seeders/variant_seeder'))
-    // await this.runSeeder(await import('#database/seeders/variant_images_seeder'))
-    // await this.runSeeder(await import('#database/seeders/variant_attribute_seeder'))
   }
 }
