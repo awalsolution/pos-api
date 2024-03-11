@@ -2,10 +2,10 @@ import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
 const ProductController = () => import('#controllers/store/product_controller')
 const CategoryController = () => import('#controllers/category_controller')
-const CustomerController = () => import('#controllers/customer_controller')
+const CustomerController = () => import('#controllers/store/customer_controller')
 const OrderController = () => import('#controllers/order_controller')
 const PaymentMethodController = () => import('#controllers/payment_method_controller')
-const ShipmentAddressController = () => import('#controllers/shipment_address_controller')
+const ShipmentAddressController = () => import('#controllers/store/shipment_address_controller')
 const AuthController = () => import('#controllers/store/auth_controller')
 
 router

@@ -1,13 +1,13 @@
 import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
-const CustomerController = () => import('#controllers/customer_controller')
+const ClientController = () => import('#controllers/client_controller')
 
 router
   .group(() => {
-    router.get('/', [CustomerController, 'findAllRecords'])
-    router.post('/', [CustomerController, 'create'])
-    router.put('/status/:id', [CustomerController, 'updateStatus'])
-    router.delete('/:id', [CustomerController, 'destroy'])
+    router.get('/', [ClientController, 'findAllRecords'])
+    router.post('/', [ClientController, 'create'])
+    router.put('/status/:id', [ClientController, 'updateStatus'])
+    router.delete('/:id', [ClientController, 'destroy'])
   })
   .use(
     middleware.auth({
