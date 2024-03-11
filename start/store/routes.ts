@@ -2,13 +2,30 @@ import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
 const ProductController = () => import('#controllers/store/product_controller')
 const CategoryController = () => import('#controllers/category_controller')
-const CustomerController = () => import('#controllers/customer_controller')
+const CustomerController = () => import('#controllers/store/customer_controller')
 const OrderController = () => import('#controllers/order_controller')
 const PaymentMethodController = () => import('#controllers/payment_method_controller')
-const ShipmentAddressController = () => import('#controllers/shipment_address_controller')
+const ShipmentAddressController = () => import('#controllers/store/shipment_address_controller')
+const AuthController = () => import('#controllers/store/auth_controller')
 
 router
   .group(() => {
+    //auth
+    router
+      .group(() => {
+        router.post('/register', [AuthController, 'Register'])
+        router.post('/login', [AuthController, 'Login'])
+        router
+          .group(() => {
+            router.get('/logout', [AuthController, 'Logout'])
+            router.get('/authenticated', [AuthController, 'Authenticated'])
+            router.get('/:id', [CustomerController, 'findSingleRecord'])
+            router.put('/:id', [CustomerController, 'update'])
+            router.put('/profile/:id', [CustomerController, 'profileUpdate'])
+          })
+          .use(middleware.auth({ guards: ['customer'] }))
+      })
+      .prefix('/customer')
     // order
     router
       .group(() => {
@@ -17,20 +34,6 @@ router
         router.delete('/:id', [OrderController, 'destroy'])
       })
       .prefix('/order')
-
-    // customer
-    router
-      .group(() => {
-        router.get('/:id', [CustomerController, 'findSingleRecord'])
-        router.put('/:id', [CustomerController, 'update'])
-        router.put('/profile/:id', [CustomerController, 'profileUpdate'])
-      })
-      .use(
-        middleware.auth({
-          guards: ['customer'],
-        })
-      )
-      .prefix('/customer')
     // payment method
     router
       .group(() => {
