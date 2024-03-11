@@ -32,7 +32,7 @@ router.post('/api/v1/upload', [UploadController, 'imageUploader'])
 
 import '#start/store/routes'
 import '#start/routes/auth'
-import '#start/routes/customer'
+import '#start/routes/client'
 import '#start/routes/user'
 import '#start/routes/menu'
 import '#start/routes/role'
@@ -44,4 +44,3 @@ import '#start/routes/product'
 import '#start/routes/variant'
 import '#start/routes/payment_method'
 import '#start/routes/order'
-import '#start/routes/shipment_address'

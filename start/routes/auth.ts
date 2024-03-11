@@ -1,6 +1,6 @@
-const AuthController = () => import('#controllers/auth_controller')
 import { middleware } from '#start/kernel'
 import router from '@adonisjs/core/services/router'
+const AuthController = () => import('#controllers/auth_controller')
 
 router
   .group(() => {
@@ -18,17 +18,5 @@ router
       .prefix('/auth')
 
     // frontend
-    router
-      .group(() => {
-        router.post('/register', [AuthController, 'customerRegister'])
-        router.post('/login', [AuthController, 'customerLogin'])
-        router
-          .group(() => {
-            router.get('/logout', [AuthController, 'customerLogout'])
-            router.get('/authenticated', [AuthController, 'customerAuthenticated'])
-          })
-          .use(middleware.auth({ guards: ['customer'] }))
-      })
-      .prefix('/customer')
   })
   .prefix('/api/v1')
