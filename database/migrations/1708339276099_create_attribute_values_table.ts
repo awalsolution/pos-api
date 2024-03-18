@@ -1,21 +1,20 @@
 import { BaseSchema } from '@adonisjs/lucid/schema'
 
 export default class extends BaseSchema {
-  protected tableName = 'attribute_combinations'
+  protected tableName = 'attribute_values'
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table
-        .integer('product_id')
+        .integer('attribute_id')
         .unsigned()
         .references('id')
-        .inTable('products')
+        .inTable('attributes')
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
 
-      table.string('color').nullable()
-      table.string('size').nullable()
+      table.string('value').nullable()
 
       table.timestamp('created_at')
       table.timestamp('updated_at')

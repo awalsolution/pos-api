@@ -11,10 +11,9 @@ import type { BelongsTo, HasMany, ManyToMany } from '@adonisjs/lucid/types/relat
 import Shop from '#models/shop'
 import ProductImage from '#models/product_image'
 import Category from '#models/category'
+import Attribute from '#models/attribute'
 import Variant from '#models/variant'
 import Tag from '#models/tag'
-import ProductAttribute from '#models/product_attribute'
-import AttributeCombination from '#models/attribute_combination'
 
 BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
 
@@ -110,14 +109,11 @@ export default class Product extends BaseModel {
   @belongsTo(() => Category)
   declare category: BelongsTo<typeof Category>
 
-  @hasMany(() => ProductImage)
-  declare gallery: HasMany<typeof ProductImage>
+  @hasMany(() => Attribute)
+  declare attributes: HasMany<typeof Attribute>
 
-  @hasMany(() => ProductAttribute)
-  declare product_attribute: HasMany<typeof ProductAttribute>
-
-  @hasMany(() => AttributeCombination)
-  declare attribute_combination: HasMany<typeof AttributeCombination>
+  @hasMany(() => Variant)
+  declare variants: HasMany<typeof Variant>
 
   @manyToMany(() => Tag, {
     pivotTable: 'product_tags',
@@ -129,6 +125,6 @@ export default class Product extends BaseModel {
   })
   declare tags: ManyToMany<typeof Tag>
 
-  @hasMany(() => Variant)
-  declare variants: HasMany<typeof Variant>
+  @hasMany(() => ProductImage)
+  declare gallery: HasMany<typeof ProductImage>
 }

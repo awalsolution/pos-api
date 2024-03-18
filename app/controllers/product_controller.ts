@@ -59,7 +59,8 @@ export default class ProductController extends BaseController {
         .preload('shop', (qs) => qs.select(['shop_name']))
         .preload('gallery', (q) => q.select(['id', 'url']))
         .preload('category')
-        .preload('product_attribute', (qs) => qs.select(['name', 'option']))
+        .preload('product_attribute')
+        // , (qs) => qs.select(['name', 'option'])
         .preload('variants', (q) => q.preload('gallery', (s) => s.select(['id', 'url'])))
         .first()
 
@@ -152,33 +153,37 @@ export default class ProductController extends BaseController {
       let data = []
 
       for (const item of requestData) {
-        for (const subItem of item.options) {
+        console.log(item.key)
+        for (const subItem of item.values) {
           try {
             const createdData = await ProductAttribute.create({
               productId: request.param('product_id'),
-              name: item.name,
-              option: subItem,
+              option_1: item.key === 'option1' ? item.name : null,
+              option_2: item.key === 'option2' ? item.name : null,
+              option_3: item.key === 'option3' ? item.name : null,
+              value: subItem,
             })
             data.push(createdData)
           } catch (error) {
-            if (error.code === 'ER_DUP_ENTRY') {
-              return response.conflict({
-                code: HttpCodes.CONFLICTS,
-                message: 'Record already exists!',
-                result: data,
-              })
-            } else {
-              return response.internalServerError({
-                code: HttpCodes.SERVER_ERROR,
-                message: 'Some thing went worng! try again',
-              })
-            }
+            console.log(error)
+            // if (error.code === 'ER_DUP_ENTRY') {
+            //   return response.conflict({
+            //     code: HttpCodes.CONFLICTS,
+            //     message: 'Record already exists!',
+            //     result: data,
+            //   })
+            // } else {
+            //   return response.internalServerError({
+            //     code: HttpCodes.SERVER_ERROR,
+            //     message: 'Some thing went worng! try again',
+            //   })
+            // }
           }
         }
       }
 
-      const combinationData = await this.generateAttributeCombinations(requestData)
-      DQ.related('attribute_combination').createMany(combinationData)
+      // const combinationData = await this.generateAttributeCombinations(requestData)
+      // DQ.related('attribute_combination').createMany(combinationData)
 
       return response.ok({
         code: HttpCodes.SUCCESS,
@@ -211,6 +216,7 @@ export default class ProductController extends BaseController {
       })
       result.push(comboObj)
     })
+    console.log(result)
     return result
   }
 
@@ -392,3 +398,13 @@ export default class ProductController extends BaseController {
     }
   }
 }
+
+// const modifiedData = requestData.map((item: any) => {
+//   console.log(item)
+//   let newObj: any = {}
+//   newObj[item.key] = item.name
+//   newObj.values = item.values
+//   return newObj
+// })
+
+// console.log(modifiedData)

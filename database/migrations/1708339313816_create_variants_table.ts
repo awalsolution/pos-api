@@ -6,6 +6,13 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
+      // table
+      //   .integer('shop_id')
+      //   .unsigned()
+      //   .references('id')
+      //   .inTable('shops')
+      //   .onUpdate('CASCADE')
+      //   .onDelete('CASCADE')
       table
         .integer('product_id')
         .unsigned()
@@ -13,9 +20,24 @@ export default class extends BaseSchema {
         .inTable('products')
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
+      table
+        .integer('attribute_id')
+        .unsigned()
+        .references('id')
+        .inTable('attributes')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE')
+      table
+        .integer('attribute_value_id')
+        .unsigned()
+        .references('id')
+        .inTable('attribute_values')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE')
+
       table.string('sku').nullable()
-      table.string('color').notNullable()
-      table.string('size').notNullable()
+      // table.string('color').notNullable()
+      // table.string('size').notNullable()
       table.double('price').nullable()
       table.double('regular_price').nullable()
       table.double('sale_price').nullable()

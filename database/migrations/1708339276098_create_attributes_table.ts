@@ -13,8 +13,15 @@ export default class extends BaseSchema {
         .inTable('shops')
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
+      table
+        .integer('product_id')
+        .unsigned()
+        .references('id')
+        .inTable('products')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE')
+
       table.string('name').notNullable()
-      table.boolean('status').notNullable().defaultTo(true)
 
       table.unique(['shop_id', 'name'])
 

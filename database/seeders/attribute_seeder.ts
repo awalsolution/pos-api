@@ -6,26 +6,32 @@ export default class extends BaseSeeder {
     await Attribute.createMany([
       {
         shopId: 1,
+        productId: 1,
         name: 'color',
       },
       {
         shopId: 1,
+        productId: 1,
         name: 'size',
       },
       {
         shopId: 2,
+        productId: 1,
         name: 'color',
       },
       {
         shopId: 2,
+        productId: 1,
         name: 'size',
       },
       {
         shopId: 3,
+        productId: 1,
         name: 'color',
       },
       {
         shopId: 3,
+        productId: 1,
         name: 'size',
       },
     ])
