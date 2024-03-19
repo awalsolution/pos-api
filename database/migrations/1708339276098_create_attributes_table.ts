@@ -23,7 +23,7 @@ export default class extends BaseSchema {
 
       table.string('name').notNullable()
 
-      table.unique(['shop_id', 'name'])
+      table.unique(['shop_id', 'product_id', 'name'])
 
       table.timestamp('created_at')
       table.timestamp('updated_at')

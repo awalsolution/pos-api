@@ -15,7 +15,7 @@ export default class AttributeValue extends BaseModel {
   declare attributeId: number | null
 
   @column()
-  declare name: string
+  declare value: string
 
   @column.dateTime({
     autoCreate: true,

@@ -1,20 +1,25 @@
 import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
+// const AttributeController = () => import('#controllers/attribute_controller')
 const ProductController = () => import('#controllers/product_controller')
 
 router
   .group(() => {
-    router.get('/', [ProductController, 'findAllRecords'])
-    router.get('/:product_id', [ProductController, 'findSingleRecord'])
+    router.get('/', [ProductController, 'index'])
     router.post('/', [ProductController, 'create'])
-    router.put('/:id', [ProductController, 'update'])
-    router.put('/status/:id', [ProductController, 'updateStatus'])
-    router.delete('/:id', [ProductController, 'destroy'])
-    router.post('/:product_id/attribute', [ProductController, 'storeAttribute'])
-    router.get('/:product_id/attribute', [ProductController, 'findAttributeByProduct'])
-    router.delete('/attribute/:id', [ProductController, 'destroyAttribute'])
-    router.get('/:product_id/variant-generate', [ProductController, 'generateVariants'])
-    router.get('/:product_id/variant', [ProductController, 'findSingleRecord'])
+    router.get('/:product_id', [ProductController, 'show'])
+    router.put('/:product_id', [ProductController, 'update'])
+    router.delete('/:product_id', [ProductController, 'destroy'])
+    router.put('/:product_id/status', [ProductController, 'updateStatus'])
+    // attribute
+    // router.get('/:product_id/attribute', [AttributeController, 'index'])
+    // router.post('/:product_id/attribute', [AttributeController, 'create'])
+    // router.get('/attribute/:attribute_id', [AttributeController, 'show'])
+    // router.put('/attribute/:attribute_id', [AttributeController, 'update'])
+    // router.delete('/attribute/:attribute_id', [AttributeController, 'destroy'])
+    //
+    // router.get('/:product_id/variant-generate', [ProductController, 'generateVariants'])
+    // router.get('/:product_id/variant', [ProductController, 'findSingleRecord'])
   })
   .use(
     middleware.auth({

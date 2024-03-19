@@ -32,6 +32,15 @@ export default class Variant extends BaseModel {
   // declare size: string | null
 
   @column()
+  declare option1: string | null
+
+  @column()
+  declare option2: string | null
+
+  @column()
+  declare option3: string | null
+
+  @column()
   declare price: number | null
 
   @column()
@@ -41,13 +50,13 @@ export default class Variant extends BaseModel {
   declare sale_price: number | null
 
   @column()
+  declare on_sale: Boolean
+
+  @column()
   declare date_on_sale_from: DateTime | null
 
   @column()
   declare date_on_sale_to: DateTime | null
-
-  @column()
-  declare on_sale: Boolean
 
   @column()
   declare status: string

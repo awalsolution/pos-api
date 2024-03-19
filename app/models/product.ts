@@ -34,47 +34,50 @@ export default class Product extends BaseModel {
   @column()
   declare slug: string | null
 
-  @column()
-  declare type: string
+  // @column()
+  // declare type: string
 
   @column()
   declare status: string
 
   @column()
-  declare featured: boolean
+  declare featured_product: boolean
+
+  @column()
+  declare related_product: boolean
 
   @column()
   declare description: string | null
 
-  @column()
-  declare sku: string
+  // @column()
+  // declare sku: string
 
-  @column()
-  declare price: number
+  // @column()
+  // declare price: number
 
-  @column()
-  declare regular_price: number | null
+  // @column()
+  // declare regular_price: number | null
 
-  @column()
-  declare sale_price: number | null
+  // @column()
+  // declare sale_price: number | null
 
-  @column()
-  declare on_sale: Boolean
+  // @column()
+  // declare on_sale: Boolean
 
-  @column()
-  declare date_on_sale_from: DateTime | null
+  // @column()
+  // declare date_on_sale_from: DateTime | null
 
-  @column()
-  declare date_on_sale_to: DateTime | null
+  // @column()
+  // declare date_on_sale_to: DateTime | null
 
-  @column()
-  declare total_sales: number
+  // @column()
+  // declare total_sales: number
 
-  @column()
-  declare stock_quantity: number | null
+  // @column()
+  // declare stock_quantity: number | null
 
-  @column()
-  declare stock_status: string
+  // @column()
+  // declare stock_status: string
 
   @column()
   declare reviews_allowed: boolean
