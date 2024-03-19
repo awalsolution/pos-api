@@ -59,7 +59,7 @@ export default class ProductController extends BaseController {
         .preload('shop')
         .preload('gallery')
         .preload('category')
-        .preload('attributes')
+        .preload('attributes', (q) => q.preload('values'))
         .preload('variants', (q) => q.preload('gallery'))
         .first()
 
