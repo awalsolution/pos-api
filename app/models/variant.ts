@@ -5,13 +5,13 @@ import {
   belongsTo,
   column,
   hasMany,
-  manyToMany,
+  // manyToMany,
 } from '@adonisjs/lucid/orm'
-import type { BelongsTo, HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
+import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 import VariantImage from '#models/variant_image'
 import Product from '#models/product'
-import Attribute from '#models/attribute'
-import AttributeValue from '#models/attribute_value'
+// import Attribute from '#models/attribute'
+// import AttributeValue from '#models/attribute_value'
 
 BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
 
@@ -23,22 +23,21 @@ export default class Variant extends BaseModel {
   @column()
   declare productId: number | null
 
-  @column()
-  declare attributeId: number | null
-
-  @column()
-  declare attributeValueId: number | null
+  // @column()
+  // declare attributeId: number | null
+  // @column()
+  // declare attributeValueId: number | null
 
   @column()
   declare sku: string | null
 
-  @column()
+  @column({ columnName: 'option1' })
   declare option1: string | null
 
-  @column()
+  @column({ columnName: 'option2' })
   declare option2: string | null
 
-  @column()
+  @column({ columnName: 'option3' })
   declare option3: string | null
 
   @column()
@@ -92,16 +91,16 @@ export default class Variant extends BaseModel {
   @belongsTo(() => Product)
   declare product: BelongsTo<typeof Product>
 
-  @belongsTo(() => Attribute)
-  declare attribute: BelongsTo<typeof Attribute>
+  // @belongsTo(() => Attribute)
+  // declare attribute: BelongsTo<typeof Attribute>
 
-  @manyToMany(() => AttributeValue, {
-    pivotTable: 'variant_options',
-    pivotTimestamps: true,
-    localKey: 'id',
-    pivotForeignKey: 'variant_id',
-    relatedKey: 'id',
-    pivotRelatedForeignKey: 'attribute_value_id',
-  })
-  declare options: ManyToMany<typeof AttributeValue>
+  // @manyToMany(() => AttributeValue, {
+  //   pivotTable: 'variant_options',
+  //   pivotTimestamps: true,
+  //   localKey: 'id',
+  //   pivotForeignKey: 'variant_id',
+  //   relatedKey: 'id',
+  //   pivotRelatedForeignKey: 'attribute_value_id',
+  // })
+  // declare options: ManyToMany<typeof AttributeValue>
 }
