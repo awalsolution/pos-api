@@ -41,9 +41,6 @@ export default class AttributeValue extends BaseModel {
   @belongsTo(() => Attribute)
   declare attribute: BelongsTo<typeof Attribute>
 
-  // @hasMany(() => Variant)
-  // declare variants: HasMany<typeof Variant>
-
   @manyToMany(() => Variant, {
     pivotTable: 'variant_options',
     pivotTimestamps: true,
