@@ -164,38 +164,41 @@ export default class ProductController extends BaseController {
       await DQ.save()
 
       //attributes
-      if (request.body().options || request.body().variants) {
-        const vData = request.body().variants
-        for (const item of vData) {
-          const v = new Variant()
-          v.productId = request.param('product_id')
-          v.sku = item.sku
-          v.option1 = item.option1
-          v.option2 = item.option2
-          v.option3 = item.option3
-          v.price = item.price
-          v.regular_price = item.regular_price
-          v.sale_price = item.sale_price
-          v.on_sale = item.on_sale
-          v.date_on_sale_from = item.date_on_sale_from
-          v.date_on_sale_to = item.date_on_sale_to
-          v.stock_quantity = item.stock_quantity
-          v.stock_status = item.stock_status
-          v.thumbnail = item.thumbnail
-
-          await v.save()
-
-          for (const option of request.body().options) {
-            const res = await DQ.related('attributes').create({
-              shopId: SHOPID,
-              name: option.name,
-            })
-            if (option.values) {
-              for (const value of option.values) {
-                const att = await Attribute.findOrFail(res.id)
-                await att.related('values').create({ value: value })
-              }
+      if (request.body().options) {
+        for (const option of request.body().options) {
+          const res = await DQ.related('attributes').create({
+            shopId: SHOPID,
+            name: option.name,
+          })
+          if (option.values) {
+            for (const value of option.values) {
+              const att = await Attribute.findOrFail(res.id)
+              await att.related('values').create({ value: value })
             }
+          }
+        }
+
+        const variants = await this.generateVariants(request.body().options)
+
+        if (variants.length > 0) {
+          for (const item of variants) {
+            const v = new Variant()
+            v.productId = request.param('product_id')
+            v.sku = item.sku
+            v.option1 = item.option1
+            v.option2 = item.option2
+            v.option3 = item.option3
+            v.price = item.price || '100'
+            v.regular_price = item.regular_price || '99'
+            v.sale_price = item.sale_price
+            v.on_sale = item.on_sale
+            v.date_on_sale_from = item.date_on_sale_from
+            v.date_on_sale_to = item.date_on_sale_to
+            v.stock_quantity = item.stock_quantity || 0
+            v.stock_status = item.stock_status || 'outofstock'
+            v.thumbnail = item.thumbnail
+
+            await v.save()
           }
         }
       }
@@ -229,6 +232,26 @@ export default class ProductController extends BaseController {
         message: e.message,
       })
     }
+  }
+
+  async generateVariants(options: any) {
+    let variants: any = []
+    const helper = (currentIndex: number, currentVariant: any) => {
+      if (currentIndex === options.length) {
+        variants.push(currentVariant)
+        return
+      }
+
+      const option = options[currentIndex]
+      for (const value of option.values) {
+        const updatedVariant = { ...currentVariant, [`option${currentIndex + 1}`]: value }
+        helper(currentIndex + 1, updatedVariant)
+      }
+    }
+
+    helper(0, {})
+
+    return variants
   }
 
   /**
