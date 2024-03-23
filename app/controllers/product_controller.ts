@@ -3,7 +3,7 @@ import { HttpContext } from '@adonisjs/core/http'
 import HttpCodes from '#enums/http_codes'
 import Product from '#models/product'
 import Attribute from '#models/attribute'
-// import Variant from '#models/variant'
+import Variant from '#models/variant'
 
 export default class ProductController extends BaseController {
   declare MODEL: typeof Product
@@ -261,6 +261,7 @@ export default class ProductController extends BaseController {
           message: 'Data does not exists!',
         })
       }
+
       let SHOPID: number | null = null
       if (this.ischeckAllSuperAdminUser(currentUser)) {
         SHOPID = request.body().shop_id
@@ -293,11 +294,31 @@ export default class ProductController extends BaseController {
       }
 
       // varaints
-      // if (request.body().variants) {
-      //   for (const item of request.body().variants) {
-      //     await DQ.related('variants').create({})
-      //   }
-      // }
+      if (request.body().variants) {
+        const variantsData = request.body().variants
+        for (const item of variantsData) {
+          const v = new Variant()
+          v.productId = request.param('product_id')
+          v.sku = item.sku
+          v.price = item.price
+          v.regular_price = item.regular_price
+          v.sale_price = item.sale_price
+          v.on_sale = item.on_sale
+          v.date_on_sale_from = item.date_on_sale_from
+          v.date_on_sale_to = item.date_on_sale_to
+          v.stock_quantity = item.stock_quantity
+          v.stock_status = item.stock_status
+          v.thumbnail = item.thumbnail
+
+          const DVQ = await v.save()
+
+          if (item.options) {
+            for (const optionId of item.options) {
+              await DVQ.related('options').attach([optionId])
+            }
+          }
+        }
+      }
 
       // gallery images
       if (request.body().gallery) {

@@ -36,8 +36,6 @@ export default class extends BaseSchema {
         .onDelete('CASCADE')
 
       table.string('sku').nullable()
-      // table.string('color').notNullable()
-      // table.string('size').notNullable()
       table.string('option1').nullable()
       table.string('option2').nullable()
       table.string('option3').nullable()

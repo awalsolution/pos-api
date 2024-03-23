@@ -1,6 +1,12 @@
 import { DateTime } from 'luxon'
-import { BaseModel, SnakeCaseNamingStrategy, belongsTo, column, hasMany } from '@adonisjs/lucid/orm'
-import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
+import {
+  BaseModel,
+  SnakeCaseNamingStrategy,
+  belongsTo,
+  column,
+  manyToMany,
+} from '@adonisjs/lucid/orm'
+import type { BelongsTo, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Attribute from '#models/attribute'
 import Variant from '#models/variant'
 
@@ -35,6 +41,16 @@ export default class AttributeValue extends BaseModel {
   @belongsTo(() => Attribute)
   declare attribute: BelongsTo<typeof Attribute>
 
-  @hasMany(() => Variant)
-  declare variants: HasMany<typeof Variant>
+  // @hasMany(() => Variant)
+  // declare variants: HasMany<typeof Variant>
+
+  @manyToMany(() => Variant, {
+    pivotTable: 'variant_options',
+    pivotTimestamps: true,
+    localKey: 'id',
+    pivotForeignKey: 'attribute_value_id',
+    relatedKey: 'id',
+    pivotRelatedForeignKey: 'variant_id',
+  })
+  declare variants: ManyToMany<typeof Variant>
 }
