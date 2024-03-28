@@ -8,6 +8,7 @@ router
       .group(() => {
         router.post('/register', [AuthController, 'register'])
         router.post('/login', [AuthController, 'login'])
+        router.post('/reset-password', [AuthController, 'resetPassword'])
         router
           .group(() => {
             router.get('/logout', [AuthController, 'logout'])

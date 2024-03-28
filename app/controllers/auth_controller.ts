@@ -5,6 +5,7 @@ import HttpCodes from '#enums/http_codes'
 import Role from '#models/role'
 import User from '#models/user'
 import Customer from '#models/customer'
+import mail from '@adonisjs/mail/services/main'
 
 export default class AuthController extends BaseController {
   declare MODEL: typeof User
@@ -199,24 +200,24 @@ export default class AuthController extends BaseController {
     })
   }
 
-  // async resetPasswordUsingOldPassword({ auth, request, response }: HttpContext) {
-  //   if (!auth.user) {
-  //     return response.unauthorized({ message: ResponseMessages.UNAUTHORIZED })
-  //   }
-  //   const payload = await request.validate(OldPasswordResetValidator)
-  //   const passwordMatched = await Hash.verify(auth.user.password, payload.oldPassword)
-  //   if (passwordMatched) {
-  //     const user = await User.findBy('id', auth.user.id)
-  //     if (user) {
-  //       await user
-  //         .merge({
-  //           password: payload.password,
-  //         })
-  //         .save()
-  //       return response.send({ message: 'Password changed' })
-  //     }
-  //     return response.notFound({ message: 'User' })
-  //   }
-  //   return response.notAcceptable({ message: 'Wrong password' })
-  // }
+  /**
+   * @resetPassword
+   * @requestBody {"email": "iqbal.hassan2584@gmail.com"}
+   */
+  async resetPassword({ request, response }: HttpContext) {
+    const payload = request.body().email
+
+    await mail.send((message) => {
+      message
+        .to(payload)
+        .subject('Reset Your Password using this link')
+        .html('<h1>This is testing email</h1>')
+    })
+
+    return response.ok({
+      code: HttpCodes.SUCCESS,
+      message: `Please check your inbox email is sended successfully!`,
+      data: null,
+    })
+  }
 }

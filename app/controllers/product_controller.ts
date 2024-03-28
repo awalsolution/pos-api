@@ -165,6 +165,8 @@ export default class ProductController extends BaseController {
 
       //attributes
       if (request.body().options) {
+        const attribute = await Attribute.query().where('product_id', request.param('product_id'))
+        attribute.forEach((item) => item.delete())
         for (const option of request.body().options) {
           const res = await DQ.related('attributes').create({
             shopId: SHOPID,
@@ -181,6 +183,8 @@ export default class ProductController extends BaseController {
         const variants = await this.generateVariants(request.body().options)
 
         if (variants.length > 0) {
+          const vv = await Variant.query().where('product_id', request.param('product_id'))
+          vv.forEach((item) => item.delete())
           for (const item of variants) {
             const v = new Variant()
             v.productId = request.param('product_id')
