@@ -32,7 +32,7 @@ export default class UploadController {
     if (!url) {
       return response.badRequest({
         code: 400,
-        message: 'Something went wrong! image not uploaded please try again!',
+        message: 'Image not uploaded please try again!',
         data: null,
       })
     }
