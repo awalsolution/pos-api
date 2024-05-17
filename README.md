@@ -1,8 +1,8 @@
-# InSync CRM Apis
+# Awal HR Management System REST Apis
 
 ## Description
 
-InSnync CRM API's is developed with Adonisjs and mysql.
+Awal HR Management System REST API's is developed with Adonisjs and mysql.
 
 # Environments
 
@@ -21,8 +21,8 @@ InSnync CRM API's is developed with Adonisjs and mysql.
 1. Clone repository
 
    ```
-   git clone https://github.com/abendsoft/insync-crm-api.git
-   cd insync-crm-api
+   git clone https://github.com/awal-solution/awal-hr-api.git
+   cd awal-hr-api
    yarn install
    ```
 
@@ -61,16 +61,8 @@ InSnync CRM API's is developed with Adonisjs and mysql.
          node ace db:seed
       ```
 
-      or
-
-      ```bash
-      node ace db:seed --files "./database/seeders/main/index_seeder.ts"
-      ```
-
       Please note that this operation could take a couple of minutes.
-
-8. Get an email and password of a user and log in.
-9. Congratulations. You have successfully set up the InSync.
+8. Congratulations. You have successfully set up the InSync.
 
 # Resources
 
