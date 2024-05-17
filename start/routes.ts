@@ -10,7 +10,7 @@
 import router from '@adonisjs/core/services/router'
 const UploadController = () => import('#controllers/upload_controller')
 
-router.get('/', async ({ response }) => {
+router.get('/api/v1', async ({ response }) => {
   response.ok({
     code: 200,
     data: "Awal HR Management System REST API's is Started.",
