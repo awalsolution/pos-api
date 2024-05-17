@@ -13,6 +13,7 @@ const AuthController = () => import('#controllers/auth_controller')
 const UserController = () => import('#controllers/admin/user_controller')
 const PermissionController = () => import('#controllers/admin/permission_controller')
 const RoleController = () => import('#controllers/admin/role_controller')
+const PlanController = () => import('#controllers/admin/plan_controller')
 
 router
   .group(() => {
