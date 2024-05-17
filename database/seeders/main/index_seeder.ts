@@ -6,5 +6,11 @@ export default class IndexSeeder extends BaseSeeder {
   }
   async run() {
     await this.runSeeder(await import('#database/seeders/user_seeder'))
+    await this.runSeeder(await import('#database/seeders/profile_seeder'))
+    await this.runSeeder(await import('#database/seeders/role_seeder'))
+    await this.runSeeder(await import('#database/seeders/permission_seeder'))
+    await this.runSeeder(await import('#database/seeders/role_has_permission_seeder'))
+    await this.runSeeder(await import('#database/seeders/user_has_permission_seeder'))
+    await this.runSeeder(await import('#database/seeders/user_has_role_seeder'))
   }
 }
