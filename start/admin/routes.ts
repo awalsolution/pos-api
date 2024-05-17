@@ -65,5 +65,27 @@ router
       })
       .use(middleware.auth({ guards: ['api'] }))
       .prefix('/permission')
+
+    // router
+    //   .group(() => {
+    //     router.get('/', [TenantController, 'index'])
+    //     router.post('/', [TenantController, 'create'])
+    //     router.get('/:id', [TenantController, 'show'])
+    //     router.put('/:id', [TenantController, 'update'])
+    //     router.delete('/:id', [TenantController, 'destroy'])
+    //   })
+    //   .use(middleware.auth({ guards: ['api'] }))
+    //   .prefix('/tenant')
+
+    router
+      .group(() => {
+        router.get('/', [PlanController, 'index'])
+        router.post('/', [PlanController, 'create'])
+        router.get('/:id', [PlanController, 'show'])
+        router.put('/:id', [PlanController, 'update'])
+        router.delete('/:id', [PlanController, 'destroy'])
+      })
+      .use(middleware.auth({ guards: ['api'] }))
+      .prefix('/plan')
   })
   .prefix('/api/v1/admin')
