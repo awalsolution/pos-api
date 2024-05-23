@@ -19,6 +19,9 @@ export default class Tenant extends BaseModel {
   declare db_name: string
 
   @column()
+  declare tenant_api_key: string
+
+  @column()
   declare first_name: string
 
   @column()

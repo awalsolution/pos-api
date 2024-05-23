@@ -1,9 +1,9 @@
 import { HttpContext } from '@adonisjs/core/http'
-import Role from '#models/role'
+import Plan from '#models/plan'
 
 export default class PlanController {
   async index({ request, response }: HttpContext) {
-    let DQ = Role.query().whereNot('name', 'super admin')
+    let DQ = Plan.query()
 
     const page = request.input('page')
     const perPage = request.input('perPage')
@@ -21,7 +21,7 @@ export default class PlanController {
     } else {
       return response.ok({
         code: 200,
-        data: await DQ.preload('permissions'),
+        data: await DQ.preload('tenants'),
         message: 'Record find successfully!',
       })
     }
@@ -29,7 +29,7 @@ export default class PlanController {
 
   async show({ request, response }: HttpContext) {
     try {
-      const DQ = await Role.query().where('id', request.param('id')).preload('permissions').first()
+      const DQ = await Plan.query().where('id', request.param('id')).preload('tenants').first()
 
       if (!DQ) {
         return response.notFound({
@@ -51,9 +51,10 @@ export default class PlanController {
     }
   }
 
-  async create({ request, response }: HttpContext) {
+  async create({ auth, request, response }: HttpContext) {
     try {
-      const DE = await Role.findBy('name', request.body().name)
+      const currentUser = auth.user!
+      const DE = await Plan.findBy('name', request.body().name)
 
       if (DE) {
         return response.conflict({
@@ -62,9 +63,14 @@ export default class PlanController {
         })
       }
 
-      const DM = new Role()
+      const DM = new Plan()
 
-      DM.name = request.input('name')
+      DM.name = request.body().name
+      DM.type = request.body().type
+      DM.price = request.body().price
+      DM.description = request.body().description
+      DM.status = request.body().status
+      DM.created_by = currentUser?.profile?.first_name! + currentUser?.profile?.last_name
 
       const DQ = await DM.save()
       return response.ok({
@@ -81,16 +87,17 @@ export default class PlanController {
     }
   }
 
-  async update({ request, response }: HttpContext) {
+  async update({ auth, request, response }: HttpContext) {
     try {
-      const DQ = await Role.findBy('id', request.param('id'))
+      const currentUser = auth.user!
+      const DQ = await Plan.findBy('id', request.param('id'))
       if (!DQ) {
         return response.notFound({
           code: 400,
           message: 'Data does not exists!',
         })
       }
-      const DE = await Role.query()
+      const DE = await Plan.query()
         .where('name', 'like', request.body().name)
         .whereNot('id', request.param('id'))
         .first()
@@ -103,6 +110,11 @@ export default class PlanController {
       }
 
       DQ.name = request.body().name
+      DQ.type = request.body().type
+      DQ.price = request.body().price
+      DQ.description = request.body().description
+      DQ.status = request.body().status
+      DQ.created_by = currentUser?.profile?.first_name! + currentUser?.profile?.last_name
 
       await DQ.save()
       return response.ok({
@@ -119,35 +131,8 @@ export default class PlanController {
     }
   }
 
-  async assignPermission({ request, response }: HttpContext) {
-    try {
-      const DQ = await Role.findBy('id', request.param('id'))
-      if (!DQ) {
-        return response.notFound({
-          code: 400,
-          message: 'Data does not exists!',
-        })
-      }
-
-      await DQ.related('permissions').sync(request.body().permissions)
-      await DQ.save()
-
-      return response.ok({
-        code: 200,
-        message: 'Record successfully!',
-        data: DQ,
-      })
-    } catch (e) {
-      console.log(e)
-      return response.internalServerError({
-        code: 500,
-        message: e.message,
-      })
-    }
-  }
-
   async destroy({ request, response }: HttpContext) {
-    const DQ = await Role.findBy('id', request.param('id'))
+    const DQ = await Plan.findBy('id', request.param('id'))
     if (!DQ) {
       return response.notFound({
         code: 400,
@@ -157,7 +142,7 @@ export default class PlanController {
     await DQ.delete()
     return response.ok({
       code: 200,
-      message: 'Record deleted successfully!',
+      message: 'Deleted successfully!',
     })
   }
 }

@@ -7,6 +7,7 @@
 |
 */
 
+import { middleware } from '#start/kernel'
 import router from '@adonisjs/core/services/router'
 
 router
@@ -15,4 +16,5 @@ router
     router.get('/slider', () => {})
     router.get('/home', () => {})
   })
+  .use([middleware.auth({ guards: ['api'] }), middleware.tenant()])
   .prefix('/api/v1/client')

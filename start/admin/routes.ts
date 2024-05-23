@@ -14,6 +14,7 @@ const UserController = () => import('#controllers/admin/user_controller')
 const PermissionController = () => import('#controllers/admin/permission_controller')
 const RoleController = () => import('#controllers/admin/role_controller')
 const PlanController = () => import('#controllers/admin/plan_controller')
+const TenantController = () => import('#controllers/admin/tenant_controller')
 
 router
   .group(() => {
@@ -67,16 +68,16 @@ router
       .use(middleware.auth({ guards: ['api'] }))
       .prefix('/permission')
 
-    // router
-    //   .group(() => {
-    //     router.get('/', [TenantController, 'index'])
-    //     router.post('/', [TenantController, 'create'])
-    //     router.get('/:id', [TenantController, 'show'])
-    //     router.put('/:id', [TenantController, 'update'])
-    //     router.delete('/:id', [TenantController, 'destroy'])
-    //   })
-    //   .use(middleware.auth({ guards: ['api'] }))
-    //   .prefix('/tenant')
+    router
+      .group(() => {
+        router.get('/', [TenantController, 'index'])
+        router.post('/', [TenantController, 'create'])
+        router.get('/:id', [TenantController, 'show'])
+        router.put('/:id', [TenantController, 'update'])
+        router.delete('/:id', [TenantController, 'destroy'])
+      })
+      .use(middleware.auth({ guards: ['api'] }))
+      .prefix('/tenant')
 
     router
       .group(() => {
