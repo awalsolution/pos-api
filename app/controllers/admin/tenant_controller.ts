@@ -1,9 +1,9 @@
-import { HttpContext } from '@adonisjs/core/http'
-import Tenant from '#models/tenant'
-import { cuid } from '@adonisjs/core/helpers'
-import db from '@adonisjs/lucid/services/db'
-import { MigrationRunner } from '@adonisjs/lucid/migration'
 import app from '@adonisjs/core/services/app'
+import db from '@adonisjs/lucid/services/db'
+import { HttpContext } from '@adonisjs/core/http'
+import { MigrationRunner } from '@adonisjs/lucid/migration'
+import { cuid } from '@adonisjs/core/helpers'
+import Tenant from '#models/tenant'
 
 export default class TenantController {
   async index({ request, response }: HttpContext) {
@@ -19,7 +19,7 @@ export default class TenantController {
     if (perPage) {
       return response.ok({
         code: 200,
-        data: await DQ.paginate(page, perPage),
+        data: await DQ.preload('plan').paginate(page, perPage),
         message: 'Record find successfully!',
       })
     } else {
@@ -66,7 +66,7 @@ export default class TenantController {
       if (DE) {
         return response.conflict({
           code: 409,
-          message: `${request.body().domain_name} already exists!`,
+          message: `Domain ${request.body().domain_name} already exists!`,
         })
       } else {
         try {
