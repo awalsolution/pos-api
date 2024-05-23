@@ -16,7 +16,7 @@ export default class extends BaseSchema {
 
       table.string('domain_name').nullable().unique()
       table.string('db_name').nullable()
-      table.string('tenant_api_key').nullable()
+      table.text('tenant_api_key').nullable()
       table.string('first_name').nullable()
       table.string('last_name').nullable()
       table.string('email').nullable()

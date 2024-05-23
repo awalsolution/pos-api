@@ -58,6 +58,9 @@ export default class TenantController {
   async create({ auth, request, response }: HttpContext) {
     try {
       const currentUser = auth.user!
+      // db name generation
+      const dbName: string = `tenant_${cuid()}_db`
+
       const DE = await Tenant.findBy('domain_name', request.body().domain_name)
 
       if (DE) {
@@ -66,41 +69,36 @@ export default class TenantController {
           message: `${request.body().domain_name} already exists!`,
         })
       } else {
-        if (await this.databaseExists(request.body().db_name)) {
+        try {
+          await this.createDatabase(dbName)
+          await this.dealsWithMigrations()
+
+          const DM = new Tenant()
+
+          DM.planId = request.body().plan_id || 1
+          DM.domain_name = request.body().domain_name
+          DM.db_name = dbName
+          DM.tenant_api_key = `tenant_${cuid()}_key`
+          DM.first_name = request.body().first_name
+          DM.last_name = request.body().last_name
+          DM.email = request.body().email
+          DM.phone_number = request.body().phone_number
+          DM.password = request.body().password
+          DM.status = request.body().status
+          DM.created_by = currentUser?.profile?.first_name! + currentUser?.profile?.last_name
+
+          const DQ = await DM.save()
+
+          return response.ok({
+            code: 200,
+            message: 'Created successfully!',
+            data: DQ,
+          })
+        } catch (error) {
           return response.conflict({
             code: 409,
-            message: `${request.body().db_name} already exists!`,
+            message: error.sqlMessage || 'Database creation failed.',
           })
-        } else {
-          if (await this.createDatabase(request.body().db_name)) {
-            await this.dealsWithMigrations()
-
-            const DM = new Tenant()
-
-            DM.planId = request.body().plan_id || 1
-            DM.domain_name = request.body().domain_name
-            DM.db_name = request.body().db_name
-            DM.tenant_api_key = `tenant_${cuid}_key`
-            DM.first_name = request.body().first_name
-            DM.last_name = request.body().last_name
-            DM.email = request.body().email
-            DM.phone_number = request.body().phone_number
-            DM.password = request.body().password
-            DM.status = request.body().status
-            DM.created_by = currentUser?.profile?.first_name! + currentUser?.profile?.last_name
-
-            const DQ = await DM.save()
-            return response.ok({
-              code: 200,
-              message: 'Created successfully!',
-              data: DQ,
-            })
-          } else {
-            return response.abort({
-              code: 400,
-              message: `some this went wrong ${request.body().db_name} not created!`,
-            })
-          }
         }
       }
     } catch (e) {
@@ -163,14 +161,6 @@ export default class TenantController {
       code: 200,
       message: 'Deleted successfully!',
     })
-  }
-
-  async databaseExists(db_name: string): Promise<boolean> {
-    return db
-      .connection('tenant')
-      .rawQuery(
-        `SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = ${db_name}`
-      )
   }
 
   async createDatabase(db_name: string): Promise<boolean> {
