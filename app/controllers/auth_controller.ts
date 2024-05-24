@@ -98,7 +98,11 @@ export default class AuthController {
       return response.ok({
         code: 200,
         message: 'Record find successfully!',
-        data: DQ,
+        data: DQ.serialize({
+          fields: {
+            pick: ['tenant_api_key'],
+          },
+        }),
       })
     } catch (e) {
       return response.internalServerError({
