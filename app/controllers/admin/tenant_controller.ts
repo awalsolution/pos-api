@@ -8,6 +8,7 @@ import {
   adminConnectionSwitcher,
 } from '#services/db_connection_switcher_service'
 import Tenant from '#models/tenant'
+import ace from '@adonisjs/core/services/ace'
 
 export default class TenantController {
   async index({ request, response }: HttpContext) {
@@ -184,7 +185,7 @@ export default class TenantController {
       })
 
       await migrator.run()
-
+      await ace.exec('db:seed', [''])
       await adminConnectionSwitcher()
 
       return true
