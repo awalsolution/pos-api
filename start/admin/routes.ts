@@ -90,4 +90,5 @@ router
       .use(middleware.auth({ guards: ['api'] }))
       .prefix('/plan')
   })
+  .use(middleware.tenant())
   .prefix('/api/v1/admin')

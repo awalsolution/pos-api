@@ -1,6 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
 import Tenant from '#models/tenant'
+import { adminConnectionSwitcher } from '#services/db_connection_switcher_service'
 
 export default class AuthController {
   async register({ request, response }: HttpContext) {
@@ -86,6 +87,7 @@ export default class AuthController {
 
   async verifyDomainName({ request, response }: HttpContext) {
     try {
+      await adminConnectionSwitcher()
       const DQ = await Tenant.query().where('domain_name', request.param('name')).first()
 
       if (!DQ) {

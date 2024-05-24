@@ -15,20 +15,10 @@ const dbConfig = defineConfig({
       },
       migrations: {
         naturalSort: true,
-        paths: ['database/migrations'],
+        paths: ['database/migrations/admin'],
       },
       seeders: {
         paths: ['database/seeders/main'],
-      },
-    },
-    tenant: {
-      client: 'mysql2',
-      connection: {
-        host: env.get('DB_HOST'),
-        port: env.get('DB_PORT'),
-        user: env.get('DB_USER'),
-        password: env.get('DB_PASSWORD'),
-        database: '',
       },
     },
   },

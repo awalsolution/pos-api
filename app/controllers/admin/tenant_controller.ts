@@ -3,6 +3,10 @@ import db from '@adonisjs/lucid/services/db'
 import { HttpContext } from '@adonisjs/core/http'
 import { MigrationRunner } from '@adonisjs/lucid/migration'
 import { cuid } from '@adonisjs/core/helpers'
+import {
+  tenantConnectionSwitcher,
+  adminConnectionSwitcher,
+} from '#services/db_connection_switcher_service'
 import Tenant from '#models/tenant'
 
 export default class TenantController {
@@ -71,7 +75,7 @@ export default class TenantController {
       } else {
         try {
           await this.createDatabase(dbName)
-          await this.dealsWithMigrations()
+          await this.dealsWithMigrations(dbName)
 
           const DM = new Tenant()
 
@@ -164,20 +168,29 @@ export default class TenantController {
   }
 
   async createDatabase(db_name: string): Promise<boolean> {
-    return db.connection('tenant').rawQuery(`CREATE DATABASE ${db_name}`)
+    return db.rawQuery(`CREATE DATABASE ${db_name}`)
   }
 
   async deleteDatabase(db_name: string): Promise<boolean> {
-    return db.connection('tenant').rawQuery(`DROP DATABASE ${db_name}`)
+    return db.rawQuery(`DROP DATABASE ${db_name}`)
   }
 
-  async dealsWithMigrations() {
-    const migrator = new MigrationRunner(db, app, {
-      direction: 'up',
-      connectionName: 'tenant',
-    })
+  async dealsWithMigrations(db_name: string) {
+    try {
+      await tenantConnectionSwitcher(db_name)
+      const migrator = new MigrationRunner(db, app, {
+        direction: 'up',
+        dryRun: false,
+      })
 
-    await migrator.run()
-    return migrator.migratedFiles
+      await migrator.run()
+
+      await adminConnectionSwitcher()
+
+      return true
+    } catch (error) {
+      console.error('An error occurred during migration:', error)
+      return false
+    }
   }
 }
