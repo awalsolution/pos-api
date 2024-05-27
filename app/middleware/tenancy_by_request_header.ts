@@ -13,7 +13,7 @@ export default class TenancyByRequestHeader {
       const tenant = await Tenant.findBy('tenant_api_key', request.headers().tenant_api_public_key)
       if (!tenant?.db_name) {
         throw new TenancyNotInitializedException(
-          'Invalid tenant key provided.Please contact with Service provider.',
+          'Invalid tenant api key provided. Please contact with Service provider support.',
           403
         )
       }
