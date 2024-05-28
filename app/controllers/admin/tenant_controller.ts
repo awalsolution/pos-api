@@ -9,6 +9,9 @@ import {
 } from '#services/db_connection_switcher_service'
 import Tenant from '#models/tenant'
 import ace from '@adonisjs/core/services/ace'
+import Role from '#models/role'
+// import Permission from '#models/permission'
+import Menu from '#models/menu'
 
 export default class TenantController {
   async index({ request, response }: HttpContext) {
@@ -77,6 +80,22 @@ export default class TenantController {
         try {
           await this.createDatabase(dbName)
           await this.dealsWithMigrations(dbName)
+
+          console.log(request.body().roles)
+
+          for (const menu of request.body().menus) {
+            await Menu.create({ menu_name: menu })
+          }
+
+          for (const role of request.body().roles) {
+            await Role.create({ name: role })
+          }
+
+          // for (const role of request.body().permissions) {
+          //   await Permission.create({ name: role })
+          // }
+
+          await adminConnectionSwitcher()
 
           const DM = new Tenant()
 
@@ -186,7 +205,6 @@ export default class TenantController {
 
       await migrator.run()
       await ace.exec('db:seed', [''])
-      await adminConnectionSwitcher()
 
       return true
     } catch (error) {
