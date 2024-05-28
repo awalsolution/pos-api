@@ -1,8 +1,8 @@
-# Awal HR Management System REST Apis
+# Awal Umrah Management System REST Apis
 
 ## Description
 
-Awal HR Management System REST API's is developed with Adonisjs and mysql.
+Awal Umrah Management System REST API's is developed with Adonisjs and mysql.
 
 # Environments
 
@@ -21,8 +21,8 @@ Awal HR Management System REST API's is developed with Adonisjs and mysql.
 1. Clone repository
 
    ```
-   git clone https://github.com/awal-solution/awal-hr-api.git
-   cd awal-hr-api
+   git clone https://github.com/awal-solution/awal-umrah-api.git
+   cd awal-umrah-api
    yarn install
    ```
 
