@@ -12,7 +12,6 @@ import router from '@adonisjs/core/services/router'
 const AuthController = () => import('#controllers/auth_controller')
 const UserController = () => import('#controllers/admin/user_controller')
 const PermissionController = () => import('#controllers/admin/permission_controller')
-const MenuController = () => import('#controllers/admin/menu_controller')
 const RoleController = () => import('#controllers/admin/role_controller')
 const PlanController = () => import('#controllers/admin/plan_controller')
 const TenantController = () => import('#controllers/admin/tenant_controller')
@@ -68,21 +67,6 @@ router
       })
       .use(middleware.auth({ guards: ['api'] }))
       .prefix('/permission')
-
-    router
-      .group(() => {
-        router.get('/', [MenuController, 'index'])
-        router.post('/', [MenuController, 'create'])
-        router.get('/:id', [MenuController, 'show'])
-        router.put('/:id', [MenuController, 'update'])
-        router.delete('/:id', [MenuController, 'destroy'])
-      })
-      .use(
-        middleware.auth({
-          guards: ['api'],
-        })
-      )
-      .prefix('/menu')
 
     router
       .group(() => {

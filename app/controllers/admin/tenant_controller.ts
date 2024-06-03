@@ -9,9 +9,8 @@ import {
 } from '#services/db_connection_switcher_service'
 import Tenant from '#models/tenant'
 import ace from '@adonisjs/core/services/ace'
+import Permission from '#models/permission'
 import Role from '#models/role'
-// import Permission from '#models/permission'
-import Menu from '#models/menu'
 
 export default class TenantController {
   async index({ request, response }: HttpContext) {
@@ -81,19 +80,21 @@ export default class TenantController {
           await this.createDatabase(dbName)
           await this.dealsWithMigrations(dbName)
 
-          console.log(request.body().roles)
-
-          for (const menu of request.body().menus) {
-            await Menu.create({ menu_name: menu })
+          if (request.body().permissions) {
+            for (const permission of request.body().permissions) {
+              await Permission.create({ name: permission })
+            }
+          } else {
+            console.log('Permissions not insert successfully!')
           }
 
-          for (const role of request.body().roles) {
-            await Role.create({ name: role })
+          if (request.body().roles) {
+            for (const role of request.body().roles) {
+              await Role.create({ name: role })
+            }
+          } else {
+            console.log('Roles not insert successfully!')
           }
-
-          // for (const role of request.body().permissions) {
-          //   await Permission.create({ name: role })
-          // }
 
           await adminConnectionSwitcher()
 
@@ -133,6 +134,44 @@ export default class TenantController {
       })
     }
   }
+
+  // async tenantDetailInfo() {
+  //   try {
+  //     const DQ = await Tenant.findBy('id', request.param('id'))
+  //     if (!DQ) {
+  //       return response.notFound({
+  //         code: 400,
+  //         message: 'Data does not exists!',
+  //       })
+  //     }
+  //     const DE = await Tenant.query()
+  //       .where('name', 'like', request.body().name)
+  //       .whereNot('id', request.param('id'))
+  //       .first()
+
+  //     if (DE) {
+  //       return response.conflict({
+  //         code: 409,
+  //         message: 'Record already exist!',
+  //       })
+  //     }
+
+  //     DQ.db_name = request.body().name
+
+  //     await DQ.save()
+  //     return response.ok({
+  //       code: 200,
+  //       message: 'Updated successfully!',
+  //       data: DQ,
+  //     })
+  //   } catch (e) {
+  //     console.log(e)
+  //     return response.internalServerError({
+  //       code: 500,
+  //       message: e.message,
+  //     })
+  //   }
+  // }
 
   async update({ request, response }: HttpContext) {
     try {

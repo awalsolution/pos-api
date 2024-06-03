@@ -63,7 +63,6 @@ export default class PermissionController {
       const DM = new Permission()
 
       DM.name = request.body().name
-      DM.type = request.body().type
 
       const DQ = await DM.save()
       return response.ok({
@@ -102,7 +101,6 @@ export default class PermissionController {
       }
 
       DQ.name = request.body().name
-      DQ.type = request.body().type
 
       await DQ.save()
       return response.ok({
