@@ -3,7 +3,7 @@ import User from '#models/user'
 
 export default class UserController {
   async index({ auth, request, response }: HttpContext) {
-    const currentUser = auth.use('api').user!
+    const currentUser = auth.user!
     let DQ = User.query().whereNotIn('id', [currentUser.id, 1])
 
     const page = request.input('page')
@@ -90,7 +90,7 @@ export default class UserController {
 
       await DM.save()
 
-      DM.related('roles').sync(request.body().roles)
+      DM.related('roles').sync(request.body().role_id)
 
       DM.related('profile').create({
         first_name: request.body().first_name,

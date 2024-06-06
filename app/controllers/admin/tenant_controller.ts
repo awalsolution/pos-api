@@ -8,9 +8,9 @@ import {
   adminConnectionSwitcher,
 } from '#services/db_connection_switcher_service'
 import Tenant from '#models/tenant'
-import ace from '@adonisjs/core/services/ace'
 import Permission from '#models/permission'
 import Role from '#models/role'
+import User from '#models/user'
 
 export default class TenantController {
   async index({ request, response }: HttpContext) {
@@ -80,20 +80,46 @@ export default class TenantController {
           await this.createDatabase(dbName)
           await this.dealsWithMigrations(dbName)
 
+          let permArr = []
+
           if (request.body().permissions) {
             for (const permission of request.body().permissions) {
-              await Permission.create({ name: permission })
+              const res = await Permission.create({ name: permission })
+              permArr.push(res.id)
             }
           } else {
-            console.log('Permissions not insert successfully!')
+            console.log('Something went wrong! Permissions not insert successfully!')
           }
-
+          let createdRole: any = []
           if (request.body().roles) {
             for (const role of request.body().roles) {
-              await Role.create({ name: role })
+              createdRole = await Role.create({ name: role })
+              const newRole: any = await Role.find(createdRole.id)
+              await newRole.related('permissions').sync(permArr)
             }
           } else {
-            console.log('Roles not insert successfully!')
+            console.log('Something went wrong! Roles not insert successfully!')
+          }
+
+          if (request.body().email) {
+            const user = new User()
+
+            user.email = request.body().email
+
+            user.password = request.body().password
+            user.status = request.body().status
+
+            await user.save()
+
+            await user.related('profile').create({
+              first_name: request.body().first_name,
+              last_name: request.body().last_name,
+              phone_number: request.body().phone_number,
+            })
+            console.log(createdRole)
+            await user.related('roles').sync([createdRole.id])
+          } else {
+            console.log('Something went wrong! User not insert successfully!')
           }
 
           await adminConnectionSwitcher()
@@ -135,43 +161,26 @@ export default class TenantController {
     }
   }
 
-  // async tenantDetailInfo() {
-  //   try {
-  //     const DQ = await Tenant.findBy('id', request.param('id'))
-  //     if (!DQ) {
-  //       return response.notFound({
-  //         code: 400,
-  //         message: 'Data does not exists!',
-  //       })
-  //     }
-  //     const DE = await Tenant.query()
-  //       .where('name', 'like', request.body().name)
-  //       .whereNot('id', request.param('id'))
-  //       .first()
-
-  //     if (DE) {
-  //       return response.conflict({
-  //         code: 409,
-  //         message: 'Record already exist!',
-  //       })
-  //     }
-
-  //     DQ.db_name = request.body().name
-
-  //     await DQ.save()
-  //     return response.ok({
-  //       code: 200,
-  //       message: 'Updated successfully!',
-  //       data: DQ,
-  //     })
-  //   } catch (e) {
-  //     console.log(e)
-  //     return response.internalServerError({
-  //       code: 500,
-  //       message: e.message,
-  //     })
-  //   }
-  // }
+  async tenantDetailInfo({ request, response }: HttpContext) {
+    try {
+      await tenantConnectionSwitcher(request.param('db_name'))
+      const perm = await Permission.all()
+      const roles = await Role.all()
+      const users = await User.all()
+      await adminConnectionSwitcher()
+      return response.ok({
+        code: 200,
+        message: 'find successfully!',
+        data: { permissions: perm.length, users: users.length, roles: roles.length },
+      })
+    } catch (e) {
+      console.log(e)
+      return response.internalServerError({
+        code: 500,
+        message: e.message,
+      })
+    }
+  }
 
   async update({ request, response }: HttpContext) {
     try {
@@ -243,7 +252,7 @@ export default class TenantController {
       })
 
       await migrator.run()
-      await ace.exec('db:seed', [''])
+      // await ace.exec('db:seed', [''])
 
       return true
     } catch (error) {

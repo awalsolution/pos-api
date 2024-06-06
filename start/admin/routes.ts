@@ -75,6 +75,7 @@ router
         router.get('/:id', [TenantController, 'show'])
         router.put('/:id', [TenantController, 'update'])
         router.delete('/:id', [TenantController, 'destroy'])
+        router.get('/detail/:db_name', [TenantController, 'tenantDetailInfo'])
       })
       .use(middleware.auth({ guards: ['api'] }))
       .prefix('/tenant')
