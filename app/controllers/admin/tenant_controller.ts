@@ -171,7 +171,53 @@ export default class TenantController {
       return response.ok({
         code: 200,
         message: 'find successfully!',
-        data: { permissions: perm.length, users: users.length, roles: roles.length },
+        data: { permissions: perm, users: users, roles: roles },
+      })
+    } catch (e) {
+      console.log(e)
+      return response.internalServerError({
+        code: 500,
+        message: e.message,
+      })
+    }
+  }
+
+  async allPermission({ request, response }: HttpContext) {
+    try {
+      await tenantConnectionSwitcher(request.param('db_name'))
+      const perm = await Permission.all()
+      await adminConnectionSwitcher()
+      return response.ok({
+        code: 200,
+        message: 'find successfully!',
+        data: perm,
+      })
+    } catch (e) {
+      console.log(e)
+      return response.internalServerError({
+        code: 500,
+        message: e.message,
+      })
+    }
+  }
+  // assign permission to tenant role
+  async assignPermission({ request, response }: HttpContext) {
+    try {
+      const DQ = await Role.findBy('id', request.param('id'))
+      if (!DQ) {
+        return response.notFound({
+          code: 400,
+          message: 'Data does not exists!',
+        })
+      }
+
+      await DQ.related('permissions').sync(request.body().permissions)
+      await DQ.save()
+
+      return response.ok({
+        code: 200,
+        message: 'Record successfully!',
+        data: DQ,
       })
     } catch (e) {
       console.log(e)
@@ -233,6 +279,32 @@ export default class TenantController {
       code: 200,
       message: 'Deleted successfully!',
     })
+  }
+
+  // tenant role delete
+  async deleteTenantRole({ request, response }: HttpContext) {
+    try {
+      await tenantConnectionSwitcher(request.input('db_name'))
+      const DQ = await Role.findBy('id', request.param('id'))
+      if (!DQ) {
+        return response.notFound({
+          code: 400,
+          message: 'Data not found',
+        })
+      }
+      await DQ.delete()
+      await adminConnectionSwitcher()
+      return response.ok({
+        code: 200,
+        message: 'Deleted successfully!',
+      })
+    } catch (e) {
+      console.log(e)
+      return response.internalServerError({
+        code: 500,
+        message: e.message,
+      })
+    }
   }
 
   async createDatabase(db_name: string): Promise<boolean> {
