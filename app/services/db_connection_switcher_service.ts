@@ -18,6 +18,7 @@ export const tenantConnectionSwitcher = async (db_name: string) => {
     seeders: {
       paths: ['database/seeders/tenant/main'],
     },
+    debug: true,
   })
 }
 
@@ -35,5 +36,6 @@ export const adminConnectionSwitcher = async () => {
       naturalSort: true,
       paths: ['database/migrations/admin'],
     },
+    debug: true,
   })
 }

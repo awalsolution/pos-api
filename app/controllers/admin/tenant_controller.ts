@@ -163,7 +163,6 @@ export default class TenantController {
 
   async tenantDetailInfo({ request, response }: HttpContext) {
     try {
-      // console.log(request.all(), request.input('db_name'))
       const DQ = await Tenant.findBy('db_name', request.input('db_name'))
       if (!DQ) {
         return response.notFound({
@@ -216,6 +215,7 @@ export default class TenantController {
   // assign permission to tenant role
   async assignPermission({ request, response }: HttpContext) {
     try {
+      await tenantConnectionSwitcher(request.input('db_name'))
       const DQ = await Role.findBy('id', request.param('id'))
       if (!DQ) {
         return response.notFound({
@@ -226,7 +226,7 @@ export default class TenantController {
 
       await DQ.related('permissions').sync(request.body().permissions)
       await DQ.save()
-
+      await adminConnectionSwitcher()
       return response.ok({
         code: 200,
         message: 'assign successfully!',
