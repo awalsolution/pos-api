@@ -78,7 +78,7 @@ router
         router.get('/detail/:db_name', [TenantController, 'tenantDetailInfo'])
         router.get('/all-permission/:db_name', [TenantController, 'allPermission'])
         router.delete('/delete-role/:id', [TenantController, 'deleteTenantRole'])
-        router.post('/assign-permission/:id', [TenantController, 'assignPermission'])
+        router.put('/assign-permission/:id', [TenantController, 'assignPermission'])
       })
       .use(middleware.auth({ guards: ['api'] }))
       .prefix('/tenant')
