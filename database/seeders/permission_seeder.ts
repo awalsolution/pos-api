@@ -41,6 +41,26 @@ export default class extends BaseSeeder {
         type: 'private',
       },
       {
+        name: 'permission menu',
+        type: 'public',
+      },
+      {
+        name: 'permission create',
+        type: 'private',
+      },
+      {
+        name: 'permission update',
+        type: 'private',
+      },
+      {
+        name: 'permission delete',
+        type: 'private',
+      },
+      {
+        name: 'assign permission menu',
+        type: 'public',
+      },
+      {
         name: 'user menu',
         type: 'public',
       },
@@ -82,26 +102,6 @@ export default class extends BaseSeeder {
       },
       {
         name: 'role assign permission',
-        type: 'public',
-      },
-      {
-        name: 'permission menu',
-        type: 'public',
-      },
-      {
-        name: 'permission create',
-        type: 'private',
-      },
-      {
-        name: 'permission update',
-        type: 'private',
-      },
-      {
-        name: 'permission delete',
-        type: 'private',
-      },
-      {
-        name: 'assign permission menu',
         type: 'public',
       },
     ])
