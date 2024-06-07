@@ -70,15 +70,16 @@ router
 
     router
       .group(() => {
+        console.log('route')
         router.get('/', [TenantController, 'index'])
         router.post('/', [TenantController, 'create'])
-        router.get('/:id', [TenantController, 'show'])
+        // router.get('/:id', [TenantController, 'show'])
         router.put('/:id', [TenantController, 'update'])
         router.delete('/:id', [TenantController, 'destroy'])
-        router.get('/detail/:db_name', [TenantController, 'tenantDetailInfo'])
-        router.get('/all-permission/:db_name', [TenantController, 'allPermission'])
-        router.delete('/delete-role/:id', [TenantController, 'deleteTenantRole'])
-        router.put('/assign-permission/:id', [TenantController, 'assignPermission'])
+        router.get('/detail', [TenantController, 'tenantDetailInfo'])
+        // router.get('/all-permission/:db_name', [TenantController, 'allPermission'])
+        // router.delete('/delete-role/:id', [TenantController, 'deleteTenantRole'])
+        // router.put('/assign-permission/:id', [TenantController, 'assignPermission'])
       })
       .use(middleware.auth({ guards: ['api'] }))
       .prefix('/tenant')

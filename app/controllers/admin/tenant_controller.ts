@@ -163,7 +163,16 @@ export default class TenantController {
 
   async tenantDetailInfo({ request, response }: HttpContext) {
     try {
-      await tenantConnectionSwitcher(request.param('db_name'))
+      // console.log(request.all(), request.input('db_name'))
+      const DQ = await Tenant.findBy('db_name', request.input('db_name'))
+      if (!DQ) {
+        return response.notFound({
+          code: 400,
+          message: 'Tenant does not exists! Please contact with support!',
+        })
+      }
+
+      await tenantConnectionSwitcher(request.input('db_name'))
       const perm = await Permission.all()
       const roles = await Role.all()
       const users = await User.all()
@@ -186,11 +195,15 @@ export default class TenantController {
     try {
       await tenantConnectionSwitcher(request.param('db_name'))
       const perm = await Permission.all()
+      const role = await Role.query()
+        .where('id', request.input('role_id'))
+        .preload('permissions')
+        .first()
       await adminConnectionSwitcher()
       return response.ok({
         code: 200,
         message: 'find successfully!',
-        data: perm,
+        data: { permissions: perm, role: role },
       })
     } catch (e) {
       console.log(e)
@@ -216,7 +229,7 @@ export default class TenantController {
 
       return response.ok({
         code: 200,
-        message: 'Record successfully!',
+        message: 'assign successfully!',
         data: DQ,
       })
     } catch (e) {
