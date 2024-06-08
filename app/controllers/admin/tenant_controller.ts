@@ -116,7 +116,6 @@ export default class TenantController {
               last_name: request.body().last_name,
               phone_number: request.body().phone_number,
             })
-            console.log(createdRole)
             await user.related('roles').sync([createdRole.id])
           } else {
             console.log('Something went wrong! User not insert successfully!')

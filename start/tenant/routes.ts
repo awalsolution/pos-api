@@ -41,7 +41,6 @@ router
       })
       .use(middleware.auth({ guards: ['api'] }))
       .prefix('/user')
-
     router
       .group(() => {
         router.get('/', [RoleController, 'index'])
@@ -53,7 +52,6 @@ router
       })
       .use(middleware.auth({ guards: ['api'] }))
       .prefix('/role')
-
     router
       .group(() => {
         router.get('/', [PermissionController, 'index'])
