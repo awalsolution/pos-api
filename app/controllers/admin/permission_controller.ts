@@ -3,27 +3,34 @@ import Permission from '#models/permission'
 
 export default class PermissionController {
   async index({ request, response }: HttpContext) {
-    let DQ = Permission.query()
+    try {
+      let DQ = Permission.query()
 
-    const page = request.input('page')
-    const perPage = request.input('perPage')
+      const page = request.input('page')
+      const perPage = request.input('perPage')
 
-    // name filter
-    if (request.input('name')) {
-      DQ = DQ.whereILike('name', request.input('name') + '%')
-    }
+      // name filter
+      if (request.input('name')) {
+        DQ = DQ.whereILike('name', request.input('name') + '%')
+      }
 
-    if (perPage) {
-      return response.ok({
-        code: 200,
-        data: await DQ.paginate(page, perPage),
-        message: 'Record find successfully!',
-      })
-    } else {
-      return response.ok({
-        code: 200,
-        data: await DQ.select('*'),
-        message: 'Record find successfully!',
+      if (perPage) {
+        return response.ok({
+          code: 200,
+          data: await DQ.paginate(page, perPage),
+          message: 'Record find successfully!',
+        })
+      } else {
+        return response.ok({
+          code: 200,
+          data: await DQ.select('*'),
+          message: 'Record find successfully!',
+        })
+      }
+    } catch (e) {
+      return response.internalServerError({
+        code: 500,
+        message: e.toString(),
       })
     }
   }

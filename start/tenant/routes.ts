@@ -9,6 +9,7 @@
 
 import { middleware } from '#start/kernel'
 import router from '@adonisjs/core/services/router'
+// import db from '@adonisjs/lucid/services/db'
 const AuthController = () => import('#controllers/auth_controller')
 const UserController = () => import('#controllers/admin/user_controller')
 const PermissionController = () => import('#controllers/admin/permission_controller')

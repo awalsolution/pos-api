@@ -1,46 +1,60 @@
 import { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
+// import db from '@adonisjs/lucid/services/db'
+import { BaseController } from '#controllers/base_controller'
 
-export default class UserController {
+export default class UserController extends BaseController {
   async index({ auth, request, response }: HttpContext) {
-    const currentUser = auth.user!
-    let DQ = User.query().whereNotIn('id', [currentUser.id, 1])
+    try {
+      const currentUser = auth.user!
+      let DQ
+      if (await this.isSuperAdmin(currentUser)) {
+        DQ = User.query().whereNotIn('id', [currentUser.id, 1])
+      } else {
+        DQ = User.query().whereNotIn('id', [currentUser.id])
+      }
 
-    const page = request.input('page')
-    const perPage = request.input('perPage')
+      const page = request.input('page')
+      const perPage = request.input('perPage')
 
-    // name filter
-    if (request.input('name')) {
-      DQ = DQ.whereILike('email', request.input('name') + '%')
-    }
+      // name filter
+      if (request.input('name')) {
+        DQ = DQ.whereILike('email', request.input('name') + '%')
+      }
 
-    if (!DQ) {
-      return response.notFound({
-        code: 400,
-        message: 'Data not found',
-      })
-    }
+      if (!DQ) {
+        return response.notFound({
+          code: 400,
+          message: 'Data not found',
+        })
+      }
 
-    if (perPage) {
-      return response.ok({
-        code: 200,
-        data: await DQ.preload('permissions')
-          .preload('roles', (PQ) => {
-            PQ.preload('permissions')
-          })
-          .preload('profile')
-          .paginate(page, perPage),
-        message: 'Record find successfully!',
-      })
-    } else {
-      return response.ok({
-        code: 200,
-        message: 'Record find successfully!',
-        data: await DQ.preload('permissions')
-          .preload('roles', (PQ) => {
-            PQ.preload('permissions')
-          })
-          .preload('profile'),
+      if (perPage) {
+        return response.ok({
+          code: 200,
+          data: await DQ.preload('permissions')
+            .preload('roles', (PQ) => {
+              PQ.preload('permissions')
+            })
+            .preload('profile')
+            .paginate(page, perPage),
+          message: 'Record find successfully!',
+        })
+      } else {
+        return response.ok({
+          code: 200,
+          message: 'Record find successfully!',
+          data: await DQ.preload('permissions')
+            .preload('roles', (PQ) => {
+              PQ.preload('permissions')
+            })
+            .preload('profile'),
+        })
+      }
+    } catch (e) {
+      return response.internalServerError({
+        code: 500,
+        message: e.toString(),
       })
     }
   }
@@ -62,7 +76,7 @@ export default class UserController {
         data: DQ,
       })
     } catch (e) {
-      console.log(e)
+      // console.log(e)
       return response.internalServerError({
         code: 500,
         message: e.toString(),
