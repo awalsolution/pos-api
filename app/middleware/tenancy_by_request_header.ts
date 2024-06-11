@@ -17,7 +17,6 @@ export default class TenancyByRequestHeader {
       const conn = db.manager.get('tenant')
       //@ts-ignore
       if (!conn?.connection || conn?.config.connection?.database !== tenant?.db_name) {
-        console.log('tenant connection is connected! ===>', db.manager.isConnected('tenant'))
         await tenantConnectionSwitcher(tenant?.db_name)
       }
     }

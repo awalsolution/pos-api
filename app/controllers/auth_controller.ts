@@ -1,6 +1,11 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
 import Tenant from '#models/tenant'
+import TenancyNotInitializedException from '#exceptions/tenancy_not_initialized_exception'
+import {
+  ReplaceAdminToTenantConnectionSwitcher,
+  adminConnectionSwitcher,
+} from '#services/db_connection_switcher_service'
 
 export default class AuthController {
   async register({ request, response }: HttpContext) {
@@ -43,11 +48,27 @@ export default class AuthController {
 
   async login({ request, response }: HttpContext) {
     try {
+      if (request.headers().tenant_api_public_key) {
+        const tenant = await Tenant.findBy(
+          'tenant_api_key',
+          request.headers().tenant_api_public_key
+        )
+        if (!tenant?.db_name) {
+          throw new TenancyNotInitializedException(
+            'Invalid tenant api key provided. Please contact with Service provider support.',
+            403
+          )
+        }
+        await ReplaceAdminToTenantConnectionSwitcher(tenant?.db_name)
+      }
       const { email, password } = request.only(['email', 'password'])
       const user = await User.verifyCredentials(email, password)
       const token = await User.accessTokens.create(user, ['*'], {
         name: 'login_token',
       })
+
+      await adminConnectionSwitcher()
+
       return response.ok({
         code: 200,
         message: 'Login successfully!',
@@ -68,6 +89,7 @@ export default class AuthController {
       return response.unauthorized({ code: 401, message: 'Unauthorized' })
     }
     delete authenticatedUser.$attributes.password
+
     return response.ok({
       code: 200,
       message: 'Record find successfully!',
