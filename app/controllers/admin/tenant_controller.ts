@@ -3,10 +3,7 @@ import db from '@adonisjs/lucid/services/db'
 import { HttpContext } from '@adonisjs/core/http'
 import { MigrationRunner } from '@adonisjs/lucid/migration'
 import { cuid } from '@adonisjs/core/helpers'
-import {
-  tenantConnectionSwitcher,
-  adminConnectionSwitcher,
-} from '#services/db_connection_switcher_service'
+import { tenantConnectionSwitcher } from '#services/db_connection_switcher_service'
 import Tenant from '#models/tenant'
 import Permission from '#models/permission'
 import Role from '#models/role'
@@ -121,8 +118,6 @@ export default class TenantController {
             console.log('Something went wrong! User not insert successfully!')
           }
 
-          await adminConnectionSwitcher()
-
           const DM = new Tenant()
 
           DM.planId = request.body().plan_id || 1
@@ -174,7 +169,7 @@ export default class TenantController {
       const perm = await Permission.all()
       const roles = await Role.all()
       const users = await User.all()
-      await adminConnectionSwitcher()
+
       return response.ok({
         code: 200,
         message: 'find successfully!',
@@ -197,7 +192,7 @@ export default class TenantController {
         .where('id', request.input('role_id'))
         .preload('permissions')
         .first()
-      await adminConnectionSwitcher()
+
       return response.ok({
         code: 200,
         message: 'find successfully!',
@@ -225,7 +220,7 @@ export default class TenantController {
 
       await DQ.related('permissions').sync(request.body().permissions)
       await DQ.save()
-      await adminConnectionSwitcher()
+
       return response.ok({
         code: 200,
         message: 'assign successfully!',
@@ -305,7 +300,7 @@ export default class TenantController {
         })
       }
       await DQ.delete()
-      await adminConnectionSwitcher()
+
       return response.ok({
         code: 200,
         message: 'Deleted successfully!',
