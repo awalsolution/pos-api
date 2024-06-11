@@ -1,15 +1,12 @@
 import { HttpContext } from '@adonisjs/core/http'
 import TenancyNotInitializedException from '#exceptions/tenancy_not_initialized_exception'
-import {
-  tenantConnectionSwitcher,
-  adminConnectionSwitcher,
-} from '#services/db_connection_switcher_service'
+import { tenantConnectionSwitcher } from '#services/db_connection_switcher_service'
 import Tenant from '#models/tenant'
+import db from '@adonisjs/lucid/services/db'
 
 export default class TenancyByRequestHeader {
   async handle({ request }: HttpContext, next: () => Promise<void>) {
     if (request.headers().tenant_api_public_key) {
-      await adminConnectionSwitcher()
       const tenant = await Tenant.findBy('tenant_api_key', request.headers().tenant_api_public_key)
       if (!tenant?.db_name) {
         throw new TenancyNotInitializedException(
@@ -17,13 +14,12 @@ export default class TenancyByRequestHeader {
           403
         )
       }
-      // tenant connnection
-      if (tenant?.db_name) {
+      const conn = db.manager.get('tenant')
+      //@ts-ignore
+      if (!conn?.connection || conn?.config.connection?.database !== tenant?.db_name) {
+        console.log('tenant connection is connected! ===>', db.manager.isConnected('tenant'))
         await tenantConnectionSwitcher(tenant?.db_name)
       }
-    } else {
-      // admin connection
-      await adminConnectionSwitcher()
     }
     await next()
   }

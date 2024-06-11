@@ -2,6 +2,7 @@ import { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
 // import db from '@adonisjs/lucid/services/db'
 import { BaseController } from '#controllers/base_controller'
+import db from '@adonisjs/lucid/services/db'
 
 export default class UserController extends BaseController {
   async index({ auth, request, response }: HttpContext) {
