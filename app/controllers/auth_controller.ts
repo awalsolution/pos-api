@@ -1,5 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
+import Tenant from '#models/tenant'
 
 export default class AuthController {
   async register({ request, response }: HttpContext) {
@@ -47,6 +48,7 @@ export default class AuthController {
       const token = await User.accessTokens.create(user, ['*'], {
         name: 'login_token',
       })
+
       return response.ok({
         code: 200,
         message: 'Login successfully!',
@@ -67,6 +69,7 @@ export default class AuthController {
       return response.unauthorized({ code: 401, message: 'Unauthorized' })
     }
     delete authenticatedUser.$attributes.password
+
     return response.ok({
       code: 200,
       message: 'Record find successfully!',
@@ -81,5 +84,35 @@ export default class AuthController {
       code: 200,
       message: 'Logout successfully!',
     })
+  }
+
+  async verifyDomainName({ request, response }: HttpContext) {
+    try {
+      const DQ = await Tenant.query({ connection: 'mysql' })
+        .where('domain_name', request.param('name'))
+        .first()
+
+      if (!DQ) {
+        return response.notFound({
+          code: 400,
+          message: `Domain ${request.param('name')} does not exists!`,
+        })
+      }
+
+      return response.ok({
+        code: 200,
+        message: 'Record find successfully!',
+        data: DQ.serialize({
+          fields: {
+            pick: ['tenant_api_key'],
+          },
+        }),
+      })
+    } catch (e) {
+      return response.internalServerError({
+        code: 500,
+        message: e.toString(),
+      })
+    }
   }
 }

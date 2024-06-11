@@ -13,8 +13,6 @@ const AuthController = () => import('#controllers/auth_controller')
 const UserController = () => import('#controllers/admin/user_controller')
 const PermissionController = () => import('#controllers/admin/permission_controller')
 const RoleController = () => import('#controllers/admin/role_controller')
-const PlanController = () => import('#controllers/admin/plan_controller')
-const TenantController = () => import('#controllers/admin/tenant_controller')
 
 router
   .group(() => {
@@ -30,7 +28,6 @@ router
           .use(middleware.auth({ guards: ['api'] }))
       })
       .prefix('/auth')
-
     router
       .group(() => {
         router.get('/', [UserController, 'index'])
@@ -44,7 +41,6 @@ router
       })
       .use(middleware.auth({ guards: ['api'] }))
       .prefix('/user')
-
     router
       .group(() => {
         router.get('/', [RoleController, 'index'])
@@ -56,7 +52,6 @@ router
       })
       .use(middleware.auth({ guards: ['api'] }))
       .prefix('/role')
-
     router
       .group(() => {
         router.get('/', [PermissionController, 'index'])
@@ -67,33 +62,6 @@ router
       })
       .use(middleware.auth({ guards: ['api'] }))
       .prefix('/permission')
-
-    router
-      .group(() => {
-        console.log('route')
-        router.get('/', [TenantController, 'index'])
-        router.post('/', [TenantController, 'create'])
-        // router.get('/:id', [TenantController, 'show'])
-        router.put('/:id', [TenantController, 'update'])
-        router.delete('/:id', [TenantController, 'destroy'])
-        router.get('/detail', [TenantController, 'tenantDetailInfo'])
-        router.get('/all-permission/:db_name', [TenantController, 'allPermission'])
-        router.delete('/delete-role/:id', [TenantController, 'deleteTenantRole'])
-        router.put('/assign-permission/:id', [TenantController, 'assignPermission'])
-      })
-      .use(middleware.auth({ guards: ['api'] }))
-      .prefix('/tenant')
-
-    router
-      .group(() => {
-        router.get('/', [PlanController, 'index'])
-        router.post('/', [PlanController, 'create'])
-        router.get('/:id', [PlanController, 'show'])
-        router.put('/:id', [PlanController, 'update'])
-        router.delete('/:id', [PlanController, 'destroy'])
-      })
-      .use(middleware.auth({ guards: ['api'] }))
-      .prefix('/plan')
   })
   .use(middleware.tenant())
-  .prefix('/api/v1/admin')
+  .prefix('/api/v1/tenant')

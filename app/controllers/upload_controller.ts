@@ -6,7 +6,7 @@ import env from '#start/env'
 export default class UploadController {
   async imageUploader({ request, response }: HttpContext) {
     // from frontend
-    const receivedFile = ['profile_picture']
+    const receivedFile = ['profile_image']
     const basePath: string = 'uploads/'
 
     let image: any = null

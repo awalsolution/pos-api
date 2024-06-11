@@ -1,50 +1,43 @@
 import { HttpContext } from '@adonisjs/core/http'
-import Permission from '#models/permission'
+import Plan from '#models/plan'
 
-export default class PermissionController {
+export default class PlanController {
   async index({ request, response }: HttpContext) {
-    try {
-      let DQ = Permission.query()
+    let DQ = Plan.query()
 
-      const page = request.input('page')
-      const perPage = request.input('perPage')
+    const page = request.input('page')
+    const perPage = request.input('perPage')
 
-      // name filter
-      if (request.input('name')) {
-        DQ = DQ.whereILike('name', request.input('name') + '%')
-      }
+    if (request.input('name')) {
+      DQ = DQ.whereILike('name', request.input('name') + '%')
+    }
 
-      if (perPage) {
-        return response.ok({
-          code: 200,
-          data: await DQ.paginate(page, perPage),
-          message: 'Record find successfully!',
-        })
-      } else {
-        return response.ok({
-          code: 200,
-          data: await DQ.select('*'),
-          message: 'Record find successfully!',
-        })
-      }
-    } catch (e) {
-      return response.internalServerError({
-        code: 500,
-        message: e.toString(),
+    if (perPage) {
+      return response.ok({
+        code: 200,
+        data: await DQ.paginate(page, perPage),
+        message: 'Record find successfully!',
+      })
+    } else {
+      return response.ok({
+        code: 200,
+        data: await DQ.preload('tenants'),
+        message: 'Record find successfully!',
       })
     }
   }
 
   async show({ request, response }: HttpContext) {
     try {
-      const DQ = await Permission.findBy('id', request.param('id'))
+      const DQ = await Plan.query().where('id', request.param('id')).preload('tenants').first()
+
       if (!DQ) {
         return response.notFound({
           code: 400,
           message: 'Data does not exists!',
-          data: null,
         })
       }
+
       return response.ok({
         code: 200,
         message: 'Record find successfully!',
@@ -58,18 +51,26 @@ export default class PermissionController {
     }
   }
 
-  async create({ request, response }: HttpContext) {
+  async create({ auth, request, response }: HttpContext) {
     try {
-      const DE = await Permission.findBy('name', request.body().name)
+      const currentUser = auth.user!
+      const DE = await Plan.findBy('name', request.body().name)
+
       if (DE) {
         return response.conflict({
           code: 409,
           message: 'Data already exists!',
         })
       }
-      const DM = new Permission()
+
+      const DM = new Plan()
 
       DM.name = request.body().name
+      DM.type = request.body().type
+      DM.price = request.body().price
+      DM.description = request.body().description
+      DM.status = request.body().status
+      DM.created_by = currentUser?.profile?.first_name! + currentUser?.profile?.last_name
 
       const DQ = await DM.save()
       return response.ok({
@@ -86,28 +87,34 @@ export default class PermissionController {
     }
   }
 
-  async update({ request, response }: HttpContext) {
+  async update({ auth, request, response }: HttpContext) {
     try {
-      const DQ = await Permission.findBy('id', request.param('id'))
+      const currentUser = auth.user!
+      const DQ = await Plan.findBy('id', request.param('id'))
       if (!DQ) {
         return response.notFound({
           code: 400,
           message: 'Data does not exists!',
         })
       }
-      const permissionExists = await Permission.query()
+      const DE = await Plan.query()
         .where('name', 'like', request.body().name)
         .whereNot('id', request.param('id'))
         .first()
 
-      if (permissionExists) {
+      if (DE) {
         return response.conflict({
           code: 409,
-          message: 'Data already exist!',
+          message: 'Record already exist!',
         })
       }
 
       DQ.name = request.body().name
+      DQ.type = request.body().type
+      DQ.price = request.body().price
+      DQ.description = request.body().description
+      DQ.status = request.body().status
+      DQ.created_by = currentUser?.profile?.first_name! + currentUser?.profile?.last_name
 
       await DQ.save()
       return response.ok({
@@ -116,6 +123,7 @@ export default class PermissionController {
         data: DQ,
       })
     } catch (e) {
+      console.log(e)
       return response.internalServerError({
         code: 500,
         message: e.message,
@@ -124,7 +132,7 @@ export default class PermissionController {
   }
 
   async destroy({ request, response }: HttpContext) {
-    const DQ = await Permission.findBy('id', request.param('id'))
+    const DQ = await Plan.findBy('id', request.param('id'))
     if (!DQ) {
       return response.notFound({
         code: 400,
@@ -134,7 +142,7 @@ export default class PermissionController {
     await DQ.delete()
     return response.ok({
       code: 200,
-      message: 'Record deleted successfully!',
+      message: 'Deleted successfully!',
     })
   }
 }

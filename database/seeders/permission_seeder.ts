@@ -4,25 +4,106 @@ import Permission from '#models/permission'
 export default class extends BaseSeeder {
   async run() {
     await Permission.createMany([
-      { name: 'can view dashboard menu', type: 'public' },
-      { name: 'can view dashboard list', type: 'public' },
-      { name: 'can view system setting menu', type: 'public' },
-      { name: 'can view user menu', type: 'public' },
-      { name: 'can view user create', type: 'public' },
-      { name: 'can view user update', type: 'public' },
-      { name: 'can view user delete', type: 'public' },
-      { name: 'can view user profile', type: 'public' },
-      { name: 'can view user assign permission', type: 'public' },
-      { name: 'can view role menu', type: 'public' },
-      { name: 'can view role create', type: 'public' },
-      { name: 'can view role update', type: 'public' },
-      { name: 'can view role delete', type: 'public' },
-      { name: 'can view role assign permission', type: 'public' },
-      { name: 'can view permission menu', type: 'private' },
-      { name: 'can view permission create', type: 'private' },
-      { name: 'can view permission update', type: 'private' },
-      { name: 'can view permission delete', type: 'private' },
-      { name: 'can view assign permission menu', type: 'public' },
+      {
+        name: 'dashboard menu',
+        type: 'public',
+      },
+      {
+        name: 'tenant menu',
+        type: 'private',
+      },
+      {
+        name: 'tenant create',
+        type: 'private',
+      },
+      {
+        name: 'tenant update',
+        type: 'private',
+      },
+      {
+        name: 'tenant delete',
+        type: 'private',
+      },
+      {
+        name: 'plan menu',
+        type: 'private',
+      },
+      {
+        name: 'plan create',
+        type: 'private',
+      },
+      {
+        name: 'plan update',
+        type: 'private',
+      },
+      {
+        name: 'plan delete',
+        type: 'private',
+      },
+      {
+        name: 'permission menu',
+        type: 'public',
+      },
+      {
+        name: 'permission create',
+        type: 'private',
+      },
+      {
+        name: 'permission update',
+        type: 'private',
+      },
+      {
+        name: 'permission delete',
+        type: 'private',
+      },
+      {
+        name: 'assign permission menu',
+        type: 'public',
+      },
+      {
+        name: 'user menu',
+        type: 'public',
+      },
+      {
+        name: 'user create',
+        type: 'public',
+      },
+      {
+        name: 'user update',
+        type: 'public',
+      },
+      {
+        name: 'user delete',
+        type: 'public',
+      },
+      {
+        name: 'user profile',
+        type: 'public',
+      },
+      {
+        name: 'user assign permission',
+        type: 'public',
+      },
+      {
+        name: 'role menu',
+        type: 'public',
+      },
+      {
+        name: 'role create',
+        type: 'public',
+      },
+      {
+        name: 'role update',
+        type: 'public',
+      },
+      {
+        name: 'role delete',
+        type: 'public',
+      },
+      {
+        name: 'role assign permission',
+        type: 'public',
+      },
     ])
   }
 }

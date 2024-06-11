@@ -9,6 +9,7 @@
 
 import router from '@adonisjs/core/services/router'
 const UploadController = () => import('#controllers/upload_controller')
+const AuthController = () => import('#controllers/auth_controller')
 
 router.get('/api/v1', async ({ response }) => {
   response.ok({
@@ -18,6 +19,7 @@ router.get('/api/v1', async ({ response }) => {
 })
 
 router.post('/api/v1/upload', [UploadController, 'imageUploader'])
+router.get('/api/v1/verify-domain/:name', [AuthController, 'verifyDomainName'])
 
-import '#start/client/routes'
 import '#start/admin/routes'
+import '#start/tenant/routes'
