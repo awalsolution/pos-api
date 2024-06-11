@@ -88,7 +88,9 @@ export default class AuthController {
 
   async verifyDomainName({ request, response }: HttpContext) {
     try {
-      const DQ = await Tenant.query().where('domain_name', request.param('name')).first()
+      const DQ = await Tenant.query({ connection: 'mysql' })
+        .where('domain_name', request.param('name'))
+        .first()
 
       if (!DQ) {
         return response.notFound({
