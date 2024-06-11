@@ -7,7 +7,11 @@ import db from '@adonisjs/lucid/services/db'
 export default class TenancyByRequestHeader {
   async handle({ request }: HttpContext, next: () => Promise<void>) {
     if (request.headers().tenant_api_public_key) {
-      const tenant = await Tenant.findBy('tenant_api_key', request.headers().tenant_api_public_key)
+      const tenant = await Tenant.findBy(
+        'tenant_api_key',
+        request.headers().tenant_api_public_key,
+        { connection: 'mysql' }
+      )
       if (!tenant?.db_name) {
         throw new TenancyNotInitializedException(
           'Invalid tenant api key provided. Please contact with Service provider support.',

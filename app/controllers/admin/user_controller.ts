@@ -1,19 +1,12 @@
 import { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
-// import db from '@adonisjs/lucid/services/db'
 import { BaseController } from '#controllers/base_controller'
-import db from '@adonisjs/lucid/services/db'
 
 export default class UserController extends BaseController {
   async index({ auth, request, response }: HttpContext) {
     try {
       const currentUser = auth.user!
-      let DQ
-      if (await this.isSuperAdmin(currentUser)) {
-        DQ = User.query().whereNotIn('id', [currentUser.id, 1])
-      } else {
-        DQ = User.query().whereNotIn('id', [currentUser.id])
-      }
+      let DQ = User.query().whereNotIn('id', [currentUser.id, 1])
 
       const page = request.input('page')
       const perPage = request.input('perPage')

@@ -63,4 +63,5 @@ router
       .use(middleware.auth({ guards: ['api'] }))
       .prefix('/permission')
   })
+  .use(middleware.tenant())
   .prefix('/api/v1/tenant')
