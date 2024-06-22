@@ -3,7 +3,7 @@ import db from '@adonisjs/lucid/services/db'
 import { HttpContext } from '@adonisjs/core/http'
 import { MigrationRunner } from '@adonisjs/lucid/migration'
 import { cuid } from '@adonisjs/core/helpers'
-import { tenantConnectionSwitcher } from '#services/db_connection_switcher_service'
+import { tenantConnectionPatch } from '#services/db_connection_switcher_service'
 import Tenant from '#models/tenant'
 import Permission from '#models/permission'
 import Role from '#models/role'
@@ -118,6 +118,8 @@ export default class TenantController {
             console.log('Something went wrong! User not insert successfully!')
           }
 
+          db.primaryConnectionName = 'mysql'
+
           const DM = new Tenant()
 
           DM.planId = request.body().plan_id || 1
@@ -165,10 +167,13 @@ export default class TenantController {
         })
       }
 
-      await tenantConnectionSwitcher(request.input('db_name'))
+      db.primaryConnectionName = 'tenant'
+
       const perm = await Permission.all()
       const roles = await Role.all()
       const users = await User.all()
+
+      db.primaryConnectionName = 'mysql'
 
       return response.ok({
         code: 200,
@@ -186,13 +191,14 @@ export default class TenantController {
 
   async allPermission({ request, response }: HttpContext) {
     try {
-      await tenantConnectionSwitcher(request.param('db_name'))
+      await tenantConnectionPatch(request.param('db_name'))
+      db.primaryConnectionName = 'tenant'
       const perm = await Permission.all()
       const role = await Role.query()
         .where('id', request.input('role_id'))
         .preload('permissions')
         .first()
-
+      db.primaryConnectionName = 'mysql'
       return response.ok({
         code: 200,
         message: 'find successfully!',
@@ -209,7 +215,8 @@ export default class TenantController {
   // assign permission to tenant role
   async assignPermission({ request, response }: HttpContext) {
     try {
-      await tenantConnectionSwitcher(request.input('db_name'))
+      await tenantConnectionPatch(request.input('db_name'))
+      db.primaryConnectionName = 'tenant'
       const DQ = await Role.findBy('id', request.param('id'))
       if (!DQ) {
         return response.notFound({
@@ -220,7 +227,7 @@ export default class TenantController {
 
       await DQ.related('permissions').sync(request.body().permissions)
       await DQ.save()
-
+      db.primaryConnectionName = 'mysql'
       return response.ok({
         code: 200,
         message: 'assign successfully!',
@@ -291,7 +298,8 @@ export default class TenantController {
   // tenant role delete
   async deleteTenantRole({ request, response }: HttpContext) {
     try {
-      await tenantConnectionSwitcher(request.input('db_name'))
+      await tenantConnectionPatch(request.input('db_name'))
+      db.primaryConnectionName = 'tenant'
       const DQ = await Role.findBy('id', request.param('id'))
       if (!DQ) {
         return response.notFound({
@@ -300,7 +308,7 @@ export default class TenantController {
         })
       }
       await DQ.delete()
-
+      db.primaryConnectionName = 'mysql'
       return response.ok({
         code: 200,
         message: 'Deleted successfully!',
@@ -324,14 +332,14 @@ export default class TenantController {
 
   async dealsWithMigrations(db_name: string) {
     try {
-      await tenantConnectionSwitcher(db_name)
+      await tenantConnectionPatch(db_name)
+      db.primaryConnectionName = 'tenant'
       const migrator = new MigrationRunner(db, app, {
         direction: 'up',
         dryRun: false,
       })
-
+      // console.log(migrator)
       await migrator.run()
-      // await ace.exec('db:seed', [''])
 
       return true
     } catch (error) {

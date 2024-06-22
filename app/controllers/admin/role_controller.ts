@@ -15,7 +15,7 @@ export default class RoleController {
     if (perPage) {
       return response.ok({
         code: 200,
-        data: await DQ.paginate(page, perPage),
+        data: await DQ.preload('permissions').paginate(page, perPage),
         message: 'Record find successfully!',
       })
     } else {

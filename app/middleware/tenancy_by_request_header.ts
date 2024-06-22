@@ -1,8 +1,8 @@
 import { HttpContext } from '@adonisjs/core/http'
 import TenancyNotInitializedException from '#exceptions/tenancy_not_initialized_exception'
-import { tenantConnectionSwitcher } from '#services/db_connection_switcher_service'
-import Tenant from '#models/tenant'
+import { tenantConnectionPatch } from '#services/db_connection_switcher_service'
 import db from '@adonisjs/lucid/services/db'
+import Tenant from '#models/tenant'
 
 export default class TenancyByRequestHeader {
   async handle({ request }: HttpContext, next: () => Promise<void>) {
@@ -18,11 +18,11 @@ export default class TenancyByRequestHeader {
           403
         )
       }
-      const conn = db.manager.get('tenant')
-      //@ts-ignore
-      if (!conn?.connection || conn?.config.connection?.database !== tenant?.db_name) {
-        await tenantConnectionSwitcher(tenant?.db_name)
-      }
+
+      await tenantConnectionPatch(tenant?.db_name)
+      db.primaryConnectionName = 'tenant'
+    } else {
+      db.primaryConnectionName = 'mysql'
     }
     await next()
   }
