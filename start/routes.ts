@@ -22,4 +22,3 @@ router.post('/api/v1/upload', [UploadController, 'imageUploader'])
 router.get('/api/v1/verify-domain/:name', [AuthController, 'verifyDomainName'])
 
 import '#start/admin/routes'
-import '#start/tenant/routes'
