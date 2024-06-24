@@ -96,4 +96,4 @@ router
       .prefix('/plan')
   })
   .use(middleware.tenant())
-  .prefix('/api/v1/admin')
+  .prefix('/api/v1')
