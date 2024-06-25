@@ -30,6 +30,10 @@ const dbConfig = defineConfig({
         password: env.get('DB_PASSWORD'),
         database: '',
       },
+      migrations: {
+        naturalSort: true,
+        paths: ['database/migrations/tenant'],
+      },
     },
   },
 })
