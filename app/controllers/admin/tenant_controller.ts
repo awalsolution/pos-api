@@ -76,6 +76,7 @@ export default class TenantController {
       } else {
         try {
           await this.createDatabase(dbName)
+          logger.info(`Database ${dbName} created Successfully!`)
           await this.dealsWithMigrations(dbName)
 
           let permArr = []
