@@ -8,6 +8,7 @@ import Tenant from '#models/tenant'
 import Permission from '#models/permission'
 import Role from '#models/role'
 import User from '#models/user'
+import logger from '@adonisjs/core/services/logger'
 
 export default class TenantController {
   async index({ request, response }: HttpContext) {
@@ -142,9 +143,10 @@ export default class TenantController {
             data: DQ,
           })
         } catch (error) {
+          logger.error(error)
           return response.conflict({
             code: 409,
-            message: error.sqlMessage || 'Database creation failed.',
+            message: error || 'Database creation failed.',
           })
         }
       }
@@ -340,6 +342,13 @@ export default class TenantController {
       })
       // console.log(migrator)
       await migrator.run()
+      for (const migratedFile in migrator.migratedFiles) {
+        const status =
+          migrator.migratedFiles[migratedFile].status === 'completed'
+            ? 'migrated'
+            : migrator.migratedFiles[migratedFile].status
+        logger.info(`[${status}] ==> [${migrator.migratedFiles[migratedFile].file.name}]`)
+      }
 
       return true
     } catch (error) {
