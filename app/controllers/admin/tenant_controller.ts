@@ -146,7 +146,7 @@ export default class TenantController {
           logger.error(error)
           return response.conflict({
             code: 409,
-            message: error || 'Database creation failed.',
+            message: error.toString(),
           })
         }
       }
