@@ -1,8 +1,8 @@
-# Awal Umrah Management System REST Apis
+# Adonis Multi Tenant Boilerplate REST Apis
 
 ## Description
 
-Awal Umrah Management System REST API's is developed with Adonisjs and mysql.
+Adonis Multi Tenant Boilerplate REST API's is developed with Adonisjs and mysql.
 
 # Environments
 
@@ -21,8 +21,8 @@ Awal Umrah Management System REST API's is developed with Adonisjs and mysql.
 1. Clone repository
 
    ```
-   git clone https://github.com/awal-solution/awal-umrah-api.git
-   cd awal-umrah-api
+   git clone https://github.com/awal-solution/adonis-multi-tenant-boilerplate.git
+   cd adonis-multi-tenant-boilerplate
    yarn install
    ```
 
@@ -62,6 +62,7 @@ Awal Umrah Management System REST API's is developed with Adonisjs and mysql.
       ```
 
       Please note that this operation could take a couple of minutes.
+
 8. Congratulations. You have successfully set up the InSync.
 
 # Resources
