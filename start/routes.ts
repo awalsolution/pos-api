@@ -83,7 +83,7 @@ router
       .group(() => {
         router.get('/', [TenantController, 'index'])
         router.post('/', [TenantController, 'create'])
-        router.get('/:id', [TenantController, 'show'])
+        // router.get('/:id', [TenantController, 'show'])
         router.put('/:id', [TenantController, 'update'])
         router.delete('/:id', [TenantController, 'destroy'])
         router.get('/detail', [TenantController, 'tenantDetailInfo'])

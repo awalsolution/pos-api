@@ -169,7 +169,7 @@ export default class TenantController {
           message: 'Tenant does not exists! Please contact with support!',
         })
       }
-
+      await tenantConnectionPatch(request.input('db_name'))
       db.primaryConnectionName = 'tenant'
 
       const perm = await Permission.all()
@@ -196,12 +196,15 @@ export default class TenantController {
     try {
       await tenantConnectionPatch(request.param('db_name'))
       db.primaryConnectionName = 'tenant'
+
       const perm = await Permission.all()
       const role = await Role.query()
         .where('id', request.input('role_id'))
         .preload('permissions')
         .first()
+
       db.primaryConnectionName = 'mysql'
+
       return response.ok({
         code: 200,
         message: 'find successfully!',
@@ -220,6 +223,7 @@ export default class TenantController {
     try {
       await tenantConnectionPatch(request.input('db_name'))
       db.primaryConnectionName = 'tenant'
+
       const DQ = await Role.findBy('id', request.param('id'))
       if (!DQ) {
         return response.notFound({
@@ -303,6 +307,7 @@ export default class TenantController {
     try {
       await tenantConnectionPatch(request.input('db_name'))
       db.primaryConnectionName = 'tenant'
+
       const DQ = await Role.findBy('id', request.param('id'))
       if (!DQ) {
         return response.notFound({
