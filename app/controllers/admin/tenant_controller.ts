@@ -76,7 +76,7 @@ export default class TenantController {
       } else {
         try {
           await this.createDatabase(dbName)
-          logger.info(`Database ${dbName} created Successfully!`)
+          logger.info(`Database: ${dbName} created Successfully!`)
           await this.dealsWithMigrations(dbName)
 
           let permArr = []
@@ -85,6 +85,7 @@ export default class TenantController {
             for (const permission of request.body().permissions) {
               const res = await Permission.create({ name: permission })
               permArr.push(res.id)
+              logger.info(`Permissions Inserted into tenant database: ${dbName} Successfully!`)
             }
           } else {
             console.log('Something went wrong! Permissions not insert successfully!')
@@ -93,8 +94,12 @@ export default class TenantController {
           if (request.body().roles) {
             for (const role of request.body().roles) {
               createdRole = await Role.create({ name: role })
+              logger.info(`Role Inserted into tenant database: ${dbName} Successfully!`)
               const newRole: any = await Role.find(createdRole.id)
               await newRole.related('permissions').sync(permArr)
+              logger.info(
+                `Permissions Assign to tenant role into tenant database: ${dbName} Successfully!`
+              )
             }
           } else {
             console.log('Something went wrong! Roles not insert successfully!')
@@ -108,6 +113,7 @@ export default class TenantController {
             user.status = request.body().status
 
             await user.save()
+            logger.info(`Admin User Inserted into tenant database: ${dbName} Successfully!`)
 
             await user.related('profile').create({
               first_name: request.body().first_name,
@@ -119,6 +125,9 @@ export default class TenantController {
               country: request.body().country,
             })
             await user.related('roles').sync([createdRole.id])
+            logger.info(
+              `${createdRole.name} Assign to admin user into tenant database: ${dbName} Successfully!`
+            )
           } else {
             console.log('Something went wrong! User not insert successfully!')
           }
@@ -145,6 +154,8 @@ export default class TenantController {
           DM.password = request.body().password
 
           const DQ = await DM.save()
+
+          logger.info(`Tenant Created Successfully! with id: ${DQ.id} and Domain:${DQ.domain_name}`)
 
           return response.ok({
             code: 200,
