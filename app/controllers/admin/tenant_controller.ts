@@ -104,7 +104,6 @@ export default class TenantController {
             const user = new User()
 
             user.email = request.body().email
-
             user.password = request.body().password
             user.status = request.body().status
 
@@ -114,6 +113,10 @@ export default class TenantController {
               first_name: request.body().first_name,
               last_name: request.body().last_name,
               phone_number: request.body().phone_number,
+              address: request.body().address,
+              city: request.body().city,
+              state: request.body().state,
+              country: request.body().country,
             })
             await user.related('roles').sync([createdRole.id])
           } else {
@@ -127,14 +130,19 @@ export default class TenantController {
           DM.planId = request.body().plan_id || 1
           DM.domain_name = request.body().domain_name
           DM.db_name = dbName
+          DM.tenant_name = request.body().tenant_name
           DM.tenant_api_key = `tenant_${cuid()}_key`
+          DM.status = request.body().status
+          DM.created_by = currentUser?.profile?.first_name! + ' ' + currentUser?.profile?.last_name
+          DM.address = request.body().address
+          DM.city = request.body().city
+          DM.state = request.body().state
+          DM.country = request.body().country
           DM.first_name = request.body().first_name
           DM.last_name = request.body().last_name
           DM.email = request.body().email
           DM.phone_number = request.body().phone_number
           DM.password = request.body().password
-          DM.status = request.body().status
-          DM.created_by = currentUser?.profile?.first_name! + currentUser?.profile?.last_name
 
           const DQ = await DM.save()
 
