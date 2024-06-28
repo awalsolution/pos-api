@@ -278,7 +278,7 @@ export default class TenantController {
         })
       }
       const DE = await Tenant.query()
-        .where('name', 'like', request.body().name)
+        .where('domain_name', 'like', request.body().domain_name)
         .whereNot('id', request.param('id'))
         .first()
 
@@ -289,7 +289,9 @@ export default class TenantController {
         })
       }
 
-      DQ.db_name = request.body().name
+      DQ.planId = request.body().plan_id || 1
+      DQ.domain_name = request.body().domain_name
+      DQ.status = request.body().status
 
       await DQ.save()
       return response.ok({
