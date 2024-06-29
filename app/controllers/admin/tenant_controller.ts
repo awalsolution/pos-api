@@ -1,5 +1,6 @@
 import app from '@adonisjs/core/services/app'
 import db from '@adonisjs/lucid/services/db'
+import logger from '@adonisjs/core/services/logger'
 import { HttpContext } from '@adonisjs/core/http'
 import { MigrationRunner } from '@adonisjs/lucid/migration'
 import { cuid } from '@adonisjs/core/helpers'
@@ -8,7 +9,6 @@ import Tenant from '#models/tenant'
 import Permission from '#models/permission'
 import Role from '#models/role'
 import User from '#models/user'
-import logger from '@adonisjs/core/services/logger'
 
 export default class TenantController {
   async index({ request, response }: HttpContext) {
@@ -179,6 +179,61 @@ export default class TenantController {
     }
   }
 
+  async update({ request, response }: HttpContext) {
+    try {
+      const DQ = await Tenant.findBy('id', request.param('id'))
+      if (!DQ) {
+        return response.notFound({
+          code: 400,
+          message: 'Data does not exists!',
+        })
+      }
+      const DE = await Tenant.query()
+        .where('domain_name', 'like', request.body().domain_name)
+        .whereNot('id', request.param('id'))
+        .first()
+
+      if (DE) {
+        return response.conflict({
+          code: 409,
+          message: 'Record already exist!',
+        })
+      }
+
+      DQ.planId = request.body().plan_id || 1
+      DQ.domain_name = request.body().domain_name
+      DQ.status = request.body().status
+
+      await DQ.save()
+      return response.ok({
+        code: 200,
+        message: 'Updated successfully!',
+        data: DQ,
+      })
+    } catch (e) {
+      console.log(e)
+      return response.internalServerError({
+        code: 500,
+        message: e.message,
+      })
+    }
+  }
+
+  async destroy({ request, response }: HttpContext) {
+    const DQ = await Tenant.findBy('id', request.param('id'))
+    if (!DQ) {
+      return response.notFound({
+        code: 400,
+        message: 'Data not found',
+      })
+    }
+    await DQ.delete()
+    return response.ok({
+      code: 200,
+      message: 'Deleted successfully!',
+    })
+  }
+
   async tenantDetailInfo({ request, response }: HttpContext) {
     try {
       const DQ = await Tenant.findBy('db_name', request.input('db_name'))
@@ -193,7 +248,7 @@ export default class TenantController {
 
       const perm = await Permission.all()
       const roles = await Role.all()
-      const users = await User.all()
+      const users = await User.query().preload('profile').preload('roles')
 
       db.primaryConnectionName = 'mysql'
 
@@ -253,7 +308,9 @@ export default class TenantController {
 
       await DQ.related('permissions').sync(request.body().permissions)
       await DQ.save()
+
       db.primaryConnectionName = 'mysql'
+
       return response.ok({
         code: 200,
         message: 'assign successfully!',
@@ -268,35 +325,58 @@ export default class TenantController {
     }
   }
 
-  async update({ request, response }: HttpContext) {
+  async findSingleUserOfTenant({ request, response }: HttpContext) {
     try {
-      const DQ = await Tenant.findBy('id', request.param('id'))
+      await tenantConnectionPatch(request.input('db_name'))
+      db.primaryConnectionName = 'tenant'
+
+      const DQ = await User.query().where('id', request.input('user_id')).preload('roles').first()
+
+      logger.info('find single user of tenant successfully!')
+
+      db.primaryConnectionName = 'mysql'
+
+      return response.ok({
+        code: 200,
+        message: 'Record find successfully!',
+        data: DQ,
+      })
+    } catch (e) {
+      console.log(e)
+      return response.internalServerError({
+        code: 500,
+        message: e.toString(),
+      })
+    }
+  }
+
+  async updateUserOfTenant({ request, response }: HttpContext) {
+    try {
+      await tenantConnectionPatch(request.input('db_name'))
+      db.primaryConnectionName = 'tenant'
+
+      const DQ = await User.findBy('id', request.param('user_id'))
       if (!DQ) {
         return response.notFound({
           code: 400,
-          message: 'Data does not exists!',
-        })
-      }
-      const DE = await Tenant.query()
-        .where('domain_name', 'like', request.body().domain_name)
-        .whereNot('id', request.param('id'))
-        .first()
-
-      if (DE) {
-        return response.conflict({
-          code: 409,
-          message: 'Record already exist!',
+          message: 'Data not found',
         })
       }
 
-      DQ.planId = request.body().plan_id || 1
-      DQ.domain_name = request.body().domain_name
+      DQ.email = request.body().email
       DQ.status = request.body().status
 
+      DQ.related('roles').sync(request.body().roles)
+
       await DQ.save()
+
+      logger.info('Update User of tenant successfully!')
+
+      db.primaryConnectionName = 'mysql'
+
       return response.ok({
         code: 200,
-        message: 'Updated successfully!',
+        message: 'Update successfully!',
         data: DQ,
       })
     } catch (e) {
@@ -308,28 +388,87 @@ export default class TenantController {
     }
   }
 
-  async destroy({ request, response }: HttpContext) {
-    const DQ = await Tenant.findBy('id', request.param('id'))
-    if (!DQ) {
-      return response.notFound({
-        code: 400,
-        message: 'Data not found',
-      })
-    }
-    await DQ.delete()
-    return response.ok({
-      code: 200,
-      message: 'Deleted successfully!',
-    })
-  }
-
-  // tenant role delete
-  async deleteTenantRole({ request, response }: HttpContext) {
+  // Insert Role of tenant into tenant database
+  async InsertRoleOfTenant({ request, response }: HttpContext) {
     try {
       await tenantConnectionPatch(request.input('db_name'))
       db.primaryConnectionName = 'tenant'
 
-      const DQ = await Role.findBy('id', request.param('id'))
+      let data: any = []
+      if (request.body().roles.length > 0) {
+        for (const role of request.body().roles) {
+          const DE = await Role.findBy('name', role)
+          if (DE) {
+            return response.conflict({
+              code: 409,
+              message: `Role ${role} already exists!`,
+            })
+          }
+          data = await Role.create({ name: role })
+
+          logger.info(
+            `Role: ${role} Inserted into tenant database: ${request.input('db_name')} Successfully!`
+          )
+        }
+      } else {
+        return response.badRequest({
+          code: 400,
+          message: `Something went wrong! Roles not insert successfully!`,
+          data: null,
+        })
+      }
+
+      db.primaryConnectionName = 'mysql'
+
+      return response.ok({
+        code: 200,
+        message: `Role Inserted into tenant database: ${request.input('db_name')} Successfully!`,
+        data: data,
+      })
+    } catch (e) {
+      console.log(e)
+      return response.internalServerError({
+        code: 500,
+        message: e.toString(),
+      })
+    }
+  }
+
+  // find All roles of tenant from tenant database
+  async findRolesOfTenant({ request, response }: HttpContext) {
+    try {
+      await tenantConnectionPatch(request.input('db_name'))
+      db.primaryConnectionName = 'tenant'
+
+      let DQ = Role.query()
+
+      let data = await DQ.preload('permissions')
+
+      logger.info('find roles of tenant successfully!')
+
+      db.primaryConnectionName = 'mysql'
+
+      return response.ok({
+        code: 200,
+        data: data,
+        message: 'Record find successfully!',
+      })
+    } catch (e) {
+      console.log(e)
+      return response.internalServerError({
+        code: 500,
+        message: e.message,
+      })
+    }
+  }
+
+  // delete role of tenant from tenant database
+  async deleteRoleOfTenant({ request, response }: HttpContext) {
+    try {
+      await tenantConnectionPatch(request.input('db_name'))
+      db.primaryConnectionName = 'tenant'
+
+      const DQ = await Role.findBy('id', request.input('role_id'))
       if (!DQ) {
         return response.notFound({
           code: 400,
@@ -337,7 +476,119 @@ export default class TenantController {
         })
       }
       await DQ.delete()
+
+      logger.info('delete role of tenant successfully!')
+
       db.primaryConnectionName = 'mysql'
+
+      return response.ok({
+        code: 200,
+        message: 'Deleted successfully!',
+      })
+    } catch (e) {
+      console.log(e)
+      return response.internalServerError({
+        code: 500,
+        message: e.message,
+      })
+    }
+  }
+
+  // Insert Permissons of tenant into tenant database
+  async InsertPermissionsOfTenant({ request, response }: HttpContext) {
+    try {
+      await tenantConnectionPatch(request.input('db_name'))
+      db.primaryConnectionName = 'tenant'
+
+      let data: any = []
+      if (request.body().permissions.length > 0) {
+        for (const permission of request.body().permissions) {
+          const DE = await Permission.findBy('name', permission)
+          if (!DE) {
+            data = await Permission.create({ name: permission })
+            logger.info(
+              `Permission: ${permission} Inserted into tenant database: ${request.input('db_name')} Successfully!`
+            )
+          }
+        }
+      } else {
+        return response.badRequest({
+          code: 400,
+          message: `Something went wrong! Roles not insert successfully!`,
+          data: null,
+        })
+      }
+
+      db.primaryConnectionName = 'mysql'
+
+      return response.ok({
+        code: 200,
+        message: `Permission Inserted into tenant database: ${request.input('db_name')} Successfully!`,
+        data: data,
+      })
+    } catch (e) {
+      console.log(e)
+      return response.internalServerError({
+        code: 500,
+        message: e.toString(),
+      })
+    }
+  }
+
+  // find All permissions of tenant from tenant database
+  async findPermssionsOfTenant({ request, response }: HttpContext) {
+    try {
+      await tenantConnectionPatch(request.input('db_name'))
+      db.primaryConnectionName = 'tenant'
+
+      let DQ = Permission.query()
+
+      const page = request.input('page')
+      const perPage = request.input('perPage')
+      let data
+
+      if (perPage) {
+        data = await DQ.paginate(page, perPage)
+      } else {
+        data = await DQ.select('*')
+      }
+
+      logger.info('find Permissions of tenant successfully!')
+
+      db.primaryConnectionName = 'mysql'
+
+      return response.ok({
+        code: 200,
+        data: data,
+        message: 'Record find successfully!',
+      })
+    } catch (e) {
+      console.log(e)
+      return response.internalServerError({
+        code: 500,
+        message: e.message,
+      })
+    }
+  }
+
+  async deletePermissionOfTenant({ request, response }: HttpContext) {
+    try {
+      await tenantConnectionPatch(request.input('db_name'))
+      db.primaryConnectionName = 'tenant'
+
+      const DQ = await Permission.findBy('id', request.param('permission_id'))
+      if (!DQ) {
+        return response.notFound({
+          code: 400,
+          message: 'Data not found',
+        })
+      }
+      await DQ.delete()
+
+      logger.info('delete Permission of tenant successfully!')
+
+      db.primaryConnectionName = 'mysql'
+
       return response.ok({
         code: 200,
         message: 'Deleted successfully!',
@@ -363,11 +614,12 @@ export default class TenantController {
     try {
       await tenantConnectionPatch(db_name)
       db.primaryConnectionName = 'tenant'
+
       const migrator = new MigrationRunner(db, app, {
         direction: 'up',
         dryRun: false,
       })
-      // console.log(migrator)
+
       await migrator.run()
       for (const migratedFile in migrator.migratedFiles) {
         const status =
