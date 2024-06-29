@@ -23,7 +23,6 @@ export default class extends BaseSchema {
       table.string('last_name').nullable()
       table.string('email').nullable()
       table.string('phone_number').nullable()
-      table.string('password').nullable()
       table.string('address').nullable()
       table.string('city').nullable()
       table.string('state').nullable()

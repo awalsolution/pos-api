@@ -11,11 +11,11 @@ import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
 const UploadController = () => import('#controllers/upload_controller')
 const AuthController = () => import('#controllers/auth_controller')
-const UserController = () => import('#controllers/admin/user_controller')
-const PermissionController = () => import('#controllers/admin/permission_controller')
-const RoleController = () => import('#controllers/admin/role_controller')
-const PlanController = () => import('#controllers/admin/plan_controller')
-const TenantController = () => import('#controllers/admin/tenant_controller')
+const UserController = () => import('#controllers/user_controller')
+const PermissionController = () => import('#controllers/permission_controller')
+const RoleController = () => import('#controllers/role_controller')
+const PlanController = () => import('#controllers/plan_controller')
+const TenantController = () => import('#controllers/tenant_controller')
 
 router.get('/', async ({ response }) => {
   response.ok({
@@ -24,11 +24,13 @@ router.get('/', async ({ response }) => {
   })
 })
 
+router.post('/api/v1/tenant-register', [AuthController, 'tenantRegister'])
 router.post('/api/v1/upload', [UploadController, 'imageUploader'])
 router.get('/api/v1/verify-domain/:name', [AuthController, 'verifyDomainName'])
 
 router
   .group(() => {
+    // user routes
     router
       .group(() => {
         router.post('/login', [AuthController, 'login'])
@@ -41,7 +43,7 @@ router
           .use(middleware.auth({ guards: ['api'] }))
       })
       .prefix('/auth')
-
+    // user routes
     router
       .group(() => {
         router.get('/', [UserController, 'index'])
@@ -55,7 +57,7 @@ router
       })
       .use(middleware.auth({ guards: ['api'] }))
       .prefix('/user')
-
+    // roles routes
     router
       .group(() => {
         router.get('/', [RoleController, 'index'])
@@ -67,7 +69,7 @@ router
       })
       .use(middleware.auth({ guards: ['api'] }))
       .prefix('/role')
-
+    // permissions routes
     router
       .group(() => {
         router.get('/', [PermissionController, 'index'])
@@ -78,7 +80,7 @@ router
       })
       .use(middleware.auth({ guards: ['api'] }))
       .prefix('/permission')
-
+    // tenant routes
     router
       .group(() => {
         router.get('/', [TenantController, 'index'])

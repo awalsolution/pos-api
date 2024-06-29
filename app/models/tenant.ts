@@ -31,18 +31,6 @@ export default class Tenant extends BaseModel {
   declare created_by: string | null
 
   @column()
-  declare address: string | null
-
-  @column()
-  declare city: string | null
-
-  @column()
-  declare state: string | null
-
-  @column()
-  declare country: string | null
-
-  @column()
   declare first_name: string
 
   @column()
@@ -54,8 +42,17 @@ export default class Tenant extends BaseModel {
   @column()
   declare phone_number: string | null
 
-  @column({ serializeAs: null })
-  declare password: string | null
+  @column()
+  declare address: string | null
+
+  @column()
+  declare city: string | null
+
+  @column()
+  declare state: string | null
+
+  @column()
+  declare country: string | null
 
   @column.dateTime({
     autoCreate: true,

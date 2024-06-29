@@ -1,16 +1,15 @@
-import app from '@adonisjs/core/services/app'
 import db from '@adonisjs/lucid/services/db'
 import logger from '@adonisjs/core/services/logger'
 import { HttpContext } from '@adonisjs/core/http'
-import { MigrationRunner } from '@adonisjs/lucid/migration'
 import { cuid } from '@adonisjs/core/helpers'
 import { tenantConnectionPatch } from '#services/db_connection_switcher_service'
+import { BaseController } from '#controllers/base_controller'
 import Tenant from '#models/tenant'
 import Permission from '#models/permission'
 import Role from '#models/role'
 import User from '#models/user'
 
-export default class TenantController {
+export default class TenantController extends BaseController {
   async index({ request, response }: HttpContext) {
     let DQ = Tenant.query()
 
@@ -88,7 +87,11 @@ export default class TenantController {
               logger.info(`Permissions Inserted into tenant database: ${dbName} Successfully!`)
             }
           } else {
-            console.log('Something went wrong! Permissions not insert successfully!')
+            logger.error('Something went wrong! Permissions not insert successfully!')
+            return response.badRequest({
+              code: 400,
+              message: 'Something went wrong! User not insert successfully!',
+            })
           }
           let createdRole: any = []
           if (request.body().roles) {
@@ -102,7 +105,11 @@ export default class TenantController {
               )
             }
           } else {
-            console.log('Something went wrong! Roles not insert successfully!')
+            logger.error('Something went wrong! Roles not insert successfully!')
+            return response.badRequest({
+              code: 400,
+              message: 'Something went wrong! Roles not insert successfully!',
+            })
           }
 
           if (request.body().email) {
@@ -129,7 +136,11 @@ export default class TenantController {
               `${createdRole.name} Assign to admin user into tenant database: ${dbName} Successfully!`
             )
           } else {
-            console.log('Something went wrong! User not insert successfully!')
+            logger.error('Something went wrong! User not insert successfully!')
+            return response.badRequest({
+              code: 400,
+              message: 'Something went wrong! User not insert successfully!',
+            })
           }
 
           db.primaryConnectionName = 'mysql'
@@ -151,7 +162,6 @@ export default class TenantController {
           DM.last_name = request.body().last_name
           DM.email = request.body().email
           DM.phone_number = request.body().phone_number
-          DM.password = request.body().password
 
           const DQ = await DM.save()
 
@@ -162,19 +172,19 @@ export default class TenantController {
             message: 'Created successfully!',
             data: DQ,
           })
-        } catch (error) {
-          logger.error(error)
-          return response.conflict({
-            code: 409,
-            message: error.toString(),
+        } catch (e) {
+          logger.error('Something went wrong!', e.toString())
+          return response.badRequest({
+            code: 400,
+            message: `Something went wrong! ${e.toString()}`,
           })
         }
       }
     } catch (e) {
-      console.log(e)
+      logger.error('Something went wrong!', e.toString())
       return response.internalServerError({
         code: 500,
-        message: e.toString(),
+        message: `Something went wrong! ${e.toString()}`,
       })
     }
   }
@@ -211,7 +221,7 @@ export default class TenantController {
         data: DQ,
       })
     } catch (e) {
-      console.log(e)
+      logger.error('Something went wrong!', e.toString())
       return response.internalServerError({
         code: 500,
         message: e.message,
@@ -258,7 +268,7 @@ export default class TenantController {
         data: { permissions: perm, users: users, roles: roles },
       })
     } catch (e) {
-      console.log(e)
+      logger.error('Something went wrong!', e.toString())
       return response.internalServerError({
         code: 500,
         message: e.message,
@@ -285,7 +295,7 @@ export default class TenantController {
         data: { permissions: perm, role: role },
       })
     } catch (e) {
-      console.log(e)
+      logger.error('Something went wrong!', e.toString())
       return response.internalServerError({
         code: 500,
         message: e.message,
@@ -317,7 +327,7 @@ export default class TenantController {
         data: DQ,
       })
     } catch (e) {
-      console.log(e)
+      logger.error('Something went wrong!', e.toString())
       return response.internalServerError({
         code: 500,
         message: e.message,
@@ -342,7 +352,7 @@ export default class TenantController {
         data: DQ,
       })
     } catch (e) {
-      console.log(e)
+      logger.error('Something went wrong!', e.toString())
       return response.internalServerError({
         code: 500,
         message: e.toString(),
@@ -380,7 +390,7 @@ export default class TenantController {
         data: DQ,
       })
     } catch (e) {
-      console.log(e)
+      logger.error('Something went wrong!', e.toString())
       return response.internalServerError({
         code: 500,
         message: e.message,
@@ -426,7 +436,7 @@ export default class TenantController {
         data: data,
       })
     } catch (e) {
-      console.log(e)
+      logger.error('Something went wrong!', e.toString())
       return response.internalServerError({
         code: 500,
         message: e.toString(),
@@ -454,7 +464,7 @@ export default class TenantController {
         message: 'Record find successfully!',
       })
     } catch (e) {
-      console.log(e)
+      logger.error('Something went wrong!', e.toString())
       return response.internalServerError({
         code: 500,
         message: e.message,
@@ -486,7 +496,7 @@ export default class TenantController {
         message: 'Deleted successfully!',
       })
     } catch (e) {
-      console.log(e)
+      logger.error('Something went wrong!', e.toString())
       return response.internalServerError({
         code: 500,
         message: e.message,
@@ -527,7 +537,7 @@ export default class TenantController {
         data: data,
       })
     } catch (e) {
-      console.log(e)
+      logger.error('Something went wrong!', e.toString())
       return response.internalServerError({
         code: 500,
         message: e.toString(),
@@ -563,7 +573,7 @@ export default class TenantController {
         message: 'Record find successfully!',
       })
     } catch (e) {
-      console.log(e)
+      logger.error('Something went wrong!', e.toString())
       return response.internalServerError({
         code: 500,
         message: e.message,
@@ -594,45 +604,11 @@ export default class TenantController {
         message: 'Deleted successfully!',
       })
     } catch (e) {
-      console.log(e)
+      logger.error('Something went wrong!', e.toString())
       return response.internalServerError({
         code: 500,
         message: e.message,
       })
-    }
-  }
-
-  async createDatabase(db_name: string): Promise<boolean> {
-    return db.rawQuery(`CREATE DATABASE ${db_name}`)
-  }
-
-  async deleteDatabase(db_name: string): Promise<boolean> {
-    return db.rawQuery(`DROP DATABASE ${db_name}`)
-  }
-
-  async dealsWithMigrations(db_name: string) {
-    try {
-      await tenantConnectionPatch(db_name)
-      db.primaryConnectionName = 'tenant'
-
-      const migrator = new MigrationRunner(db, app, {
-        direction: 'up',
-        dryRun: false,
-      })
-
-      await migrator.run()
-      for (const migratedFile in migrator.migratedFiles) {
-        const status =
-          migrator.migratedFiles[migratedFile].status === 'completed'
-            ? 'migrated'
-            : migrator.migratedFiles[migratedFile].status
-        logger.info(`[${status}] ==> [${migrator.migratedFiles[migratedFile].file.name}]`)
-      }
-
-      return true
-    } catch (error) {
-      console.error('An error occurred during migration:', error)
-      return false
     }
   }
 }
