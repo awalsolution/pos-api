@@ -189,8 +189,9 @@ export default class TenantController extends BaseController {
     }
   }
 
-  async update({ request, response }: HttpContext) {
+  async update({ auth, request, response }: HttpContext) {
     try {
+      const currentUser = auth.user!
       const DQ = await Tenant.findBy('id', request.param('id'))
       if (!DQ) {
         return response.notFound({
@@ -213,6 +214,7 @@ export default class TenantController extends BaseController {
       DQ.planId = request.body().plan_id || 1
       DQ.domain_name = request.body().domain_name
       DQ.status = request.body().status
+      DQ.created_by = currentUser?.profile?.first_name! + ' ' + currentUser?.profile?.last_name
 
       await DQ.save()
       return response.ok({

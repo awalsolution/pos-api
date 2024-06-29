@@ -189,6 +189,13 @@ export default class AuthController extends BaseController {
         })
       }
 
+      if (DQ && !DQ.status) {
+        return response.badRequest({
+          code: 400,
+          message: `Domain ${request.param('name')} is unverified! Please contact with Support!`,
+        })
+      }
+
       return response.ok({
         code: 200,
         message: 'Record find successfully!',
