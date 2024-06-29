@@ -35,7 +35,7 @@ export default class UploadController extends BaseController {
         const tenantPath = `uploads/tenant_${tenantId.id}`
 
         const movePath = app.inProduction
-          ? app.makePath(`../${tenantPath}`)
+          ? app.makePath(`../../${tenantPath}`)
           : app.makePath(`../../../local-images-drive/awal-bucket/${tenantPath}`)
 
         await img.move(movePath, { name: newImg })
@@ -45,7 +45,7 @@ export default class UploadController extends BaseController {
         const adminPath = 'uploads/admin'
 
         const movePath = app.inProduction
-          ? app.makePath(`../${adminPath}`)
+          ? app.makePath(`../../${adminPath}`)
           : app.makePath(`../../../local-images-drive/awal-bucket/${adminPath}`)
 
         await img.move(movePath, { name: newImg })
