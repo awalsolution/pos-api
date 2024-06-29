@@ -1,8 +1,12 @@
 import type { HttpContext } from '@adonisjs/core/http'
+import { cuid } from '@adonisjs/core/helpers'
+import { BaseController } from '#controllers/base_controller'
 import User from '#models/user'
 import Tenant from '#models/tenant'
+import logger from '@adonisjs/core/services/logger'
+import db from '@adonisjs/lucid/services/db'
 
-export default class AuthController {
+export default class AuthController extends BaseController {
   async register({ request, response }: HttpContext) {
     try {
       let DE = await User.findBy('email', request.body().email)
@@ -85,6 +89,92 @@ export default class AuthController {
       message: 'Logout successfully!',
     })
   }
+  async tenantRegister({ request, response }: HttpContext) {
+    try {
+      // db name generation
+      const dbName: string = `tenant_${cuid()}_db`
+
+      const DE = await Tenant.findBy('tenant_name', request.body().tenant_name)
+
+      if (DE) {
+        return response.conflict({
+          code: 409,
+          message: `This Organization ${request.body().tenant_name} already exists!`,
+        })
+      } else {
+        try {
+          await this.createDatabase(dbName)
+          logger.info(`Database: ${dbName} created Successfully!`)
+          await this.dealsWithMigrations(dbName)
+
+          if (request.body().email) {
+            const user = new User()
+
+            user.email = request.body().email
+            user.password = request.body().password
+
+            await user.save()
+
+            logger.info(`Admin User Inserted into tenant database: ${dbName} Successfully!`)
+
+            await user.related('profile').create({
+              first_name: request.body().first_name,
+              last_name: request.body().last_name,
+              phone_number: request.body().phone_number,
+              address: request.body().address,
+              city: request.body().city,
+              state: request.body().state,
+              country: request.body().country,
+            })
+          } else {
+            logger.error('Something went wrong! User not insert successfully!')
+            return response.badRequest({
+              code: 400,
+              message: 'Something went wrong! User not insert successfully!',
+            })
+          }
+
+          db.primaryConnectionName = 'mysql'
+
+          const DM = new Tenant()
+
+          DM.db_name = dbName
+          DM.tenant_name = request.body().tenant_name
+          DM.tenant_api_key = `tenant_${cuid()}_key`
+          DM.first_name = request.body().first_name
+          DM.last_name = request.body().last_name
+          DM.email = request.body().email
+          DM.phone_number = request.body().phone_number
+          DM.address = request.body().address
+          DM.city = request.body().city
+          DM.state = request.body().state
+          DM.country = request.body().country
+
+          const DQ = await DM.save()
+
+          logger.info(`Tenant Created Successfully! with id: ${DQ.id} and Domain:${DQ.domain_name}`)
+
+          return response.ok({
+            code: 200,
+            message: 'Created successfully!',
+            data: DQ,
+          })
+        } catch (error) {
+          logger.error(error)
+          return response.badRequest({
+            code: 409,
+            message: error.toString(),
+          })
+        }
+      }
+    } catch (e) {
+      console.log(e)
+      return response.internalServerError({
+        code: 500,
+        message: e.toString(),
+      })
+    }
+  }
 
   async verifyDomainName({ request, response }: HttpContext) {
     try {
@@ -96,6 +186,13 @@ export default class AuthController {
         return response.notFound({
           code: 400,
           message: `Domain ${request.param('name')} does not exists!`,
+        })
+      }
+
+      if (DQ && !DQ.status) {
+        return response.badRequest({
+          code: 400,
+          message: `Domain ${request.param('name')} is unverified! Please contact with Support!`,
         })
       }
 
