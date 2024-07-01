@@ -6,6 +6,7 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').notNullable()
+      table.integer('agency_id').unsigned().nullable().references('agencies.id');
       table.string('email').notNullable().unique()
       table.string('password').notNullable()
       table.boolean('status').notNullable().defaultTo(true)

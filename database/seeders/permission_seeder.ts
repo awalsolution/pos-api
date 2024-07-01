@@ -104,6 +104,46 @@ export default class extends BaseSeeder {
         name: 'role assign permission',
         type: 'public',
       },
+      {
+        name: 'agencies menu',
+        type: 'public',
+      },
+      {
+        name: 'agency create',
+        type: 'public',
+      },
+      {
+        name: 'agency update',
+        type: 'public',
+      },
+      {
+        name: 'agency delete',
+        type: 'public',
+      },
+      {
+        name: 'bookings menu',
+        type: 'public',
+      },
+      {
+        name: 'bookings list',
+        type: 'public',
+      },
+      {
+        name: 'booking create',
+        type: 'public',
+      },
+      {
+        name: 'booking update',
+        type: 'public',
+      },
+      {
+        name: 'booking delete',
+        type: 'public',
+      },
+      {
+        name: 'booking print',
+        type: 'public',
+      },
     ])
   }
 }
