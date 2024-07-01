@@ -16,10 +16,19 @@ export default class Tenant extends BaseModel {
   declare domain_name: string
 
   @column()
+  declare tenant_name: string
+
+  @column()
   declare db_name: string
 
   @column()
   declare tenant_api_key: string
+
+  @column()
+  declare status: boolean
+
+  @column()
+  declare created_by: string | null
 
   @column()
   declare first_name: string
@@ -34,13 +43,16 @@ export default class Tenant extends BaseModel {
   declare phone_number: string | null
 
   @column()
-  declare password: string | null
+  declare address: string | null
 
   @column()
-  declare status: boolean
+  declare city: string | null
 
   @column()
-  declare created_by: string | null
+  declare state: string | null
+
+  @column()
+  declare country: string | null
 
   @column.dateTime({
     autoCreate: true,
