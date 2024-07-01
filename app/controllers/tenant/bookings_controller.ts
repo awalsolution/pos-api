@@ -1,7 +1,6 @@
+import { DateTime } from 'luxon'
 import { HttpContext } from '@adonisjs/core/http'
 import Bookings from '#models/tenant/bookings'
-import Agencies from "#models/tenant/agencies";
-import {DateTime} from "luxon";
 
 export default class BookingsController {
   async index({ request, response }: HttpContext) {
@@ -29,20 +28,17 @@ export default class BookingsController {
     }
   }
 
-  async create({ auth, request, response }: HttpContext) {
+  async create({ request, response }: HttpContext) {
     try {
-      const currentUser = auth.user!
       const DM = new Bookings()
-      DM.customerName = request.body().customer_name;
-      DM.status = request.body().status;
-      DM.group_no = request.body().group_no;
-      DM.group_name = request.body().group_name;
-      DM.category = request.body().category;
-      DM.approvalDate =  DateTime.fromJSDate(new Date(request.body().approval_date));
-      DM.expectedDeparture = DateTime.fromJSDate(
-        new Date(request.body().expected_departure)
-      );
-      await DM.save();
+      DM.customerName = request.body().customer_name
+      DM.status = request.body().status
+      DM.group_no = request.body().group_no
+      DM.group_name = request.body().group_name
+      DM.category = request.body().category
+      DM.approvalDate = DateTime.fromJSDate(new Date(request.body().approval_date))
+      DM.expectedDeparture = DateTime.fromJSDate(new Date(request.body().expected_departure))
+      await DM.save()
 
       const DQ = await DM.save()
       return response.ok({

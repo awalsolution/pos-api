@@ -11,12 +11,12 @@ import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
 const UploadController = () => import('#controllers/upload_controller')
 const AuthController = () => import('#controllers/auth_controller')
-const UserController = () => import('#controllers/admin/user_controller')
-const PermissionController = () => import('#controllers/admin/permission_controller')
-const RoleController = () => import('#controllers/admin/role_controller')
-const PlanController = () => import('#controllers/admin/plan_controller')
+const UserController = () => import('#controllers/user_controller')
+const PermissionController = () => import('#controllers/permission_controller')
+const RoleController = () => import('#controllers/role_controller')
+const PlanController = () => import('#controllers/plan_controller')
 const AgencyController = () => import('#controllers/tenant/agencies_controller')
-const TenantController = () => import('#controllers/admin/tenant_controller')
+const TenantController = () => import('#controllers/tenant_controller')
 const BookingsController = () => import('#controllers/tenant/bookings_controller')
 
 router.get('/', async ({ response }) => {
@@ -140,7 +140,6 @@ router
         router.get('/', [BookingsController, 'index'])
         router.post('/', [BookingsController, 'create'])
         router.get('/:id', [BookingsController, 'show'])
-        router.put('/:id', [BookingsController, 'update'])
         router.delete('/:id', [BookingsController, 'destroy'])
       })
       .use(middleware.auth({ guards: ['api'] }))
