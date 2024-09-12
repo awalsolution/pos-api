@@ -15,6 +15,12 @@ export default class Permission extends BaseModel {
   @column()
   declare type: string
 
+  @column()
+  declare status: boolean
+
+  @column()
+  declare created_by: string | null
+
   @column.dateTime({
     autoCreate: true,
     serialize: (value) => value?.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY),

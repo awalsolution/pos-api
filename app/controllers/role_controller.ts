@@ -51,8 +51,9 @@ export default class RoleController {
     }
   }
 
-  async create({ request, response }: HttpContext) {
+  async create({ auth, request, response }: HttpContext) {
     try {
+      const currentUser = auth.user!
       const DE = await Role.findBy('name', request.body().name)
 
       if (DE) {
@@ -64,7 +65,9 @@ export default class RoleController {
 
       const DM = new Role()
 
-      DM.name = request.input('name')
+      DM.name = request.body().name
+      DM.status = request.body().status
+      DM.created_by = currentUser?.profile?.first_name! + ' ' + currentUser?.profile?.last_name
 
       const DQ = await DM.save()
       return response.ok({
@@ -81,8 +84,9 @@ export default class RoleController {
     }
   }
 
-  async update({ request, response }: HttpContext) {
+  async update({ auth, request, response }: HttpContext) {
     try {
+      const currentUser = auth.user!
       const DQ = await Role.findBy('id', request.param('id'))
       if (!DQ) {
         return response.notFound({
@@ -103,6 +107,8 @@ export default class RoleController {
       }
 
       DQ.name = request.body().name
+      DQ.status = request.body().status
+      DQ.created_by = currentUser?.profile?.first_name! + ' ' + currentUser?.profile?.last_name
 
       await DQ.save()
       return response.ok({

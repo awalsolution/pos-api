@@ -78,8 +78,9 @@ export default class UserController extends BaseController {
     }
   }
 
-  async create({ request, response }: HttpContext) {
+  async create({ auth, request, response }: HttpContext) {
     try {
+      const currentUser = auth.user!
       let DE = await User.findBy('email', request.body().email)
       if (DE && !DE.is_email_verified) {
         delete DE.$attributes.password
@@ -93,8 +94,9 @@ export default class UserController extends BaseController {
       const DM = new User()
 
       DM.email = request.body().email
-      DM.status = request.body().status
       DM.password = request.body().password
+      DM.status = request.body().status
+      DM.created_by = currentUser?.profile?.first_name! + ' ' + currentUser?.profile?.last_name
 
       await DM.save()
 

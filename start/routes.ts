@@ -56,7 +56,7 @@ router
         router.delete('/:id', [UserController, 'destroy'])
       })
       .use(middleware.auth({ guards: ['api'] }))
-      .prefix('/user')
+      .prefix('/users')
     // roles routes
     router
       .group(() => {
@@ -68,7 +68,7 @@ router
         router.delete('/:id', [RoleController, 'destroy'])
       })
       .use(middleware.auth({ guards: ['api'] }))
-      .prefix('/role')
+      .prefix('/roles')
     // permissions routes
     router
       .group(() => {
@@ -79,7 +79,7 @@ router
         router.delete('/:id', [PermissionController, 'destroy'])
       })
       .use(middleware.auth({ guards: ['api'] }))
-      .prefix('/permission')
+      .prefix('/permissions')
     // tenant routes
     router
       .group(() => {
@@ -111,7 +111,7 @@ router
         ])
       })
       .use(middleware.auth({ guards: ['api'] }))
-      .prefix('/tenant')
+      .prefix('/tenants')
 
     router
       .group(() => {
@@ -122,7 +122,7 @@ router
         router.delete('/:id', [PlanController, 'destroy'])
       })
       .use(middleware.auth({ guards: ['api'] }))
-      .prefix('/plan')
+      .prefix('/plans')
   })
   .use(middleware.tenant())
   .prefix('/api/v1')

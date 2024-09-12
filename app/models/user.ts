@@ -55,6 +55,9 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column()
   declare phone_verified_at: DateTime
 
+  @column()
+  declare created_by: string | null
+
   @column.dateTime({
     autoCreate: true,
     serialize: (value) => value?.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY),

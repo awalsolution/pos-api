@@ -14,6 +14,7 @@ export default class extends BaseSchema {
       table.datetime('email_verified_at').nullable()
       table.boolean('is_phone_verified').notNullable().defaultTo(false)
       table.datetime('phone_verified_at').nullable()
+      table.string('created_by').nullable()
 
       table.timestamp('created_at').notNullable()
       table.timestamp('updated_at').nullable()

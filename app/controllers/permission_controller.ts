@@ -14,10 +14,14 @@ export default class PermissionController {
         DQ = DQ.whereILike('name', request.input('name') + '%')
       }
 
+      if (request.input('type')) {
+        DQ = DQ.whereILike('type', request.input('type') + '%')
+      }
+
       if (perPage) {
         return response.ok({
           code: 200,
-          data: await DQ.paginate(page, perPage),
+          data: await DQ.orderBy('created_at', 'desc').paginate(page, perPage),
           message: 'Record find successfully!',
         })
       } else {
