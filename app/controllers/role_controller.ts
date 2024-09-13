@@ -15,13 +15,13 @@ export default class RoleController {
     if (perPage) {
       return response.ok({
         code: 200,
-        data: await DQ.preload('permissions').paginate(page, perPage),
+        data: await DQ.preload('permissions').orderBy('created_at', 'desc').paginate(page, perPage),
         message: 'Record find successfully!',
       })
     } else {
       return response.ok({
         code: 200,
-        data: await DQ.preload('permissions'),
+        data: await DQ.preload('permissions').orderBy('created_at', 'desc'),
         message: 'Record find successfully!',
       })
     }

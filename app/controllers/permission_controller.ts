@@ -27,7 +27,7 @@ export default class PermissionController {
       } else {
         return response.ok({
           code: 200,
-          data: await DQ.select('*'),
+          data: await DQ.orderBy('created_at', 'desc').select('*'),
           message: 'Record find successfully!',
         })
       }

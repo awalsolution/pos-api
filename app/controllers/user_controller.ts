@@ -31,6 +31,7 @@ export default class UserController extends BaseController {
               PQ.preload('permissions')
             })
             .preload('profile')
+            .orderBy('created_at', 'desc')
             .paginate(page, perPage),
           message: 'Record find successfully!',
         })
@@ -42,7 +43,8 @@ export default class UserController extends BaseController {
             .preload('roles', (PQ) => {
               PQ.preload('permissions')
             })
-            .preload('profile'),
+            .preload('profile')
+            .orderBy('created_at', 'desc'),
         })
       }
     } catch (e) {
@@ -100,7 +102,7 @@ export default class UserController extends BaseController {
 
       await DM.save()
 
-      DM.related('roles').sync(request.body().role_id)
+      DM.related('roles').sync(request.body().roles)
 
       DM.related('profile').create({
         first_name: request.body().first_name,

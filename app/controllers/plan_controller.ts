@@ -15,13 +15,13 @@ export default class PlanController {
     if (perPage) {
       return response.ok({
         code: 200,
-        data: await DQ.paginate(page, perPage),
+        data: await DQ.orderBy('created_at', 'desc').paginate(page, perPage),
         message: 'Record find successfully!',
       })
     } else {
       return response.ok({
         code: 200,
-        data: await DQ.preload('tenants'),
+        data: await DQ.orderBy('created_at', 'desc').preload('tenants'),
         message: 'Record find successfully!',
       })
     }

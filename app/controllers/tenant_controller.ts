@@ -23,7 +23,7 @@ export default class TenantController extends BaseController {
     if (perPage) {
       return response.ok({
         code: 200,
-        data: await DQ.preload('plan').paginate(page, perPage),
+        data: await DQ.preload('plan').orderBy('created_at', 'desc').paginate(page, perPage),
         message: 'Record find successfully!',
       })
     } else {
