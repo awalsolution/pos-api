@@ -67,7 +67,7 @@ export default class RoleController {
 
       DM.name = request.body().name
       DM.status = request.body().status
-      DM.created_by = currentUser?.profile?.first_name! + ' ' + currentUser?.profile?.last_name
+      DM.created_by = currentUser?.profile?.name
 
       const DQ = await DM.save()
       return response.ok({
@@ -108,7 +108,7 @@ export default class RoleController {
 
       DQ.name = request.body().name
       DQ.status = request.body().status
-      DQ.created_by = currentUser?.profile?.first_name! + ' ' + currentUser?.profile?.last_name
+      DQ.created_by = currentUser?.profile?.name
 
       await DQ.save()
       return response.ok({

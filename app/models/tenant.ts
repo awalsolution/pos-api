@@ -31,10 +31,7 @@ export default class Tenant extends BaseModel {
   declare created_by: string | null
 
   @column()
-  declare first_name: string
-
-  @column()
-  declare last_name: string | null
+  declare name: string
 
   @column()
   declare email: string | null

@@ -70,7 +70,7 @@ export default class PlanController {
       DM.price = request.body().price
       DM.description = request.body().description
       DM.status = request.body().status
-      DM.created_by = currentUser?.profile?.first_name! + currentUser?.profile?.last_name
+      DM.created_by = currentUser?.profile?.name
 
       const DQ = await DM.save()
       return response.ok({
@@ -114,8 +114,7 @@ export default class PlanController {
       DQ.price = request.body().price
       DQ.description = request.body().description
       DQ.status = request.body().status
-      DQ.created_by = currentUser?.profile?.first_name! + currentUser?.profile?.last_name
-
+      DQ.created_by = currentUser?.profile?.name
       await DQ.save()
       return response.ok({
         code: 200,

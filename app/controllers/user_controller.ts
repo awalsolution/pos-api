@@ -11,9 +11,8 @@ export default class UserController extends BaseController {
       const page = request.input('page')
       const perPage = request.input('perPage')
 
-      // name filter
-      if (request.input('name')) {
-        DQ = DQ.whereILike('email', request.input('name') + '%')
+      if (request.input('email')) {
+        DQ = DQ.whereILike('email', request.input('email') + '%')
       }
 
       if (!DQ) {
@@ -98,15 +97,14 @@ export default class UserController extends BaseController {
       DM.email = request.body().email
       DM.password = request.body().password
       DM.status = request.body().status
-      DM.created_by = currentUser?.profile?.first_name! + ' ' + currentUser?.profile?.last_name
+      DM.created_by = currentUser?.profile?.name!
 
       await DM.save()
 
       DM.related('roles').sync(request.body().roles)
 
       DM.related('profile').create({
-        first_name: request.body().first_name,
-        last_name: request.body().last_name,
+        name: request.body().name,
         phone_number: request.body().phone_number,
       })
 
@@ -179,8 +177,7 @@ export default class UserController extends BaseController {
     DQ.related('profile').updateOrCreate(
       {},
       {
-        first_name: request.body().first_name,
-        last_name: request.body().last_name,
+        name: request.body().name,
         phone_number: request.body().phone_number,
         address: request.body().address,
         city: request.body().city,

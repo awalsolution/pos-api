@@ -26,8 +26,7 @@ export default class AuthController extends BaseController {
       await user.save()
 
       user.related('profile').create({
-        first_name: request.body().first_name,
-        last_name: request.body().last_name,
+        name: request.body().name,
         phone_number: request.body().phone_number,
       })
 
@@ -118,8 +117,7 @@ export default class AuthController extends BaseController {
             logger.info(`Admin User Inserted into tenant database: ${dbName} Successfully!`)
 
             await user.related('profile').create({
-              first_name: request.body().first_name,
-              last_name: request.body().last_name,
+              name: request.body().name,
               phone_number: request.body().phone_number,
               address: request.body().address,
               city: request.body().city,
@@ -141,8 +139,7 @@ export default class AuthController extends BaseController {
           DM.db_name = dbName
           DM.tenant_name = request.body().tenant_name
           DM.tenant_api_key = `tenant_${cuid()}_key`
-          DM.first_name = request.body().first_name
-          DM.last_name = request.body().last_name
+          DM.name = request.body().name
           DM.email = request.body().email
           DM.phone_number = request.body().phone_number
           DM.address = request.body().address

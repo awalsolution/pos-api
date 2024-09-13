@@ -6,7 +6,6 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').notNullable()
-      table.integer('agency_id').unsigned().nullable().references('agencies.id');
       table.string('email').notNullable().unique()
       table.string('password').notNullable()
       table.boolean('status').notNullable().defaultTo(true)
@@ -15,6 +14,7 @@ export default class extends BaseSchema {
       table.datetime('email_verified_at').nullable()
       table.boolean('is_phone_verified').notNullable().defaultTo(false)
       table.datetime('phone_verified_at').nullable()
+      table.string('created_by').nullable()
 
       table.timestamp('created_at').notNullable()
       table.timestamp('updated_at').nullable()

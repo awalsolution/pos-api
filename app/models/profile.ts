@@ -13,10 +13,7 @@ export default class Profile extends BaseModel {
   declare userId: number | null
 
   @column()
-  declare first_name: string | null
-
-  @column()
-  declare last_name: string | null
+  declare name: string | null
 
   @column()
   declare phone_number: string | null

@@ -6,8 +6,7 @@ export default class extends BaseSeeder {
     await Profile.createMany([
       {
         userId: 1,
-        first_name: 'Iqbal',
-        last_name: 'Hassan',
+        name: 'Iqbal Hassan',
         phone_number: '12345678',
         address: 'DHA Phase 5',
         city: 'Lahore',
@@ -17,8 +16,7 @@ export default class extends BaseSeeder {
       },
       {
         userId: 2,
-        first_name: 'Jawad',
-        last_name: 'Ali',
+        name: 'Jawad Ali',
         phone_number: '12345678',
         address: 'DHA Phase 5',
         city: 'Lahore',

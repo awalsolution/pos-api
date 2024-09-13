@@ -62,8 +62,9 @@ export default class PermissionController {
     }
   }
 
-  async create({ request, response }: HttpContext) {
+  async create({ auth, request, response }: HttpContext) {
     try {
+      const currentUser = auth.user!
       const DE = await Permission.findBy('name', request.body().name)
       if (DE) {
         return response.conflict({
@@ -74,6 +75,9 @@ export default class PermissionController {
       const DM = new Permission()
 
       DM.name = request.body().name
+      DM.type = request.body().type
+      DM.status = request.body().status
+      DM.created_by = currentUser?.profile?.name
 
       const DQ = await DM.save()
       return response.ok({
@@ -90,8 +94,9 @@ export default class PermissionController {
     }
   }
 
-  async update({ request, response }: HttpContext) {
+  async update({ auth, request, response }: HttpContext) {
     try {
+      const currentUser = auth.user!
       const DQ = await Permission.findBy('id', request.param('id'))
       if (!DQ) {
         return response.notFound({
@@ -112,6 +117,9 @@ export default class PermissionController {
       }
 
       DQ.name = request.body().name
+      DQ.type = request.body().type
+      DQ.status = request.body().status
+      DQ.created_by = currentUser?.profile?.name
 
       await DQ.save()
       return response.ok({

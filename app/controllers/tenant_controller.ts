@@ -123,8 +123,7 @@ export default class TenantController extends BaseController {
             logger.info(`Admin User Inserted into tenant database: ${dbName} Successfully!`)
 
             await user.related('profile').create({
-              first_name: request.body().first_name,
-              last_name: request.body().last_name,
+              name: request.body().name,
               phone_number: request.body().phone_number,
               address: request.body().address,
               city: request.body().city,
@@ -153,13 +152,12 @@ export default class TenantController extends BaseController {
           DM.tenant_name = request.body().tenant_name
           DM.tenant_api_key = `tenant_${cuid()}_key`
           DM.status = request.body().status
-          DM.created_by = currentUser?.profile?.first_name! + ' ' + currentUser?.profile?.last_name
+          DM.created_by = currentUser?.profile?.name
           DM.address = request.body().address
           DM.city = request.body().city
           DM.state = request.body().state
           DM.country = request.body().country
-          DM.first_name = request.body().first_name
-          DM.last_name = request.body().last_name
+          DM.name = request.body().name
           DM.email = request.body().email
           DM.phone_number = request.body().phone_number
 
@@ -214,7 +212,7 @@ export default class TenantController extends BaseController {
       DQ.planId = request.body().plan_id || 1
       DQ.domain_name = request.body().domain_name
       DQ.status = request.body().status
-      DQ.created_by = currentUser?.profile?.first_name! + ' ' + currentUser?.profile?.last_name
+      DQ.created_by = currentUser?.profile?.name
 
       await DQ.save()
       return response.ok({
