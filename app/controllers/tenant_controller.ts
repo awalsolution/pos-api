@@ -115,24 +115,23 @@ export default class TenantController extends BaseController {
           if (request.body().email) {
             const user = new User()
 
+            user.name = request.body().name
             user.email = request.body().email
             user.password = request.body().password
             user.status = request.body().status
+            user.phone_number = request.body().phone_number
+            user.address = request.body().address
+            user.city = request.body().city
+            user.state = request.body().state
+            user.country = request.body().country
+            user.created_by = currentUser?.name
 
             await user.save()
-            logger.info(`Admin User Inserted into tenant database: ${dbName} Successfully!`)
+            logger.info(`Admin User Inserted into tenant database: ${dbName} successfully!`)
 
-            await user.related('profile').create({
-              name: request.body().name,
-              phone_number: request.body().phone_number,
-              address: request.body().address,
-              city: request.body().city,
-              state: request.body().state,
-              country: request.body().country,
-            })
             await user.related('roles').sync([createdRole.id])
             logger.info(
-              `${createdRole.name} Assign to admin user into tenant database: ${dbName} Successfully!`
+              `${createdRole.name} Assign to admin user into tenant database: ${dbName} successfully!`
             )
           } else {
             logger.error('Something went wrong! User not insert successfully!')
@@ -152,7 +151,7 @@ export default class TenantController extends BaseController {
           DM.tenant_name = request.body().tenant_name
           DM.tenant_api_key = `tenant_${cuid()}_key`
           DM.status = request.body().status
-          DM.created_by = currentUser?.profile?.name
+          DM.created_by = currentUser?.name
           DM.address = request.body().address
           DM.city = request.body().city
           DM.state = request.body().state
@@ -163,7 +162,7 @@ export default class TenantController extends BaseController {
 
           const DQ = await DM.save()
 
-          logger.info(`Tenant Created Successfully! with id: ${DQ.id} and Domain:${DQ.domain_name}`)
+          logger.info(`Tenant created Successfully! with id: ${DQ.id} and domain:${DQ.domain_name}`)
 
           return response.ok({
             code: 200,
@@ -205,14 +204,14 @@ export default class TenantController extends BaseController {
       if (DE) {
         return response.conflict({
           code: 409,
-          message: 'Record already exist!',
+          message: 'Already exist!',
         })
       }
 
       DQ.planId = request.body().plan_id || 1
       DQ.domain_name = request.body().domain_name
       DQ.status = request.body().status
-      DQ.created_by = currentUser?.profile?.name
+      DQ.created_by = currentUser?.name
 
       await DQ.save()
       return response.ok({
@@ -230,18 +229,27 @@ export default class TenantController extends BaseController {
   }
 
   async destroy({ request, response }: HttpContext) {
-    const DQ = await Tenant.findBy('id', request.param('id'))
-    if (!DQ) {
-      return response.notFound({
-        code: 400,
-        message: 'Data not found',
+    try {
+      const DQ = await Tenant.findBy('id', request.param('id'))
+      if (!DQ) {
+        return response.notFound({
+          code: 400,
+          message: 'Data not found',
+        })
+      }
+      await DQ.delete()
+      logger.info(`Tenant ${DQ.domain_name} is deleted successfully!`)
+      return response.ok({
+        code: 200,
+        message: 'Deleted successfully!',
+      })
+    } catch (e) {
+      logger.error('Something went wrong!', e.toString())
+      return response.internalServerError({
+        code: 500,
+        message: e.message,
       })
     }
-    await DQ.delete()
-    return response.ok({
-      code: 200,
-      message: 'Deleted successfully!',
-    })
   }
 
   async tenantDetailInfo({ request, response }: HttpContext) {
@@ -258,7 +266,7 @@ export default class TenantController extends BaseController {
 
       const perm = await Permission.all()
       const roles = await Role.all()
-      const users = await User.query().preload('profile').preload('roles')
+      const users = await User.query().preload('roles')
 
       db.primaryConnectionName = 'mysql'
 
@@ -319,8 +327,8 @@ export default class TenantController extends BaseController {
       await DQ.related('permissions').sync(request.body().permissions)
       await DQ.save()
 
+      logger.info(`Permissions assign to ${DQ.name} successfully!`)
       db.primaryConnectionName = 'mysql'
-
       return response.ok({
         code: 200,
         message: 'assign successfully!',
@@ -342,7 +350,7 @@ export default class TenantController extends BaseController {
 
       const DQ = await User.query().where('id', request.input('user_id')).preload('roles').first()
 
-      logger.info('find single user of tenant successfully!')
+      logger.info('Find single user of tenant successfully!')
 
       db.primaryConnectionName = 'mysql'
 
@@ -360,8 +368,9 @@ export default class TenantController extends BaseController {
     }
   }
 
-  async updateUserOfTenant({ request, response }: HttpContext) {
+  async updateUserOfTenant({ auth, request, response }: HttpContext) {
     try {
+      const currentUser = auth.user!
       await tenantConnectionPatch(request.input('db_name'))
       db.primaryConnectionName = 'tenant'
 
@@ -373,14 +382,22 @@ export default class TenantController extends BaseController {
         })
       }
 
+      DQ.name = request.body().name
       DQ.email = request.body().email
+      DQ.password = request.body().password
       DQ.status = request.body().status
+      DQ.phone_number = request.body().phone_number
+      DQ.address = request.body().address
+      DQ.city = request.body().city
+      DQ.state = request.body().state
+      DQ.country = request.body().country
+      DQ.created_by = currentUser?.name
 
       DQ.related('roles').sync(request.body().roles)
 
       await DQ.save()
 
-      logger.info('Update User of tenant successfully!')
+      logger.info(`Update user ${DQ.name} of tenant successfully!`)
 
       db.primaryConnectionName = 'mysql'
 
@@ -417,7 +434,7 @@ export default class TenantController extends BaseController {
           data = await Role.create({ name: role })
 
           logger.info(
-            `Role: ${role} Inserted into tenant database: ${request.input('db_name')} Successfully!`
+            `Role: ${role} Inserted into tenant database: ${request.input('db_name')} successfully!`
           )
         }
       } else {
@@ -432,7 +449,7 @@ export default class TenantController extends BaseController {
 
       return response.ok({
         code: 200,
-        message: `Role Inserted into tenant database: ${request.input('db_name')} Successfully!`,
+        message: `Role Inserted into tenant database: ${request.input('db_name')} successfully!`,
         data: data,
       })
     } catch (e) {
@@ -454,7 +471,7 @@ export default class TenantController extends BaseController {
 
       let data = await DQ.preload('permissions')
 
-      logger.info('find roles of tenant successfully!')
+      logger.info('Find roles of tenant successfully!')
 
       db.primaryConnectionName = 'mysql'
 
@@ -487,7 +504,7 @@ export default class TenantController extends BaseController {
       }
       await DQ.delete()
 
-      logger.info('delete role of tenant successfully!')
+      logger.info('Delete role of tenant successfully!')
 
       db.primaryConnectionName = 'mysql'
 
@@ -517,14 +534,14 @@ export default class TenantController extends BaseController {
           if (!DE) {
             data = await Permission.create({ name: permission })
             logger.info(
-              `Permission: ${permission} Inserted into tenant database: ${request.input('db_name')} Successfully!`
+              `Permission: ${permission} Inserted into tenant database: ${request.input('db_name')} successfully!`
             )
           }
         }
       } else {
         return response.badRequest({
           code: 400,
-          message: `Something went wrong! Roles not insert successfully!`,
+          message: `Something went wrong! Permissions not insert successfully!`,
           data: null,
         })
       }
@@ -533,7 +550,7 @@ export default class TenantController extends BaseController {
 
       return response.ok({
         code: 200,
-        message: `Permission Inserted into tenant database: ${request.input('db_name')} Successfully!`,
+        message: `Permission Inserted into tenant database: ${request.input('db_name')} successfully!`,
         data: data,
       })
     } catch (e) {
@@ -563,7 +580,7 @@ export default class TenantController extends BaseController {
         data = await DQ.select('*')
       }
 
-      logger.info('find Permissions of tenant successfully!')
+      logger.info('Find Permissions of tenant successfully!')
 
       db.primaryConnectionName = 'mysql'
 
@@ -595,7 +612,7 @@ export default class TenantController extends BaseController {
       }
       await DQ.delete()
 
-      logger.info('delete Permission of tenant successfully!')
+      logger.info('Delete permission of tenant successfully!')
 
       db.primaryConnectionName = 'mysql'
 

@@ -20,15 +20,12 @@ export default class AuthController extends BaseController {
       }
 
       const user = new User()
+      user.name = request.body().name
       user.email = request.body().email
       user.password = request.body().password
+      user.phone_number = request.body().phone_number
 
       await user.save()
-
-      user.related('profile').create({
-        name: request.body().name,
-        phone_number: request.body().phone_number,
-      })
 
       return response.ok({
         code: 200,
@@ -88,6 +85,7 @@ export default class AuthController extends BaseController {
       message: 'Logout successfully!',
     })
   }
+
   async tenantRegister({ request, response }: HttpContext) {
     try {
       // db name generation
@@ -111,19 +109,16 @@ export default class AuthController extends BaseController {
 
             user.email = request.body().email
             user.password = request.body().password
+            user.name = request.body().name
+            user.phone_number = request.body().phone_number
+            user.address = request.body().address
+            user.city = request.body().city
+            user.state = request.body().state
+            user.country = request.body().country
 
             await user.save()
 
             logger.info(`Admin User Inserted into tenant database: ${dbName} Successfully!`)
-
-            await user.related('profile').create({
-              name: request.body().name,
-              phone_number: request.body().phone_number,
-              address: request.body().address,
-              city: request.body().city,
-              state: request.body().state,
-              country: request.body().country,
-            })
           } else {
             logger.error('Something went wrong! User not insert successfully!')
             return response.badRequest({

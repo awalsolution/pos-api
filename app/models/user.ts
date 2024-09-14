@@ -6,16 +6,14 @@ import {
   SnakeCaseNamingStrategy,
   beforeFind,
   column,
-  hasOne,
   manyToMany,
 } from '@adonisjs/lucid/orm'
-import type { HasOne, ManyToMany } from '@adonisjs/lucid/types/relations'
+import type { ManyToMany } from '@adonisjs/lucid/types/relations'
 import { ModelQueryBuilderContract } from '@adonisjs/lucid/types/model'
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
 import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
 import Permission from '#models/permission'
 import Role from '#models/role'
-import Profile from '#models/profile'
 
 BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
 
@@ -32,7 +30,13 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare id: number
 
   @column()
+  declare name: string | null
+
+  @column()
   declare email: string
+
+  @column()
+  declare phone_number: string | null
 
   @column({ serializeAs: null })
   declare password: string
@@ -41,7 +45,7 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare status: boolean
 
   @column()
-  declare remember_token: boolean | null
+  declare remember_me: boolean | null
 
   @column()
   declare is_email_verified: boolean
@@ -54,6 +58,21 @@ export default class User extends compose(BaseModel, AuthFinder) {
 
   @column()
   declare phone_verified_at: DateTime
+
+  @column()
+  declare address: string | null
+
+  @column()
+  declare city: string | null
+
+  @column()
+  declare state: string | null
+
+  @column()
+  declare country: string | null
+
+  @column()
+  declare profile_picture: string | null
 
   @column()
   declare created_by: string | null
@@ -76,17 +95,12 @@ export default class User extends compose(BaseModel, AuthFinder) {
   // hooks
   @beforeFind()
   static preloadListUserRoles(query: UserQuery) {
-    query
-      .preload('permissions')
-      .preload('roles', (rolesQuery: RoleQuery) => {
-        rolesQuery.preload('permissions')
-      })
-      .preload('profile')
+    query.preload('permissions').preload('roles', (rolesQuery: RoleQuery) => {
+      rolesQuery.preload('permissions')
+    })
   }
 
   // relation
-  @hasOne(() => Profile)
-  declare profile: HasOne<typeof Profile>
 
   @manyToMany(() => Role, {
     pivotTable: 'user_has_roles',

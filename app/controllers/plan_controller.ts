@@ -1,28 +1,37 @@
 import { HttpContext } from '@adonisjs/core/http'
 import Plan from '#models/plan'
+import logger from '@adonisjs/core/services/logger'
 
 export default class PlanController {
   async index({ request, response }: HttpContext) {
-    let DQ = Plan.query()
+    try {
+      let DQ = Plan.query()
 
-    const page = request.input('page')
-    const perPage = request.input('perPage')
+      const page = request.input('page')
+      const perPage = request.input('perPage')
 
-    if (request.input('name')) {
-      DQ = DQ.whereILike('name', request.input('name') + '%')
-    }
+      if (request.input('name')) {
+        DQ = DQ.whereILike('name', request.input('name') + '%')
+      }
 
-    if (perPage) {
-      return response.ok({
-        code: 200,
-        data: await DQ.orderBy('created_at', 'desc').paginate(page, perPage),
-        message: 'Record find successfully!',
-      })
-    } else {
-      return response.ok({
-        code: 200,
-        data: await DQ.orderBy('created_at', 'desc').preload('tenants'),
-        message: 'Record find successfully!',
+      if (perPage) {
+        return response.ok({
+          code: 200,
+          data: await DQ.orderBy('created_at', 'desc').paginate(page, perPage),
+          message: 'Record find successfully!',
+        })
+      } else {
+        return response.ok({
+          code: 200,
+          data: await DQ.orderBy('created_at', 'desc').preload('tenants'),
+          message: 'Record find successfully!',
+        })
+      }
+    } catch (e) {
+      console.log('error', e.toString())
+      return response.internalServerError({
+        code: 500,
+        message: e.toString(),
       })
     }
   }
@@ -44,6 +53,7 @@ export default class PlanController {
         data: DQ,
       })
     } catch (e) {
+      console.log('error', e.toString())
       return response.internalServerError({
         code: 500,
         message: e.toString(),
@@ -59,7 +69,7 @@ export default class PlanController {
       if (DE) {
         return response.conflict({
           code: 409,
-          message: 'Data already exists!',
+          message: 'Already exists!',
         })
       }
 
@@ -70,16 +80,17 @@ export default class PlanController {
       DM.price = request.body().price
       DM.description = request.body().description
       DM.status = request.body().status
-      DM.created_by = currentUser?.profile?.name
+      DM.created_by = currentUser?.name
 
       const DQ = await DM.save()
+      logger.info(`Plan ${DQ.name} is created successfully!`)
       return response.ok({
         code: 200,
         message: 'Created successfully!',
         data: DQ,
       })
     } catch (e) {
-      console.log(e)
+      console.log('error', e.toString())
       return response.internalServerError({
         code: 500,
         message: e.toString(),
@@ -105,7 +116,7 @@ export default class PlanController {
       if (DE) {
         return response.conflict({
           code: 409,
-          message: 'Record already exist!',
+          message: 'Already exist!',
         })
       }
 
@@ -114,15 +125,17 @@ export default class PlanController {
       DQ.price = request.body().price
       DQ.description = request.body().description
       DQ.status = request.body().status
-      DQ.created_by = currentUser?.profile?.name
+      DQ.created_by = currentUser?.name
+
       await DQ.save()
+      logger.info(`Plan ${DQ.name} is updated successfully!`)
       return response.ok({
         code: 200,
         message: 'Updated successfully!',
         data: DQ,
       })
     } catch (e) {
-      console.log(e)
+      console.log('error', e.toString())
       return response.internalServerError({
         code: 500,
         message: e.message,
@@ -131,17 +144,26 @@ export default class PlanController {
   }
 
   async destroy({ request, response }: HttpContext) {
-    const DQ = await Plan.findBy('id', request.param('id'))
-    if (!DQ) {
-      return response.notFound({
-        code: 400,
-        message: 'Data not found',
+    try {
+      const DQ = await Plan.findBy('id', request.param('id'))
+      if (!DQ) {
+        return response.notFound({
+          code: 400,
+          message: 'Data not found',
+        })
+      }
+      await DQ.delete()
+      logger.info(`Plan ${DQ.name} is deleted successfully!`)
+      return response.ok({
+        code: 200,
+        message: 'Deleted successfully!',
+      })
+    } catch (e) {
+      console.log('error', e.toString())
+      return response.internalServerError({
+        code: 500,
+        message: e.message,
       })
     }
-    await DQ.delete()
-    return response.ok({
-      code: 200,
-      message: 'Deleted successfully!',
-    })
   }
 }

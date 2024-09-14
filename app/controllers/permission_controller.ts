@@ -1,5 +1,6 @@
 import { HttpContext } from '@adonisjs/core/http'
 import Permission from '#models/permission'
+import logger from '@adonisjs/core/services/logger'
 
 export default class PermissionController {
   async index({ request, response }: HttpContext) {
@@ -32,6 +33,7 @@ export default class PermissionController {
         })
       }
     } catch (e) {
+      console.log('error', e.toString())
       return response.internalServerError({
         code: 500,
         message: e.toString(),
@@ -55,6 +57,7 @@ export default class PermissionController {
         data: DQ,
       })
     } catch (e) {
+      console.log('error', e.toString())
       return response.internalServerError({
         code: 500,
         message: e.toString(),
@@ -69,7 +72,7 @@ export default class PermissionController {
       if (DE) {
         return response.conflict({
           code: 409,
-          message: 'Data already exists!',
+          message: 'Already exists!',
         })
       }
       const DM = new Permission()
@@ -77,16 +80,17 @@ export default class PermissionController {
       DM.name = request.body().name
       DM.type = request.body().type
       DM.status = request.body().status
-      DM.created_by = currentUser?.profile?.name
+      DM.created_by = currentUser?.name
 
       const DQ = await DM.save()
+      logger.info(`Permission ${DQ.name} is created successfully!`)
       return response.ok({
         code: 200,
         message: 'Created successfully!',
         data: DQ,
       })
     } catch (e) {
-      console.log(e)
+      console.log('error', e.toString())
       return response.internalServerError({
         code: 500,
         message: e.toString(),
@@ -112,22 +116,24 @@ export default class PermissionController {
       if (permissionExists) {
         return response.conflict({
           code: 409,
-          message: 'Data already exist!',
+          message: 'Already exist!',
         })
       }
 
       DQ.name = request.body().name
       DQ.type = request.body().type
       DQ.status = request.body().status
-      DQ.created_by = currentUser?.profile?.name
+      DQ.created_by = currentUser?.name
 
       await DQ.save()
+      logger.info(`Permission ${DQ.name} is updated successfully!`)
       return response.ok({
         code: 200,
         message: 'Updated successfully!',
         data: DQ,
       })
     } catch (e) {
+      console.log('error', e.toString())
       return response.internalServerError({
         code: 500,
         message: e.message,
@@ -136,17 +142,26 @@ export default class PermissionController {
   }
 
   async destroy({ request, response }: HttpContext) {
-    const DQ = await Permission.findBy('id', request.param('id'))
-    if (!DQ) {
-      return response.notFound({
-        code: 400,
-        message: 'Data not found',
+    try {
+      const DQ = await Permission.findBy('id', request.param('id'))
+      if (!DQ) {
+        return response.notFound({
+          code: 400,
+          message: 'Data not found',
+        })
+      }
+      await DQ.delete()
+      logger.info(`Permission ${DQ.name} is deleted successfully!`)
+      return response.ok({
+        code: 200,
+        message: 'Deleted successfully!',
+      })
+    } catch (e) {
+      console.log('error', e.toString())
+      return response.internalServerError({
+        code: 500,
+        message: e.message,
       })
     }
-    await DQ.delete()
-    return response.ok({
-      code: 200,
-      message: 'Record deleted successfully!',
-    })
   }
 }
