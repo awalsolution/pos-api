@@ -224,6 +224,7 @@ export default class UserController extends BaseController {
       DQ.profile_picture = request.body().profile_picture
       DQ.created_by = currentUser?.name
 
+      await DQ.save()
       logger.info(`${DQ.name} profile is updated Successfully!`)
       return response.ok({
         code: 200,
