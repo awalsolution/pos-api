@@ -52,6 +52,7 @@ router
         router.put('/:id', [UserController, 'update'])
         router.put('/assign-permission/:id', [UserController, 'assignPermission'])
         router.put('/status/:id', [UserController, 'updateStatus'])
+        router.put('/profile/:id', [UserController, 'profileUpdate'])
         router.delete('/:id', [UserController, 'destroy'])
       })
       .use(middleware.auth({ guards: ['api'] }))
