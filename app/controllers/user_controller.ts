@@ -189,7 +189,7 @@ export default class UserController extends BaseController {
       await DQ.save()
 
       DQ.related('permissions').sync(request.body().permissions)
-      logger.info(`Permissions Assign to user ${DQ.name} Successfully!`)
+      logger.info(`Permissions Assign to ${DQ.name} Successfully!`)
       return response.ok({
         code: 200,
         message: 'Assigned successfully!',
