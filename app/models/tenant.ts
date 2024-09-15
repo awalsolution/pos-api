@@ -51,6 +51,9 @@ export default class Tenant extends BaseModel {
   @column()
   declare country: string | null
 
+  @column()
+  declare logo: string | null
+
   @column.dateTime({
     autoCreate: true,
     serialize: (value) => value?.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY),

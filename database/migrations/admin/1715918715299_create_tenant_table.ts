@@ -9,7 +9,7 @@ export default class extends BaseSchema {
       table
         .integer('plan_id')
         .unsigned()
-        .nullable()
+        .defaultTo(1)
         .references('id')
         .inTable('plans')
         .onUpdate('CASCADE')
@@ -18,7 +18,7 @@ export default class extends BaseSchema {
       table.string('tenant_name').notNullable()
       table.string('db_name').notNullable()
       table.text('tenant_api_key').notNullable()
-      table.string('created_by').nullable()
+      table.string('created_by').notNullable().defaultTo('online registration')
       table.boolean('status').notNullable().defaultTo(false)
       table.string('name').nullable()
       table.string('email').nullable()
@@ -27,6 +27,7 @@ export default class extends BaseSchema {
       table.string('city').nullable()
       table.string('state').nullable()
       table.string('country').nullable()
+      table.string('logo').nullable()
 
       table.timestamp('created_at')
       table.timestamp('updated_at')

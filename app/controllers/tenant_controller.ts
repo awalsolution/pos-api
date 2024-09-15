@@ -78,39 +78,28 @@ export default class TenantController extends BaseController {
           logger.info(`Database: ${dbName} created Successfully!`)
           await this.dealsWithMigrations(dbName)
 
-          let permArr = []
+          // let permArr = []
 
-          if (request.body().permissions) {
-            for (const permission of request.body().permissions) {
-              const res = await Permission.create({ name: permission })
-              permArr.push(res.id)
-              logger.info(`Permissions Inserted into tenant database: ${dbName} Successfully!`)
-            }
-          } else {
-            logger.error('Something went wrong! Permissions not insert successfully!')
-            return response.badRequest({
-              code: 400,
-              message: 'Something went wrong! User not insert successfully!',
-            })
-          }
-          let createdRole: any = []
-          if (request.body().roles) {
-            for (const role of request.body().roles) {
-              createdRole = await Role.create({ name: role })
-              logger.info(`Role Inserted into tenant database: ${dbName} Successfully!`)
-              const newRole: any = await Role.find(createdRole.id)
-              await newRole.related('permissions').sync(permArr)
-              logger.info(
-                `Permissions Assign to tenant role into tenant database: ${dbName} Successfully!`
-              )
-            }
-          } else {
-            logger.error('Something went wrong! Roles not insert successfully!')
-            return response.badRequest({
-              code: 400,
-              message: 'Something went wrong! Roles not insert successfully!',
-            })
-          }
+          // if (request.body().permissions) {
+          //   for (const permission of request.body().permissions) {
+          //     const res = await Permission.create({ name: permission })
+          //     permArr.push(res.id)
+          //     logger.info(`Permissions Inserted into tenant database: ${dbName} Successfully!`)
+          //   }
+          // }
+
+          // let createdRole: any = []
+          // if (request.body().roles) {
+          //   for (const role of request.body().roles) {
+          //     createdRole = await Role.create({ name: role })
+          //     logger.info(`Role Inserted into tenant database: ${dbName} Successfully!`)
+          //     const newRole: any = await Role.find(createdRole.id)
+          //     await newRole.related('permissions').sync(permArr)
+          //     logger.info(
+          //       `Permissions Assign to tenant role into tenant database: ${dbName} Successfully!`
+          //     )
+          //   }
+          // }
 
           if (request.body().email) {
             const user = new User()
@@ -129,16 +118,10 @@ export default class TenantController extends BaseController {
             await user.save()
             logger.info(`Admin User Inserted into tenant database: ${dbName} successfully!`)
 
-            await user.related('roles').sync([createdRole.id])
-            logger.info(
-              `${createdRole.name} Assign to admin user into tenant database: ${dbName} successfully!`
-            )
-          } else {
-            logger.error('Something went wrong! User not insert successfully!')
-            return response.badRequest({
-              code: 400,
-              message: 'Something went wrong! User not insert successfully!',
-            })
+            // await user.related('roles').sync([createdRole.id])
+            // logger.info(
+            //   `${createdRole.name} Assign to admin user into tenant database: ${dbName} successfully!`
+            // )
           }
 
           db.primaryConnectionName = 'mysql'
@@ -156,6 +139,7 @@ export default class TenantController extends BaseController {
           DM.city = request.body().city
           DM.state = request.body().state
           DM.country = request.body().country
+          DM.logo = request.body().logo
           DM.name = request.body().name
           DM.email = request.body().email
           DM.phone_number = request.body().phone_number
