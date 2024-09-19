@@ -1,7 +1,7 @@
 import db from '@adonisjs/lucid/services/db'
+import string from '@adonisjs/core/helpers/string'
 import logger from '@adonisjs/core/services/logger'
 import { HttpContext } from '@adonisjs/core/http'
-import { cuid } from '@adonisjs/core/helpers'
 import { tenantConnectionPatch } from '#services/db_connection_switcher_service'
 import { BaseController } from '#controllers/base_controller'
 import Tenant from '#models/tenant'
@@ -62,9 +62,6 @@ export default class TenantController extends BaseController {
   async create({ auth, request, response }: HttpContext) {
     try {
       const currentUser = auth.user!
-      // db name generation
-      const dbName: string = `tenant_${cuid()}_db`
-
       const DE = await Tenant.findBy('domain_name', request.body().domain_name)
 
       if (DE) {
@@ -72,95 +69,26 @@ export default class TenantController extends BaseController {
           code: 409,
           message: `Domain ${request.body().domain_name} already exists!`,
         })
-      } else {
-        try {
-          await this.createDatabase(dbName)
-          logger.info(`Database: ${dbName} created Successfully!`)
-          await this.dealsWithMigrations(dbName)
-
-          // let permArr = []
-
-          // if (request.body().permissions) {
-          //   for (const permission of request.body().permissions) {
-          //     const res = await Permission.create({ name: permission })
-          //     permArr.push(res.id)
-          //     logger.info(`Permissions Inserted into tenant database: ${dbName} Successfully!`)
-          //   }
-          // }
-
-          // let createdRole: any = []
-          // if (request.body().roles) {
-          //   for (const role of request.body().roles) {
-          //     createdRole = await Role.create({ name: role })
-          //     logger.info(`Role Inserted into tenant database: ${dbName} Successfully!`)
-          //     const newRole: any = await Role.find(createdRole.id)
-          //     await newRole.related('permissions').sync(permArr)
-          //     logger.info(
-          //       `Permissions Assign to tenant role into tenant database: ${dbName} Successfully!`
-          //     )
-          //   }
-          // }
-
-          if (request.body().email) {
-            const user = new User()
-
-            user.name = request.body().name
-            user.email = request.body().email
-            user.password = request.body().password
-            user.status = request.body().status
-            user.phone_number = request.body().phone_number
-            user.address = request.body().address
-            user.city = request.body().city
-            user.state = request.body().state
-            user.country = request.body().country
-            user.created_by = currentUser?.name
-
-            await user.save()
-            logger.info(`Admin User Inserted into tenant database: ${dbName} successfully!`)
-
-            // await user.related('roles').sync([createdRole.id])
-            // logger.info(
-            //   `${createdRole.name} Assign to admin user into tenant database: ${dbName} successfully!`
-            // )
-          }
-
-          db.primaryConnectionName = 'mysql'
-
-          const DM = new Tenant()
-
-          DM.planId = request.body().plan_id || 1
-          DM.domain_name = request.body().domain_name
-          DM.db_name = dbName
-          DM.tenant_name = request.body().tenant_name
-          DM.tenant_api_key = `tenant_${cuid()}_key`
-          DM.status = request.body().status
-          DM.created_by = currentUser?.name
-          DM.address = request.body().address
-          DM.city = request.body().city
-          DM.state = request.body().state
-          DM.country = request.body().country
-          DM.logo = request.body().logo
-          DM.name = request.body().name
-          DM.email = request.body().email
-          DM.phone_number = request.body().phone_number
-
-          const DQ = await DM.save()
-
-          logger.info(`Tenant created Successfully! with id: ${DQ.id} and domain:${DQ.domain_name}`)
-
-          return response.ok({
-            code: 200,
-            message: 'Created successfully!',
-            data: DQ,
-          })
-        } catch (e) {
-          logger.error('Something went wrong!', e.toString())
-          return response.badRequest({
-            code: 400,
-            message: `Something went wrong! ${e.toString()}`,
-          })
-        }
       }
+
+      const DM = new Tenant()
+
+      DM.planId = request.body().plan_id || 1
+      DM.tenant_name = request.body().tenant_name
+      DM.domain_name = request.body().domain_name
+      DM.phone_number = request.body().phone_number
+      DM.email = request.body().email
+      DM.created_by = currentUser?.name
+
+      const DQ = await DM.save()
+
+      logger.info(`Tenant created Successfully! with id: ${DQ.id} and domain:${DQ.domain_name}`)
+
+      return response.ok({
+        code: 200,
+        message: 'Created successfully!',
+        data: DQ,
+      })
     } catch (e) {
       logger.error('Something went wrong!', e.toString())
       return response.internalServerError({
@@ -193,11 +121,14 @@ export default class TenantController extends BaseController {
       }
 
       DQ.planId = request.body().plan_id || 1
+      DQ.tenant_name = request.body().tenant_name
       DQ.domain_name = request.body().domain_name
-      DQ.status = request.body().status
+      DQ.phone_number = request.body().phone_number
+      DQ.email = request.body().email
       DQ.created_by = currentUser?.name
 
       await DQ.save()
+
       return response.ok({
         code: 200,
         message: 'Updated successfully!',
@@ -236,6 +167,120 @@ export default class TenantController extends BaseController {
     }
   }
 
+  //  new tenant registration and activation
+  async tenantActivation({ request, response }: HttpContext) {
+    try {
+      const DQ = await Tenant.findBy('id', request.param('id'))
+      if (!DQ) {
+        return response.notFound({
+          code: 400,
+          message: 'Data does not exists!',
+        })
+      }
+
+      if (request.body().status === 0) {
+        DQ.status = request.body().status
+        await DQ.save()
+        logger.info(`Tenant with DB: ${DQ.db_name} Deactivated Successfully!`)
+        return response.ok({
+          code: 200,
+          message: 'Deactivated Successfully!',
+          data: DQ,
+        })
+      } else if (DQ.activated === 1) {
+        DQ.status = 1
+        await DQ.save()
+        logger.info(
+          `Tenant with DB: ${DQ.db_name} Already Activated! and status will be changed successfully!`
+        )
+        return response.ok({
+          code: 200,
+          message: 'Already Activated! and status will be changed successfully!',
+          data: DQ,
+        })
+      } else {
+        if (request.body().role_id) {
+          const dbName: string = `tenant_${string.snakeCase(DQ.tenant_name)}_db`
+          const tenantApiKey = `tenant_${string.snakeCase(DQ.tenant_name)}_api_key`
+          DQ.status = 1
+          DQ.activated = 1
+          DQ.db_name = dbName
+          DQ.tenant_api_key = tenantApiKey
+          await DQ.save()
+          await this.createDatabase(dbName)
+          logger.info(`Database: ${dbName} created Successfully!`)
+          await this.dealsWithMigrations(dbName)
+
+          db.primaryConnectionName = 'mysql'
+
+          const role: any = await Role.query()
+            .preload('permissions')
+            .where('id', request.body().role_id)
+            .first()
+
+          await tenantConnectionPatch(dbName)
+          db.primaryConnectionName = 'tenant'
+
+          let allPermissions = []
+          if (role.permissions) {
+            for (const item of role.permissions) {
+              const data = await Permission.create({
+                name: item.name,
+                type: item.type,
+                created_by: 'system',
+              })
+              allPermissions.push(data.id)
+              logger.info(`Permissions Inserted into tenant database: ${dbName} Successfully!`)
+            }
+          }
+
+          const createdRole = await Role.create({ name: role.name, created_by: 'system' })
+          logger.info(`Role Inserted into tenant database: ${dbName} Successfully!`)
+          createdRole.related('permissions').sync(allPermissions)
+          logger.info(
+            `Permissions Assign to ${createdRole.name} into tenant database: ${dbName} successfully!`
+          )
+
+          const user: any = new User()
+
+          user.email = DQ.email
+          user.password = '123456'
+          user.status = request.body().status
+          user.phone_number = DQ.phone_number
+          user.created_by = 'system'
+
+          await user.save()
+          logger.info(`Admin User Inserted into tenant database: ${dbName} successfully!`)
+
+          await user.related('roles').sync([createdRole.id])
+
+          logger.info(
+            `${createdRole.name} Assign to admin user into tenant database: ${dbName} successfully!`
+          )
+
+          return response.ok({
+            code: 200,
+            message: 'Activated Successfully!',
+            data: null,
+          })
+        } else {
+          return response.ok({
+            code: 400,
+            message: 'Please select role!',
+            data: null,
+          })
+        }
+      }
+    } catch (e) {
+      logger.error('Something went wrong!', e.toString())
+      return response.internalServerError({
+        code: 500,
+        message: e.message,
+      })
+    }
+  }
+
+  //  find all info of the tenant from it's db
   async tenantDetailInfo({ request, response }: HttpContext) {
     try {
       const DQ = await Tenant.findBy('db_name', request.input('db_name'))

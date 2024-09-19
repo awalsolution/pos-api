@@ -25,7 +25,10 @@ export default class Tenant extends BaseModel {
   declare tenant_api_key: string
 
   @column()
-  declare status: boolean
+  declare status: boolean | number
+
+  @column()
+  declare activated: boolean | number
 
   @column()
   declare created_by: string | null
