@@ -1,6 +1,7 @@
 import { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
 import { BaseController } from '#controllers/base_controller'
+import logger from '@adonisjs/core/services/logger'
 
 export default class UserController extends BaseController {
   async index({ auth, request, response }: HttpContext) {
@@ -11,9 +12,14 @@ export default class UserController extends BaseController {
       const page = request.input('page')
       const perPage = request.input('perPage')
 
-      // name filter
+      if (request.input('email')) {
+        DQ = DQ.whereILike('email', request.input('email') + '%')
+      }
       if (request.input('name')) {
-        DQ = DQ.whereILike('email', request.input('name') + '%')
+        DQ = DQ.whereILike('name', request.input('name') + '%')
+      }
+      if (request.input('phone')) {
+        DQ = DQ.whereILike('phone_number', request.input('phone') + '%')
       }
 
       if (!DQ) {
@@ -30,7 +36,7 @@ export default class UserController extends BaseController {
             .preload('roles', (PQ) => {
               PQ.preload('permissions')
             })
-            .preload('profile')
+            .orderBy('created_at', 'desc')
             .paginate(page, perPage),
           message: 'Record find successfully!',
         })
@@ -42,10 +48,11 @@ export default class UserController extends BaseController {
             .preload('roles', (PQ) => {
               PQ.preload('permissions')
             })
-            .preload('profile'),
+            .orderBy('created_at', 'desc'),
         })
       }
     } catch (e) {
+      console.log('error', e.toString())
       return response.internalServerError({
         code: 500,
         message: e.toString(),
@@ -61,7 +68,6 @@ export default class UserController extends BaseController {
         .preload('roles', (RQ) => {
           RQ.where('name', '!=', 'super admin').preload('permissions')
         })
-        .preload('profile')
         .first()
 
       return response.ok({
@@ -70,7 +76,7 @@ export default class UserController extends BaseController {
         data: DQ,
       })
     } catch (e) {
-      // console.log(e)
+      console.log('error', e.toString())
       return response.internalServerError({
         code: 500,
         message: e.toString(),
@@ -78,10 +84,11 @@ export default class UserController extends BaseController {
     }
   }
 
-  async create({ request, response }: HttpContext) {
+  async create({ auth, request, response }: HttpContext) {
     try {
+      const currentUser = auth.user!
       let DE = await User.findBy('email', request.body().email)
-      if (DE && !DE.is_email_verified) {
+      if (DE) {
         delete DE.$attributes.password
 
         return response.conflict({
@@ -92,28 +99,24 @@ export default class UserController extends BaseController {
 
       const DM = new User()
 
+      DM.name = request.body().name
       DM.email = request.body().email
-      DM.status = request.body().status
       DM.password = request.body().password
+      DM.status = request.body().status
+      DM.created_by = currentUser?.name
 
-      await DM.save()
-
-      DM.related('roles').sync(request.body().role_id)
-
-      DM.related('profile').create({
-        first_name: request.body().first_name,
-        last_name: request.body().last_name,
-        phone_number: request.body().phone_number,
-      })
+      const DQ = await DM.save()
+      DQ.related('roles').sync(request.body().roles)
 
       delete DM.$attributes.password
+      logger.info(`User with email: ${DQ.email} is created Successfully!`)
       return response.ok({
         code: 200,
         message: 'Created successfully!',
         result: DM,
       })
     } catch (e) {
-      console.log('register error', e.toString())
+      console.log('error', e.toString())
       return response.internalServerError({
         code: 500,
         message: e.toString(),
@@ -121,111 +124,171 @@ export default class UserController extends BaseController {
     }
   }
 
-  async update({ request, response }: HttpContext) {
-    const DQ = await User.findBy('id', request.param('id'))
-    if (!DQ) {
-      return response.notFound({
-        code: 400,
-        message: 'Data not found',
+  async update({ auth, request, response }: HttpContext) {
+    try {
+      const currentUser = auth.user!
+      const DQ = await User.findBy('id', request.param('id'))
+      if (!DQ) {
+        return response.notFound({
+          code: 400,
+          message: 'Data not found',
+        })
+      }
+      const DE = await User.query()
+        .where('email', 'like', request.body().email)
+        .whereNot('id', request.param('id'))
+        .first()
+
+      if (DE) {
+        return response.conflict({
+          code: 409,
+          message: 'Already exist!',
+        })
+      }
+
+      DQ.name = request.body().name
+      DQ.email = request.body().email
+      DQ.phone_number = request.body().phone_number
+      DQ.status = request.body().status
+      DQ.address = request.body().address
+      DQ.city = request.body().city
+      DQ.state = request.body().state
+      DQ.country = request.body().country
+      DQ.profile_picture = request.body().profile_picture
+      DQ.created_by = currentUser?.name
+
+      DQ.related('roles').sync(request.body().roles)
+
+      delete DQ.$attributes.password
+      await DQ.save()
+      logger.info(`User with email: ${DQ.email} is updated Successfully!`)
+      return response.ok({
+        code: 200,
+        message: 'Update successfully!',
+        data: DQ,
+      })
+    } catch (e) {
+      console.log('error', e.toString())
+      return response.internalServerError({
+        code: 500,
+        message: e.toString(),
       })
     }
-
-    DQ.email = request.body().email
-    DQ.status = request.body().status
-
-    DQ.related('roles').sync(request.body().roles)
-
-    await DQ.save()
-
-    return response.ok({
-      code: 200,
-      message: 'Update successfully!',
-      data: DQ,
-    })
   }
 
   async assignPermission({ request, response }: HttpContext) {
-    const DQ = await User.findBy('id', request.param('id'))
-    if (!DQ) {
-      return response.notFound({
-        code: 400,
-        message: 'Data not found',
+    try {
+      const DQ = await User.findBy('id', request.param('id'))
+      if (!DQ) {
+        return response.notFound({
+          code: 400,
+          message: 'Data not found',
+        })
+      }
+
+      await DQ.save()
+
+      DQ.related('permissions').sync(request.body().permissions)
+      logger.info(`Permissions Assign to ${DQ.name} Successfully!`)
+      return response.ok({
+        code: 200,
+        message: 'Assigned successfully!',
+        data: DQ,
+      })
+    } catch (e) {
+      console.log('error', e.toString())
+      return response.internalServerError({
+        code: 500,
+        message: e.toString(),
       })
     }
-
-    await DQ.save()
-
-    DQ.related('permissions').sync(request.body().permissions)
-
-    return response.ok({
-      code: 200,
-      message: 'Assigned successfully!',
-      data: DQ,
-    })
   }
 
-  async profileUpdate({ request, response }: HttpContext) {
-    const DQ = await User.findBy('id', request.param('id'))
-    if (!DQ) {
-      return response.notFound({
-        code: 400,
-        message: 'Data not found',
+  async profileUpdate({ auth, request, response }: HttpContext) {
+    try {
+      const currentUser = auth.user!
+      const DQ = await User.findBy('id', request.param('id'))
+      if (!DQ) {
+        return response.notFound({
+          code: 400,
+          message: 'Data not found',
+        })
+      }
+
+      DQ.name = request.body().name
+      DQ.phone_number = request.body().phone_number
+      DQ.address = request.body().address
+      DQ.city = request.body().city
+      DQ.state = request.body().state
+      DQ.country = request.body().country
+      DQ.profile_picture = request.body().profile_picture
+      DQ.created_by = currentUser?.name
+
+      await DQ.save()
+      logger.info(`${DQ.name} profile is updated Successfully!`)
+      return response.ok({
+        code: 200,
+        message: 'Update successfully!',
+        data: DQ,
+      })
+    } catch (e) {
+      console.log('error', e.toString())
+      return response.internalServerError({
+        code: 500,
+        message: e.toString(),
       })
     }
-    DQ.related('profile').updateOrCreate(
-      {},
-      {
-        first_name: request.body().first_name,
-        last_name: request.body().last_name,
-        phone_number: request.body().phone_number,
-        address: request.body().address,
-        city: request.body().city,
-        state: request.body().state,
-        country: request.body().country,
-        profile_picture: request.body().profile_picture,
-      }
-    )
-
-    return response.ok({
-      code: 200,
-      message: 'Update successfully!',
-      data: DQ,
-    })
   }
 
   async updateStatus({ request, response }: HttpContext) {
-    const DQ = await User.findBy('id', request.param('id'))
+    try {
+      const DQ = await User.findBy('id', request.param('id'))
+      if (!DQ) {
+        return response.notFound({
+          code: 400,
+          message: 'Data not found!',
+        })
+      }
 
-    if (!DQ) {
-      return response.notFound({
-        code: 400,
-        message: 'Data not found!',
+      DQ.status = request.body().status
+
+      await DQ.save()
+      logger.info(`${DQ.name} status is updated Successfully!`)
+      return response.ok({
+        code: 200,
+        message: 'Update successfully!',
+        data: DQ,
+      })
+    } catch (e) {
+      console.log('error', e.toString())
+      return response.internalServerError({
+        code: 500,
+        message: e.toString(),
       })
     }
-
-    DQ.status = request.body().status
-
-    await DQ.save()
-
-    return response.ok({
-      code: 200,
-      message: 'Update successfully!',
-      data: DQ,
-    })
   }
 
   async destroy({ request, response }: HttpContext) {
-    const DQ = await User.findBy('id', request.param('id'))
-    if (!DQ) {
-      return response.notFound({
-        code: 400,
-        message: 'Data not found',
+    try {
+      const DQ = await User.findBy('id', request.param('id'))
+      if (!DQ) {
+        return response.notFound({
+          code: 400,
+          message: 'Data not found',
+        })
+      }
+      await DQ.delete()
+      logger.info(`${DQ.name} is deleted Successfully!`)
+      return response.ok({
+        code: 200,
+        message: 'Deleted successfully!',
+      })
+    } catch (e) {
+      console.log('error', e.toString())
+      return response.internalServerError({
+        code: 500,
+        message: e.toString(),
       })
     }
-    await DQ.delete()
-    return response.ok({
-      code: 200,
-      message: 'Record deleted successfully!',
-    })
   }
 }

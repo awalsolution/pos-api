@@ -25,16 +25,16 @@ export default class Tenant extends BaseModel {
   declare tenant_api_key: string
 
   @column()
-  declare status: boolean
+  declare status: boolean | number
+
+  @column()
+  declare activated: boolean | number
 
   @column()
   declare created_by: string | null
 
   @column()
-  declare first_name: string
-
-  @column()
-  declare last_name: string | null
+  declare name: string
 
   @column()
   declare email: string | null
@@ -53,6 +53,9 @@ export default class Tenant extends BaseModel {
 
   @column()
   declare country: string | null
+
+  @column()
+  declare logo: string | null
 
   @column.dateTime({
     autoCreate: true,

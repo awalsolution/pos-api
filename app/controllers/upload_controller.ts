@@ -1,7 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import app from '@adonisjs/core/services/app'
-import { cuid } from '@adonisjs/core/helpers'
 import { BaseController } from '#controllers/base_controller'
+import env from '#start/env'
 
 export default class UploadController extends BaseController {
   async imageUploader(ctx: HttpContext) {
@@ -16,7 +16,7 @@ export default class UploadController extends BaseController {
         })
       }
 
-      const newImg = `${cuid()}.${img.extname}`
+      const newImg = img.clientName
       let url: string | null = null
 
       const tenantApiKey = ctx.request.header('X-Tenant-Api-Key')
@@ -36,7 +36,7 @@ export default class UploadController extends BaseController {
 
         const movePath = app.inProduction
           ? app.makePath(`../../${tenantPath}`)
-          : app.makePath(`../../../local-images-drive/awal-bucket/${tenantPath}`)
+          : app.makePath(`${env.get('LOCAL_DRIVE')}/${tenantPath}`)
 
         await img.move(movePath, { name: newImg })
 
@@ -46,7 +46,7 @@ export default class UploadController extends BaseController {
 
         const movePath = app.inProduction
           ? app.makePath(`../../${adminPath}`)
-          : app.makePath(`../../../local-images-drive/awal-bucket/${adminPath}`)
+          : app.makePath(`${env.get('LOCAL_DRIVE')}/${adminPath}`)
 
         await img.move(movePath, { name: newImg })
 

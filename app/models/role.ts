@@ -13,6 +13,12 @@ export default class Role extends BaseModel {
   @column()
   declare name: string
 
+  @column()
+  declare status: boolean
+
+  @column()
+  declare created_by: string | null
+
   @column.dateTime({
     autoCreate: true,
     serialize: (value) => value?.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY),

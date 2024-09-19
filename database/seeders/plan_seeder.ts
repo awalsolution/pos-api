@@ -5,7 +5,7 @@ export default class extends BaseSeeder {
   async run() {
     await Plan.createMany([
       {
-        name: 'free',
+        name: 'Free',
         type: 'Month',
         price: '0',
         description: 'This is free plan',

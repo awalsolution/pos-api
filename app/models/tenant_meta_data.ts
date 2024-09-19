@@ -1,40 +1,25 @@
 import { DateTime } from 'luxon'
 import { BaseModel, SnakeCaseNamingStrategy, belongsTo, column } from '@adonisjs/lucid/orm'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
-import User from '#models/user'
+import Tenant from '#models//tenant'
 
 BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
 
-export default class Profile extends BaseModel {
+export default class TenantMetaData extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
 
   @column()
-  declare userId: number | null
+  declare tenantId: number | null
 
   @column()
-  declare first_name: string | null
+  declare key: string
 
   @column()
-  declare last_name: string | null
+  declare value: string
 
   @column()
-  declare phone_number: string | null
-
-  @column()
-  declare address: string | null
-
-  @column()
-  declare city: string | null
-
-  @column()
-  declare state: string | null
-
-  @column()
-  declare country: string | null
-
-  @column()
-  declare profile_picture: string | null
+  declare created_by: string | null
 
   @column.dateTime({
     autoCreate: true,
@@ -47,8 +32,8 @@ export default class Profile extends BaseModel {
     autoUpdate: true,
     serialize: (value) => value?.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY),
   })
-  declare updatedAt: DateTime | null
+  declare updatedAt: DateTime
 
-  @belongsTo(() => User)
-  declare user: BelongsTo<typeof User>
+  @belongsTo(() => Tenant)
+  declare tenant: BelongsTo<typeof Tenant>
 }

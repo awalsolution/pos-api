@@ -1,5 +1,6 @@
 import { HttpContext } from '@adonisjs/core/http'
 import Role from '#models/role'
+import logger from '@adonisjs/core/services/logger'
 
 export default class RoleController {
   async index({ request, response }: HttpContext) {
@@ -15,13 +16,13 @@ export default class RoleController {
     if (perPage) {
       return response.ok({
         code: 200,
-        data: await DQ.preload('permissions').paginate(page, perPage),
+        data: await DQ.preload('permissions').orderBy('created_at', 'desc').paginate(page, perPage),
         message: 'Record find successfully!',
       })
     } else {
       return response.ok({
         code: 200,
-        data: await DQ.preload('permissions'),
+        data: await DQ.preload('permissions').orderBy('created_at', 'desc'),
         message: 'Record find successfully!',
       })
     }
@@ -51,29 +52,33 @@ export default class RoleController {
     }
   }
 
-  async create({ request, response }: HttpContext) {
+  async create({ auth, request, response }: HttpContext) {
     try {
+      const currentUser = auth.user!
       const DE = await Role.findBy('name', request.body().name)
 
       if (DE) {
         return response.conflict({
           code: 409,
-          message: 'Data already exists!',
+          message: 'Already exists!',
         })
       }
 
       const DM = new Role()
 
-      DM.name = request.input('name')
+      DM.name = request.body().name
+      DM.status = request.body().status
+      DM.created_by = currentUser?.name
 
       const DQ = await DM.save()
+      logger.info(`Role ${DQ.name} is created successfully!`)
       return response.ok({
         code: 200,
         message: 'Created successfully!',
         data: DQ,
       })
     } catch (e) {
-      console.log(e)
+      console.log('error', e.toString())
       return response.internalServerError({
         code: 500,
         message: e.toString(),
@@ -81,8 +86,9 @@ export default class RoleController {
     }
   }
 
-  async update({ request, response }: HttpContext) {
+  async update({ auth, request, response }: HttpContext) {
     try {
+      const currentUser = auth.user!
       const DQ = await Role.findBy('id', request.param('id'))
       if (!DQ) {
         return response.notFound({
@@ -98,20 +104,23 @@ export default class RoleController {
       if (DE) {
         return response.conflict({
           code: 409,
-          message: 'Record already exist!',
+          message: 'Already exist!',
         })
       }
 
       DQ.name = request.body().name
+      DQ.status = request.body().status
+      DQ.created_by = currentUser?.name
 
       await DQ.save()
+      logger.info(`Role ${DQ.name} is updated successfully!`)
       return response.ok({
         code: 200,
         message: 'Updated successfully!',
         data: DQ,
       })
     } catch (e) {
-      console.log(e)
+      console.log('error', e.toString())
       return response.internalServerError({
         code: 500,
         message: e.message,
@@ -131,14 +140,14 @@ export default class RoleController {
 
       await DQ.related('permissions').sync(request.body().permissions)
       await DQ.save()
-
+      logger.info(`Permissions Assign to ${DQ.name} successfully!`)
       return response.ok({
         code: 200,
-        message: 'Record successfully!',
+        message: 'Assign successfully!',
         data: DQ,
       })
     } catch (e) {
-      console.log(e)
+      console.log('error', e.toString())
       return response.internalServerError({
         code: 500,
         message: e.message,
@@ -147,17 +156,26 @@ export default class RoleController {
   }
 
   async destroy({ request, response }: HttpContext) {
-    const DQ = await Role.findBy('id', request.param('id'))
-    if (!DQ) {
-      return response.notFound({
-        code: 400,
-        message: 'Data not found',
+    try {
+      const DQ = await Role.findBy('id', request.param('id'))
+      if (!DQ) {
+        return response.notFound({
+          code: 400,
+          message: 'Data not found',
+        })
+      }
+      await DQ.delete()
+      logger.info(`Role ${DQ.name} is deleted successfully!`)
+      return response.ok({
+        code: 200,
+        message: 'Deleted successfully!',
+      })
+    } catch (e) {
+      console.log('error', e.toString())
+      return response.internalServerError({
+        code: 500,
+        message: e.toString(),
       })
     }
-    await DQ.delete()
-    return response.ok({
-      code: 200,
-      message: 'Record deleted successfully!',
-    })
   }
 }
