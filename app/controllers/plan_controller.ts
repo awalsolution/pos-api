@@ -1,6 +1,7 @@
 import { HttpContext } from '@adonisjs/core/http'
 import Plan from '#models/plan'
 import logger from '@adonisjs/core/services/logger'
+import InsertPermissionEvent from '#events/insert_permission_event'
 
 export default class PlanController {
   async index({ request, response }: HttpContext) {
@@ -17,7 +18,9 @@ export default class PlanController {
       if (perPage) {
         return response.ok({
           code: 200,
-          data: await DQ.orderBy('created_at', 'desc').paginate(page, perPage),
+          data: await DQ.orderBy('created_at', 'desc')
+            .preload('permissions')
+            .paginate(page, perPage),
           message: 'Record find successfully!',
         })
       } else {
@@ -38,7 +41,11 @@ export default class PlanController {
 
   async show({ request, response }: HttpContext) {
     try {
-      const DQ = await Plan.query().where('id', request.param('id')).preload('tenants').first()
+      const DQ = await Plan.query()
+        .where('id', request.param('id'))
+        .preload('permissions')
+        .preload('tenants')
+        .first()
 
       if (!DQ) {
         return response.notFound({
@@ -132,6 +139,34 @@ export default class PlanController {
       return response.ok({
         code: 200,
         message: 'Updated successfully!',
+        data: DQ,
+      })
+    } catch (e) {
+      console.log('error', e.toString())
+      return response.internalServerError({
+        code: 500,
+        message: e.message,
+      })
+    }
+  }
+
+  async assignPermission({ request, response }: HttpContext) {
+    try {
+      const DQ = await Plan.findBy('id', request.param('id'))
+      if (!DQ) {
+        return response.notFound({
+          code: 400,
+          message: 'Data does not exists!',
+        })
+      }
+
+      await DQ.related('permissions').sync(request.body().permissions)
+      // permission insert event
+      InsertPermissionEvent.dispatch(DQ.serialize())
+      logger.info(`Permissions Assign to ${DQ.name} successfully!`)
+      return response.ok({
+        code: 200,
+        message: 'Assign successfully!',
         data: DQ,
       })
     } catch (e) {

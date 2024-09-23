@@ -8,7 +8,7 @@ import {
 } from '@adonisjs/lucid/orm'
 import type { HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Tenant from '#models/tenant'
-import Permission from './permission.js'
+import Permission from '#models//permission'
 
 BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
 
