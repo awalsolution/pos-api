@@ -8,6 +8,7 @@ import Tenant from '#models/tenant'
 import Permission from '#models/permission'
 import Role from '#models/role'
 import User from '#models/user'
+import Plan from '#models/plan'
 
 export default class TenantController extends BaseController {
   async index({ request, response }: HttpContext) {
@@ -199,7 +200,8 @@ export default class TenantController extends BaseController {
           data: DQ,
         })
       } else {
-        if (request.body().role_id) {
+        const plan: any = await Plan.query().preload('permissions').where('id', DQ.planId!).first()
+        if (request.body().role_id && plan.permissions.length > 0) {
           const dbName: string = `tenant_${string.snakeCase(DQ.tenant_name)}_db`
           const tenantApiKey = `tenant_${string.snakeCase(DQ.tenant_name)}_api_key`
           DQ.status = 1
@@ -213,17 +215,14 @@ export default class TenantController extends BaseController {
 
           db.primaryConnectionName = 'mysql'
 
-          const role: any = await Role.query()
-            .preload('permissions')
-            .where('id', request.body().role_id)
-            .first()
+          const role: any = await Role.query().where('id', request.body().role_id).first()
 
           await tenantConnectionPatch(dbName)
           db.primaryConnectionName = 'tenant'
 
           let allPermissions = []
-          if (role.permissions) {
-            for (const item of role.permissions) {
+          if (plan.permissions) {
+            for (const item of plan.permissions) {
               const data = await Permission.create({
                 name: item.name,
                 type: item.type,
@@ -257,16 +256,16 @@ export default class TenantController extends BaseController {
           logger.info(
             `${createdRole.name} Assign to admin user into tenant database: ${dbName} successfully!`
           )
-
+          db.primaryConnectionName = 'mysql'
           return response.ok({
             code: 200,
             message: 'Activated Successfully!',
             data: null,
           })
         } else {
-          return response.ok({
+          return response.notFound({
             code: 400,
-            message: 'Please select role!',
+            message: 'Please select role! & plan have no permissions',
             data: null,
           })
         }

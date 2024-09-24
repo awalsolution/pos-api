@@ -2,6 +2,7 @@ import { DateTime } from 'luxon'
 import { BaseModel, SnakeCaseNamingStrategy, column, manyToMany } from '@adonisjs/lucid/orm'
 import type { ManyToMany } from '@adonisjs/lucid/types/relations'
 import Role from '#models/role'
+import Plan from '#models/plan'
 
 BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
 
@@ -35,7 +36,6 @@ export default class Permission extends BaseModel {
   declare updatedAt: DateTime
 
   // relation
-
   @manyToMany(() => Role, {
     pivotTable: 'role_has_permissions',
     pivotTimestamps: true,
@@ -45,4 +45,14 @@ export default class Permission extends BaseModel {
     pivotRelatedForeignKey: 'role_id',
   })
   declare roles: ManyToMany<typeof Role>
+
+  @manyToMany(() => Plan, {
+    pivotTable: 'plan_has_permissions',
+    pivotTimestamps: true,
+    localKey: 'id',
+    pivotForeignKey: 'permission_id',
+    relatedKey: 'id',
+    pivotRelatedForeignKey: 'plan_id',
+  })
+  declare plans: ManyToMany<typeof Plan>
 }

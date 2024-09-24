@@ -8,6 +8,7 @@ router
     router.post('/', [PlanController, 'create'])
     router.get('/:id', [PlanController, 'show'])
     router.put('/:id', [PlanController, 'update'])
+    router.put('/assign-permission/:id', [PlanController, 'assignPermission'])
     router.delete('/:id', [PlanController, 'destroy'])
   })
   .use([middleware.auth({ guards: ['api'] }), middleware.tenant()])
