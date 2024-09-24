@@ -162,8 +162,9 @@ export default class PlanController {
 
       await DQ.related('permissions').sync(request.body().permissions)
       // permission insert event
-      InsertPermissionEvent.dispatch(DQ.serialize())
+      InsertPermissionEvent.dispatch({ plan_id: DQ.id, permissions: request.body().permissions })
       logger.info(`Permissions Assign to ${DQ.name} successfully!`)
+
       return response.ok({
         code: 200,
         message: 'Assign successfully!',
