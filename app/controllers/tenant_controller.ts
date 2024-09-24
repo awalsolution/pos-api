@@ -217,8 +217,6 @@ export default class TenantController extends BaseController {
 
           const role: any = await Role.query().where('id', request.body().role_id).first()
 
-          // console.log(DQ.planId!)
-
           await tenantConnectionPatch(dbName)
           db.primaryConnectionName = 'tenant'
 
