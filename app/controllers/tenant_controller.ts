@@ -9,6 +9,7 @@ import Permission from '#models/permission'
 import Role from '#models/role'
 import User from '#models/user'
 import Plan from '#models/plan'
+import SingleTenantInsertPermissionEvent from '#events/single_tenant_insert_permission_event'
 
 export default class TenantController extends BaseController {
   async index({ request, response }: HttpContext) {
@@ -270,6 +271,39 @@ export default class TenantController extends BaseController {
           })
         }
       }
+    } catch (e) {
+      logger.error('Something went wrong!', e.toString())
+      return response.internalServerError({
+        code: 500,
+        message: e.message,
+      })
+    }
+  }
+  // update plan of tenant
+  async EditPlan({ request, response }: HttpContext) {
+    try {
+      const DQ = await Tenant.findBy('id', request.param('id'))
+      if (!DQ) {
+        return response.notFound({
+          code: 400,
+          message: 'Data does not exists!',
+        })
+      }
+
+      DQ.planId = request.body().id
+      await DQ.save()
+
+      // event to update the tenant permissions
+      await SingleTenantInsertPermissionEvent.dispatch({
+        plan_id: request.body().id,
+        tenant_id: DQ.id,
+      })
+
+      return response.ok({
+        code: 200,
+        message: 'Updated successfully!',
+        data: DQ,
+      })
     } catch (e) {
       logger.error('Something went wrong!', e.toString())
       return response.internalServerError({

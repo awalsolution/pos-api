@@ -9,8 +9,8 @@ router
     router.post('/tenant-activation/:id', [TenantController, 'tenantActivation'])
     router.get('/find-single-tenant/:id', [TenantController, 'show'])
     router.put('/edit-single-tenant/:id', [TenantController, 'update'])
+    router.put('/edit-single-tenant-plan/:id', [TenantController, 'EditPlan'])
     router.delete('/delete-single-tenant/:id', [TenantController, 'destroy'])
-    // admin to tenant operations
     router.get('/find-single-tenant-details', [TenantController, 'tenantDetailInfo'])
     // router.get('/all-permission/:db_name', [TenantController, 'allPermission'])
     // router.put('/assign-permission/:id', [TenantController, 'assignPermission'])
