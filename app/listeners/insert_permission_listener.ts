@@ -2,6 +2,7 @@ import Tenant from '#models/tenant'
 import Permission from '#models/permission'
 import { tenantConnectionPatch } from '#services/db_connection_switcher_service'
 import logger from '@adonisjs/core/services/logger'
+import Role from '#models/role'
 
 export default class InsertPermissionListener {
   async handle(event: any) {
@@ -21,7 +22,7 @@ export default class InsertPermissionListener {
               .where('name', permission.name)
               .first()
             if (!pExist) {
-              await Permission.create(
+              const p = await Permission.create(
                 {
                   name: permission.name,
                   type: permission.type,
@@ -30,7 +31,10 @@ export default class InsertPermissionListener {
                 },
                 { connection: 'tenant' }
               )
-              logger.info(`Inserted permission ${permission.name} for tenant ${tenant.tenant_name}`)
+              logger.info(`Inserted permission ${p.name} for tenant ${tenant.tenant_name}`)
+              const role = await Role.findBy('created_by', 'system', { connection: 'tenant' })
+              role?.related('permissions').attach([p.id])
+              logger.info(`Assign permission ${p.name} to role ${role?.name}`)
             } else {
               logger.info(
                 `Permission ${pExist?.name} already exists in tenant db ===> ${tenant.tenant_name}`
