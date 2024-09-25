@@ -1,5 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import app from '@adonisjs/core/services/app'
+import string from '@adonisjs/core/helpers/string'
 import { BaseController } from '#controllers/base_controller'
 import env from '#start/env'
 
@@ -22,17 +23,17 @@ export default class UploadController extends BaseController {
       const tenantApiKey = ctx.request.header('X-Tenant-Api-Key')
 
       if (tenantApiKey) {
-        const tenantId: any = await this.isTenant(ctx)
+        const tenant: any = await this.isTenant(ctx)
 
-        if (!tenantId) {
+        if (!tenant) {
           return ctx.response.unauthorized({
             code: 401,
-            message: 'Invalid tenant API key!',
+            message: 'Invalid Org API key!',
             data: null,
           })
         }
 
-        const tenantPath = `uploads/tenant_${tenantId.id}`
+        const tenantPath = `uploads/org_${string.snakeCase(tenant.tenant_name)}`
 
         const movePath = app.inProduction
           ? app.makePath(`../../${tenantPath}`)

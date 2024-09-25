@@ -4,7 +4,7 @@ import { tenantConnectionPatch } from '#services/db_connection_switcher_service'
 import logger from '@adonisjs/core/services/logger'
 import Role from '#models/role'
 
-export default class InsertPermissionListener {
+export default class AllTenantInsertPermissionListener {
   async handle(event: any) {
     const plan_id = event.data.plan_id
     const permissions = event.data.permissions
@@ -27,24 +27,24 @@ export default class InsertPermissionListener {
                   name: permission.name,
                   type: permission.type,
                   status: permission.status,
-                  created_by: permission.created_by,
+                  created_by: 'system',
                 },
                 { connection: 'tenant' }
               )
-              logger.info(`Inserted permission ${p.name} for tenant ${tenant.tenant_name}`)
+              logger.info(`Inserted permission ==> ${p.name} for tenant ==> ${tenant.tenant_name}`)
               const role = await Role.findBy('created_by', 'system', { connection: 'tenant' })
               role?.related('permissions').attach([p.id])
-              logger.info(`Assign permission ${p.name} to role ${role?.name}`)
+              logger.info(`Assign permission ==> ${p.name} to role ==> ${role?.name}`)
             } else {
               logger.info(
-                `Permission ${pExist?.name} already exists in tenant db ===> ${tenant.tenant_name}`
+                `Permission ==> ${pExist?.name} already exists in tenant db ==> ${tenant.tenant_name}`
               )
             }
           }
           await Permission.query({ connection: 'tenant' })
             .whereNotIn('name', toDeletePermissions)
             .delete()
-          logger.info(`Permission deleted for tenant ${tenant.tenant_name}`)
+          logger.info(`Permission deleted for tenant ==> ${tenant.tenant_name}`)
         }
       } else {
         logger.info('No permissions found for the plan.')

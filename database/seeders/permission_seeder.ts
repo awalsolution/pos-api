@@ -30,6 +30,11 @@ export default class extends BaseSeeder {
         created_by: 'Iqbal Hassan',
       },
       {
+        name: 'tenant profile',
+        type: 'public',
+        created_by: 'Iqbal Hassan',
+      },
+      {
         name: 'plan menu',
         type: 'private',
         created_by: 'Iqbal Hassan',
@@ -50,6 +55,11 @@ export default class extends BaseSeeder {
         created_by: 'Iqbal Hassan',
       },
       {
+        name: 'plan assign permission',
+        type: 'public',
+        created_by: 'Iqbal Hassan',
+      },
+      {
         name: 'permission menu',
         type: 'public',
         created_by: 'Iqbal Hassan',
@@ -67,11 +77,6 @@ export default class extends BaseSeeder {
       {
         name: 'permission delete',
         type: 'private',
-        created_by: 'Iqbal Hassan',
-      },
-      {
-        name: 'assign permission menu',
-        type: 'public',
         created_by: 'Iqbal Hassan',
       },
       {
