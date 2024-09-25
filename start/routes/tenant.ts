@@ -12,6 +12,8 @@ router
     router.put('/edit-single-tenant-plan/:id', [TenantController, 'EditPlan'])
     router.delete('/delete-single-tenant/:id', [TenantController, 'destroy'])
     router.get('/find-single-tenant-details', [TenantController, 'tenantDetailInfo'])
+    router.get('/find-single-tenant-profile/:apiKey', [TenantController, 'findTenantProfile'])
+    router.put('/edit-single-tenant-profile/:id', [TenantController, 'EditTenantProfile'])
     // router.get('/all-permission/:db_name', [TenantController, 'allPermission'])
     // router.put('/assign-permission/:id', [TenantController, 'assignPermission'])
     // // admin to tenant database user operations
@@ -27,10 +29,10 @@ router
     //   'InsertPermissionsOfTenant',
     // ])
     // router.get('/find-permissions-of-tenant', [TenantController, 'findPermssionsOfTenant'])
-    // router.delete('/delete-permission-of-tenant/:permission_id', [
-    //   TenantController,
-    //   'deletePermissionOfTenant',
-    // ])
+    router.delete('/delete-permission-of-tenant/:id', [
+      TenantController,
+      'deletePermissionOfTenant',
+    ])
   })
   .use([middleware.auth({ guards: ['api'] }), middleware.tenant()])
   .prefix('/api/v1/tenants')
