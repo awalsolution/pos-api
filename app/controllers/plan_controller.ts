@@ -1,7 +1,7 @@
 import { HttpContext } from '@adonisjs/core/http'
 import Plan from '#models/plan'
 import logger from '@adonisjs/core/services/logger'
-import InsertPermissionEvent from '#events/insert_permission_event'
+import AllTenantInsertPermissionEvent from '#events/all_tenant_insert_permission_event'
 
 export default class PlanController {
   async index({ request, response }: HttpContext) {
@@ -162,7 +162,10 @@ export default class PlanController {
 
       await DQ.related('permissions').sync(request.body().permissions)
       // permission insert event
-      InsertPermissionEvent.dispatch({ plan_id: DQ.id, permissions: request.body().permissions })
+      AllTenantInsertPermissionEvent.dispatch({
+        plan_id: DQ.id,
+        permissions: request.body().permissions,
+      })
       logger.info(`Permissions Assign to ${DQ.name} successfully!`)
 
       return response.ok({

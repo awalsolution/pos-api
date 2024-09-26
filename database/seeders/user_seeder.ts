@@ -5,8 +5,8 @@ export default class extends BaseSeeder {
   async run() {
     await User.createMany([
       {
-        email: 'iqbal@gmail.com',
-        password: '123456',
+        email: 'admin@gmail.com',
+        password: 'admin@123',
         created_by: 'Iqbal Hassan',
         name: 'Iqbal Hassan',
         phone_number: '12345678',
@@ -14,11 +14,11 @@ export default class extends BaseSeeder {
         city: 'Lahore',
         state: 'Punjab',
         country: 'Pakistan',
-        profile_picture: '/uploads/admin/login.avif',
+        profile_picture: '/uploads/admin/dev.jpg',
       },
       {
         email: 'manager@gmail.com',
-        password: '123456',
+        password: 'admin@123',
         created_by: 'Iqbal Hassan',
         name: 'Jawad Ali',
         phone_number: '12345678',
@@ -26,7 +26,7 @@ export default class extends BaseSeeder {
         city: 'Lahore',
         state: 'Punjab',
         country: 'Pakistan',
-        profile_picture: '/uploads/admin/login.avif',
+        profile_picture: '/uploads/admin/dev.jpg',
       },
     ])
   }

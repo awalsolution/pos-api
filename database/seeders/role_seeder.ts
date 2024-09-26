@@ -9,11 +9,11 @@ export default class extends BaseSeeder {
         created_by: 'Iqbal Hassan',
       },
       {
-        name: 'manager',
+        name: 'company admin',
         created_by: 'Iqbal Hassan',
       },
       {
-        name: 'company admin',
+        name: 'manager',
         created_by: 'Iqbal Hassan',
       },
     ])

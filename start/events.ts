@@ -1,5 +1,8 @@
 import emitter from '@adonisjs/core/services/emitter'
-import InsertPermissionEvent from '#events/insert_permission_event'
-import InsertPermissionListener from '#listeners/insert_permission_listener'
+import AllTenantInsertPermissionEvent from '#events/all_tenant_insert_permission_event'
+import AllTenantInsertPermissionListener from '#listeners/all_tenant_insert_permission_listener'
+import SingleTenantInsertPermissionEvent from '#events/single_tenant_insert_permission_event'
+import SingleTenantInsertPermissionListener from '#listeners/single_tenant_insert_permission_listener'
 
-emitter.on(InsertPermissionEvent, [InsertPermissionListener])
+emitter.on(AllTenantInsertPermissionEvent, [AllTenantInsertPermissionListener])
+emitter.on(SingleTenantInsertPermissionEvent, [SingleTenantInsertPermissionListener])
