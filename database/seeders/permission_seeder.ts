@@ -5,6 +5,21 @@ export default class extends BaseSeeder {
   async run() {
     await Permission.createMany([
       {
+        name: 'home menu',
+        type: 'public',
+        created_by: 'Iqbal Hassan',
+      },
+      {
+        name: 'admin menu',
+        type: 'public',
+        created_by: 'Iqbal Hassan',
+      },
+      {
+        name: 'management menu',
+        type: 'public',
+        created_by: 'Iqbal Hassan',
+      },
+      {
         name: 'dashboard menu',
         type: 'public',
         created_by: 'Iqbal Hassan',
@@ -131,6 +146,107 @@ export default class extends BaseSeeder {
       },
       {
         name: 'role assign permission',
+        type: 'public',
+        created_by: 'Iqbal Hassan',
+      },
+      // tenant permissions
+      {
+        name: 'customer menu',
+        type: 'public',
+        created_by: 'Iqbal Hassan',
+      },
+      {
+        name: 'customer create',
+        type: 'public',
+        created_by: 'Iqbal Hassan',
+      },
+      {
+        name: 'customer update',
+        type: 'public',
+        created_by: 'Iqbal Hassan',
+      },
+      {
+        name: 'customer delete',
+        type: 'public',
+        created_by: 'Iqbal Hassan',
+      },
+      {
+        name: 'inventory menu',
+        type: 'public',
+        created_by: 'Iqbal Hassan',
+      },
+      {
+        name: 'inventory create',
+        type: 'public',
+        created_by: 'Iqbal Hassan',
+      },
+      {
+        name: 'inventory update',
+        type: 'public',
+        created_by: 'Iqbal Hassan',
+      },
+      {
+        name: 'inventory delete',
+        type: 'public',
+        created_by: 'Iqbal Hassan',
+      },
+      {
+        name: 'inventoryCategory menu',
+        type: 'public',
+        created_by: 'Iqbal Hassan',
+      },
+      {
+        name: 'inventoryCategory create',
+        type: 'public',
+        created_by: 'Iqbal Hassan',
+      },
+      {
+        name: 'inventoryCategory update',
+        type: 'public',
+        created_by: 'Iqbal Hassan',
+      },
+      {
+        name: 'inventoryCategory delete',
+        type: 'public',
+        created_by: 'Iqbal Hassan',
+      },
+      {
+        name: 'purchase menu',
+        type: 'public',
+        created_by: 'Iqbal Hassan',
+      },
+      {
+        name: 'purchase create',
+        type: 'public',
+        created_by: 'Iqbal Hassan',
+      },
+      {
+        name: 'purchase update',
+        type: 'public',
+        created_by: 'Iqbal Hassan',
+      },
+      {
+        name: 'purchase delete',
+        type: 'public',
+        created_by: 'Iqbal Hassan',
+      },
+      {
+        name: 'vendor menu',
+        type: 'public',
+        created_by: 'Iqbal Hassan',
+      },
+      {
+        name: 'vendor create',
+        type: 'public',
+        created_by: 'Iqbal Hassan',
+      },
+      {
+        name: 'vendor update',
+        type: 'public',
+        created_by: 'Iqbal Hassan',
+      },
+      {
+        name: 'vendor delete',
         type: 'public',
         created_by: 'Iqbal Hassan',
       },
