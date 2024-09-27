@@ -2,14 +2,14 @@ import db from '@adonisjs/lucid/services/db'
 import string from '@adonisjs/core/helpers/string'
 import logger from '@adonisjs/core/services/logger'
 import { HttpContext } from '@adonisjs/core/http'
-import { tenantConnectionPatch } from '#services/db_connection_switcher_service'
 import { BaseController } from '#controllers/base_controller'
+import { tenantConnectionPatch } from '#services/db_connection_switcher_service'
+import SingleTenantInsertPermissionEvent from '#events/single_tenant_insert_permission_event'
 import Tenant from '#models/tenant'
 import Permission from '#models/permission'
 import Role from '#models/role'
 import User from '#models/user'
 import Plan from '#models/plan'
-import SingleTenantInsertPermissionEvent from '#events/single_tenant_insert_permission_event'
 
 export default class TenantController extends BaseController {
   async index({ request, response }: HttpContext) {

@@ -1,10 +1,10 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import { cuid } from '@adonisjs/core/helpers'
 import { BaseController } from '#controllers/base_controller'
-import User from '#models/user'
-import Tenant from '#models/tenant'
 import logger from '@adonisjs/core/services/logger'
 import db from '@adonisjs/lucid/services/db'
+import User from '#models/user'
+import Tenant from '#models/tenant'
 
 export default class AuthController extends BaseController {
   async register({ request, response }: HttpContext) {

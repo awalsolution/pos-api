@@ -1,8 +1,8 @@
 import { DateTime } from 'luxon'
 import { BaseModel, SnakeCaseNamingStrategy, column, hasMany } from '@adonisjs/lucid/orm'
-import VendorAddress from './vendor_address.js'
 import type { HasMany } from '@adonisjs/lucid/types/relations'
-import VendorMetadata from './vendor_metadata.js'
+import VendorAddress from '#models/tenant/vendor_address'
+import VendorMetadata from '#models/tenant/vendor_metadata'
 
 BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
 

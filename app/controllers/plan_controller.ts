@@ -1,7 +1,7 @@
 import { HttpContext } from '@adonisjs/core/http'
-import Plan from '#models/plan'
 import logger from '@adonisjs/core/services/logger'
 import AllTenantInsertPermissionEvent from '#events/all_tenant_insert_permission_event'
+import Plan from '#models/plan'
 
 export default class PlanController {
   async index({ request, response }: HttpContext) {

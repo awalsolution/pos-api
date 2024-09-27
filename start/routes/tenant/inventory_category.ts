@@ -1,7 +1,7 @@
 import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
 const InventoryCategoriesController = () =>
-  import('#controllers/tenants/inventory_categories_controller')
+  import('#controllers/tenant/inventory_categories_controller')
 
 router
   .group(() => {

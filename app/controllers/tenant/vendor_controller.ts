@@ -1,6 +1,6 @@
 import { HttpContext } from '@adonisjs/core/http'
-import Vendor from '#models/vendor'
 import logger from '@adonisjs/core/services/logger'
+import Vendor from '#models/tenant/vendor'
 
 export default class RoleController {
   async index({ request, response }: HttpContext) {
@@ -53,7 +53,6 @@ export default class RoleController {
 
   async create({ auth, request, response }: HttpContext) {
     try {
-      console.log(request.body())
       const currentUser = auth.user!
       const DE = await Vendor.findBy('name', request.body().name)
 
@@ -74,6 +73,7 @@ export default class RoleController {
       DM.shipVia = request.body().ship_via
       DM.defaulPoDays = request.body().defaul_po_days
       DM.created_by = currentUser?.name
+
       const DQ = await DM.save()
 
       DQ.related('address').create(request.body().shippingAddress)
@@ -82,7 +82,7 @@ export default class RoleController {
       } else {
         DQ.related('address').create({ ...request.body().mailingAddress, type: 'mailing' })
       }
-      logger.info(`Role ${DQ.name} is created successfully!`)
+      logger.info(`Vendor ${DQ.name} is created successfully!`)
       return response.ok({
         code: 200,
         message: 'Created successfully!',
@@ -155,7 +155,7 @@ export default class RoleController {
         })
       }
       await DQ.delete()
-      logger.info(`Role ${DQ.name} is deleted successfully!`)
+      logger.info(`Vendor ${DQ.name} is deleted successfully!`)
       return response.ok({
         code: 200,
         message: 'Deleted successfully!',

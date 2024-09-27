@@ -6,14 +6,15 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
+      table.uuid('guid').nullable()
       table.string('name').nullable()
       table.string('email').notNullable().unique()
-      table.string('phone_number').nullable()
+      table.string('contact').nullable()
+      table.string('phone').nullable()
+      table.string('notes').nullable()
+      table.string('max_credit').nullable()
+      table.string('tex_category').nullable()
       table.boolean('status').notNullable().defaultTo(true)
-      table.string('address').nullable()
-      table.string('city').nullable()
-      table.string('state').nullable()
-      table.string('country').nullable()
       table.string('created_by').nullable()
 
       table.timestamp('created_at')

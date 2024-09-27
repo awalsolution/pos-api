@@ -14,8 +14,9 @@ export default class extends BaseSchema {
       table.decimal('pd_fright_amount').defaultTo(0)
       table.string('ship_via').nullable()
       table.integer('defaul_po_days').defaultTo(7)
-      table.boolean('status').defaultTo(1).index()
+      table.boolean('status').notNullable().defaultTo(true).index()
       table.string('created_by').nullable()
+
       table.timestamp('created_at')
       table.timestamp('updated_at')
     })
