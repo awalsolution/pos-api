@@ -42,7 +42,7 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare password: string
 
   @column()
-  declare status: boolean
+  declare status: boolean | number
 
   @column()
   declare remember_me: boolean | null
