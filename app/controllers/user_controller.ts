@@ -1,7 +1,7 @@
 import { HttpContext } from '@adonisjs/core/http'
-import User from '#models/user'
 import { BaseController } from '#controllers/base_controller'
 import logger from '@adonisjs/core/services/logger'
+import User from '#models/user'
 
 export default class UserController extends BaseController {
   async index({ auth, request, response }: HttpContext) {
