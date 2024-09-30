@@ -1,4 +1,3 @@
-import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
 import Tenant from '#models/tenant'
 import db from '@adonisjs/lucid/services/db'
@@ -19,9 +18,9 @@ export class BaseController {
     return this.checkRole(user, 'super admin')
   }
 
-  async isTenant(ctx: HttpContext) {
-    if (ctx.request.header('X-Tenant-Api-Key')) {
-      const tenant = await Tenant.findBy('tenant_api_key', ctx.request.header('X-Tenant-Api-Key'), {
+  async isTenant(key: string) {
+    if (key) {
+      const tenant = await Tenant.findBy('tenant_api_key', key, {
         connection: 'mysql',
       })
       return tenant?.serialize()

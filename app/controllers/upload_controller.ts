@@ -1,64 +1,28 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import app from '@adonisjs/core/services/app'
 import string from '@adonisjs/core/helpers/string'
 import { BaseController } from '#controllers/base_controller'
-import env from '#start/env'
+import drive from '@adonisjs/drive/services/main'
+import logger from '@adonisjs/core/services/logger'
 
 export default class UploadController extends BaseController {
   async imageUploader(ctx: HttpContext) {
     try {
-      const img: any = ctx.request.file('image')
-
+      const img = ctx.request.file('image')
       if (!img) {
         return ctx.response.badRequest({
           code: 400,
           message: 'No image file found in the request!',
-          data: null,
         })
       }
 
-      const newImg = img.clientName
-      let url: string | null = null
-
-      const tenantApiKey = ctx.request.header('X-Tenant-Api-Key')
-
-      if (tenantApiKey) {
-        const tenant: any = await this.isTenant(ctx)
-
-        if (!tenant) {
-          return ctx.response.unauthorized({
-            code: 401,
-            message: 'Invalid Org API key!',
-            data: null,
-          })
-        }
-
-        const tenantPath = `uploads/org_${string.snakeCase(tenant.tenant_name)}`
-
-        const movePath = app.inProduction
-          ? app.makePath(`../../${tenantPath}`)
-          : app.makePath(`${env.get('LOCAL_DRIVE')}/${tenantPath}`)
-
-        await img.move(movePath, { name: newImg })
-
-        url = `/${tenantPath}/${newImg}`
-      } else {
-        const adminPath = 'uploads/admin'
-
-        const movePath = app.inProduction
-          ? app.makePath(`../../${adminPath}`)
-          : app.makePath(`${env.get('LOCAL_DRIVE')}/${adminPath}`)
-
-        await img.move(movePath, { name: newImg })
-
-        url = `/${adminPath}/${newImg}`
-      }
+      const key = ctx.request.header('X-Tenant-Api-Key')
+      const path = key ? await this.getTenantPath(key, img.clientName) : `admin/${img.clientName}`
+      const url = await this.uploadImage(img, path)
 
       if (!url) {
         return ctx.response.badRequest({
           code: 400,
           message: 'Image not uploaded, please try again!',
-          data: null,
         })
       }
 
@@ -68,12 +32,24 @@ export default class UploadController extends BaseController {
         data: url,
       })
     } catch (error) {
-      console.error('Image upload error:', error)
+      logger.error('Internal server error during image upload!')
       ctx.response.internalServerError({
         code: 500,
         message: 'Internal server error during image upload!',
-        data: null,
       })
     }
+  }
+
+  private async getTenantPath(key: string, imgName: string) {
+    const tenant = await this.isTenant(key)
+    if (!tenant) {
+      throw new Error('Invalid Org API key!')
+    }
+    return `org_${string.snakeCase(tenant.tenant_name)}/${imgName}`
+  }
+
+  private async uploadImage(img: any, path: string) {
+    await img.moveToDisk(path)
+    return await drive.use().getUrl(path)
   }
 }
