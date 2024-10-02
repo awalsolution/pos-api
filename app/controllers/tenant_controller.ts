@@ -1,15 +1,16 @@
+import { DateTime } from 'luxon'
 import db from '@adonisjs/lucid/services/db'
 import string from '@adonisjs/core/helpers/string'
 import logger from '@adonisjs/core/services/logger'
 import { HttpContext } from '@adonisjs/core/http'
-import { tenantConnectionPatch } from '#services/db_connection_switcher_service'
 import { BaseController } from '#controllers/base_controller'
+import { tenantConnectionPatch } from '#services/db_connection_switcher_service'
+import SingleTenantInsertPermissionEvent from '#events/single_tenant_insert_permission_event'
 import Tenant from '#models/tenant'
 import Permission from '#models/permission'
 import Role from '#models/role'
 import User from '#models/user'
 import Plan from '#models/plan'
-import SingleTenantInsertPermissionEvent from '#events/single_tenant_insert_permission_event'
 
 export default class TenantController extends BaseController {
   async index({ request, response }: HttpContext) {
@@ -241,11 +242,14 @@ export default class TenantController extends BaseController {
             `Permissions Assign to ${createdRole.name} into tenant database: ${dbName} successfully!`
           )
 
-          const user: any = new User()
+          const user = new User()
 
-          user.email = DQ.email
+          user.email = DQ.email!
           user.password = 'admin@123'
-          user.status = request.body().status
+          user.is_email_verified = 1
+          user.email_verified_at = DateTime.now().toFormat('yyyy-MM-dd HH:mm:ss')
+          user.is_phone_verified = 1
+          user.phone_verified_at = DateTime.now().toFormat('yyyy-MM-dd HH:mm:ss')
           user.phone_number = DQ.phone_number
           user.created_by = 'system'
 

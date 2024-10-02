@@ -48,16 +48,16 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare remember_me: boolean | null
 
   @column()
-  declare is_email_verified: boolean
+  declare is_email_verified: boolean | number
 
   @column()
-  declare email_verified_at: DateTime
+  declare email_verified_at: DateTime | string
 
   @column()
-  declare is_phone_verified: boolean
+  declare is_phone_verified: boolean | number
 
   @column()
-  declare phone_verified_at: DateTime
+  declare phone_verified_at: DateTime | string
 
   @column()
   declare address: string | null
