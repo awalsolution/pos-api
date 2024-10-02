@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon'
 import db from '@adonisjs/lucid/services/db'
 import string from '@adonisjs/core/helpers/string'
 import logger from '@adonisjs/core/services/logger'
@@ -241,11 +242,14 @@ export default class TenantController extends BaseController {
             `Permissions Assign to ${createdRole.name} into tenant database: ${dbName} successfully!`
           )
 
-          const user: any = new User()
+          const user = new User()
 
-          user.email = DQ.email
+          user.email = DQ.email!
           user.password = 'admin@123'
-          user.status = request.body().status
+          user.is_email_verified = 1
+          user.email_verified_at = DateTime.now().toFormat('yyyy-MM-dd HH:mm:ss')
+          user.is_phone_verified = 1
+          user.phone_verified_at = DateTime.now().toFormat('yyyy-MM-dd HH:mm:ss')
           user.phone_number = DQ.phone_number
           user.created_by = 'system'
 
