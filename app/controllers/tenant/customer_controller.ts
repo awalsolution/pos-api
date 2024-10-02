@@ -110,7 +110,7 @@ export default class CustomersController {
   async update({ auth, request, response }: HttpContext) {
     try {
       const currentUser = auth.user!
-      const DQ = await Customer.findBy('id', request.param('id'))
+      const DQ = await Customer.query().preload('address').where('id', request.param('id')).first()
 
       if (!DQ) {
         return response.notFound({
@@ -141,6 +141,46 @@ export default class CustomersController {
       DQ.created_by = currentUser?.name
 
       await DQ.save()
+
+      if (request.body().address) {
+        DQ.related('address').updateOrCreate(
+          { id: request.body().address.id },
+          {
+            street: request.body().address.street,
+            city: request.body().address.city,
+            state: request.body().address.state,
+            zip: request.body().address.zip,
+            country: request.body().address.country,
+            type: request.body().address.type,
+          }
+        )
+      }
+
+      if (request.body().same_as) {
+        DQ.related('address').updateOrCreate(
+          { id: request.body().billing.id },
+          {
+            street: request.body().address.street,
+            city: request.body().address.city,
+            state: request.body().address.state,
+            zip: request.body().address.zip,
+            country: request.body().address.country,
+            type: 'billing',
+          }
+        )
+      } else {
+        DQ.related('address').updateOrCreate(
+          { id: request.body().billing.id },
+          {
+            street: request.body().billing.street,
+            city: request.body().billing.city,
+            state: request.body().billing.state,
+            zip: request.body().billing.zip,
+            country: request.body().billing.country,
+            type: request.body().billing.type,
+          }
+        )
+      }
 
       logger.info(`Customer ${DQ.name} is updated successfully!`)
 

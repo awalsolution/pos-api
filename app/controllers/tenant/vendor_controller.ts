@@ -100,7 +100,7 @@ export default class RoleController {
   async update({ auth, request, response }: HttpContext) {
     try {
       const currentUser = auth.user!
-      const DM = await Vendor.findBy('id', request.param('id'))
+      const DM = await Vendor.query().preload('address').where('id', request.param('id')).first()
       if (!DM) {
         return response.notFound({
           code: 400,
@@ -130,6 +130,47 @@ export default class RoleController {
       DM.created_by = currentUser?.name
 
       await DM.save()
+
+      if (request.body().shipping_address) {
+        DM.related('address').updateOrCreate(
+          { id: request.body().shipping_address.id },
+          {
+            street: request.body().shipping_address.street,
+            city: request.body().shipping_address.city,
+            state: request.body().shipping_address.state,
+            zip: request.body().shipping_address.zip,
+            country: request.body().shipping_address.country,
+            type: request.body().shipping_address.type,
+          }
+        )
+      }
+
+      if (request.body().same_as_shipping) {
+        DM.related('address').updateOrCreate(
+          { id: request.body().mailing_address.id },
+          {
+            street: request.body().shipping_address.street,
+            city: request.body().shipping_address.city,
+            state: request.body().shipping_address.state,
+            zip: request.body().shipping_address.zip,
+            country: request.body().shipping_address.country,
+            type: 'mailing',
+          }
+        )
+      } else {
+        DM.related('address').updateOrCreate(
+          { id: request.body().mailing_address.id },
+          {
+            street: request.body().mailing_address.street,
+            city: request.body().mailing_address.city,
+            state: request.body().mailing_address.state,
+            zip: request.body().mailing_address.zip,
+            country: request.body().mailing_address.country,
+            type: request.body().mailing_address.type,
+          }
+        )
+      }
+
       logger.info(`Vendor ${DM.name} is updated successfully!`)
       return response.ok({
         code: 200,
