@@ -5,6 +5,7 @@ import { tenantConnectionPatch } from '#services/db_connection_switcher_service'
 import { MigrationRunner } from '@adonisjs/lucid/migration'
 import app from '@adonisjs/core/services/app'
 import logger from '@adonisjs/core/services/logger'
+
 export class BaseController {
   async checkRole(user?: User, role?: string) {
     if (user?.roles && user.roles.length) {

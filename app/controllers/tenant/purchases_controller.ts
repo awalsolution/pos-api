@@ -1,10 +1,10 @@
 import { HttpContext } from '@adonisjs/core/http'
-import Customer from '#models/tenants/customer'
+import Purchase from '#models/tenant/purchase'
 import logger from '@adonisjs/core/services/logger'
 
-export default class CustomersController {
+export default class PurchasesController {
   async index({ request, response }: HttpContext) {
-    let DQ = Customer.query()
+    let DQ = Purchase.query()
 
     const page = request.input('page')
     const perPage = request.input('perPage')
@@ -30,7 +30,7 @@ export default class CustomersController {
 
   async show({ request, response }: HttpContext) {
     try {
-      const DQ = await Customer.query().where('id', request.param('id')).first()
+      const DQ = await Purchase.query().where('id', request.param('id')).first()
 
       if (!DQ) {
         return response.notFound({
@@ -55,7 +55,7 @@ export default class CustomersController {
   async create({ auth, request, response }: HttpContext) {
     try {
       const currentUser = auth.user!
-      const DE = await Customer.findBy('name', request.body().name)
+      const DE = await Purchase.findBy('name', request.body().name)
 
       if (DE) {
         return response.conflict({
@@ -64,14 +64,14 @@ export default class CustomersController {
         })
       }
 
-      const DM = new Customer()
+      const DM = new Purchase()
 
       DM.name = request.body().name
       DM.status = request.body().status
       DM.created_by = currentUser?.name
 
       const DQ = await DM.save()
-      logger.info(`Customer ${DQ.name} is created successfully!`)
+      logger.info(`Purchase ${DQ.name} is created successfully!`)
       return response.ok({
         code: 200,
         message: 'Created successfully!',
@@ -89,14 +89,14 @@ export default class CustomersController {
   async update({ auth, request, response }: HttpContext) {
     try {
       const currentUser = auth.user!
-      const DQ = await Customer.findBy('id', request.param('id'))
+      const DQ = await Purchase.findBy('id', request.param('id'))
       if (!DQ) {
         return response.notFound({
           code: 400,
           message: 'Data does not exists!',
         })
       }
-      const DE = await Customer.query()
+      const DE = await Purchase.query()
         .where('name', 'like', request.body().name)
         .whereNot('id', request.param('id'))
         .first()
@@ -113,7 +113,7 @@ export default class CustomersController {
       DQ.created_by = currentUser?.name
 
       await DQ.save()
-      logger.info(`Customer ${DQ.name} is updated successfully!`)
+      logger.info(`Purchase ${DQ.name} is updated successfully!`)
       return response.ok({
         code: 200,
         message: 'Updated successfully!',
@@ -130,7 +130,7 @@ export default class CustomersController {
 
   async destroy({ request, response }: HttpContext) {
     try {
-      const DQ = await Customer.findBy('id', request.param('id'))
+      const DQ = await Purchase.findBy('id', request.param('id'))
       if (!DQ) {
         return response.notFound({
           code: 400,
@@ -138,7 +138,7 @@ export default class CustomersController {
         })
       }
       await DQ.delete()
-      logger.info(`Customer ${DQ.name} is deleted successfully!`)
+      logger.info(`Purchase ${DQ.name} is deleted successfully!`)
       return response.ok({
         code: 200,
         message: 'Deleted successfully!',

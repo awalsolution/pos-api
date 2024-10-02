@@ -1,6 +1,6 @@
 import { HttpContext } from '@adonisjs/core/http'
-import Permission from '#models/permission'
 import logger from '@adonisjs/core/services/logger'
+import Permission from '#models/permission'
 
 export default class PermissionController {
   async index({ request, response }: HttpContext) {

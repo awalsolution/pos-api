@@ -1,10 +1,10 @@
 import { HttpContext } from '@adonisjs/core/http'
-import Purchase from '#models/tenants/purchase'
+import Inventory from '#models/tenant/inventory'
 import logger from '@adonisjs/core/services/logger'
 
-export default class PurchasesController {
+export default class InventoriesController {
   async index({ request, response }: HttpContext) {
-    let DQ = Purchase.query()
+    let DQ = Inventory.query()
 
     const page = request.input('page')
     const perPage = request.input('perPage')
@@ -30,7 +30,7 @@ export default class PurchasesController {
 
   async show({ request, response }: HttpContext) {
     try {
-      const DQ = await Purchase.query().where('id', request.param('id')).first()
+      const DQ = await Inventory.query().where('id', request.param('id')).first()
 
       if (!DQ) {
         return response.notFound({
@@ -55,7 +55,7 @@ export default class PurchasesController {
   async create({ auth, request, response }: HttpContext) {
     try {
       const currentUser = auth.user!
-      const DE = await Purchase.findBy('name', request.body().name)
+      const DE = await Inventory.findBy('name', request.body().name)
 
       if (DE) {
         return response.conflict({
@@ -64,14 +64,13 @@ export default class PurchasesController {
         })
       }
 
-      const DM = new Purchase()
+      const DM = new Inventory()
 
-      DM.name = request.body().name
       DM.status = request.body().status
       DM.created_by = currentUser?.name
 
       const DQ = await DM.save()
-      logger.info(`Purchase ${DQ.name} is created successfully!`)
+      logger.info(`Inventory ${DQ.name} is created successfully!`)
       return response.ok({
         code: 200,
         message: 'Created successfully!',
@@ -89,14 +88,14 @@ export default class PurchasesController {
   async update({ auth, request, response }: HttpContext) {
     try {
       const currentUser = auth.user!
-      const DQ = await Purchase.findBy('id', request.param('id'))
+      const DQ = await Inventory.findBy('id', request.param('id'))
       if (!DQ) {
         return response.notFound({
           code: 400,
           message: 'Data does not exists!',
         })
       }
-      const DE = await Purchase.query()
+      const DE = await Inventory.query()
         .where('name', 'like', request.body().name)
         .whereNot('id', request.param('id'))
         .first()
@@ -108,12 +107,11 @@ export default class PurchasesController {
         })
       }
 
-      DQ.name = request.body().name
       DQ.status = request.body().status
       DQ.created_by = currentUser?.name
 
       await DQ.save()
-      logger.info(`Purchase ${DQ.name} is updated successfully!`)
+      logger.info(`Inventory ${DQ.name} is updated successfully!`)
       return response.ok({
         code: 200,
         message: 'Updated successfully!',
@@ -130,7 +128,7 @@ export default class PurchasesController {
 
   async destroy({ request, response }: HttpContext) {
     try {
-      const DQ = await Purchase.findBy('id', request.param('id'))
+      const DQ = await Inventory.findBy('id', request.param('id'))
       if (!DQ) {
         return response.notFound({
           code: 400,
@@ -138,7 +136,7 @@ export default class PurchasesController {
         })
       }
       await DQ.delete()
-      logger.info(`Purchase ${DQ.name} is deleted successfully!`)
+      logger.info(`Inventory ${DQ.name} is deleted successfully!`)
       return response.ok({
         code: 200,
         message: 'Deleted successfully!',

@@ -3,18 +3,18 @@ import { BaseModel, SnakeCaseNamingStrategy, column } from '@adonisjs/lucid/orm'
 
 BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
 
-export default class Customer extends BaseModel {
+export default class VendorMetadata extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
 
   @column()
-  declare name: string
+  declare vendorId: number | null
 
   @column()
-  declare status: boolean
+  declare key_name: string | null
 
   @column()
-  declare created_by: string | null
+  declare key_value: string | null
 
   @column.dateTime({
     autoCreate: true,

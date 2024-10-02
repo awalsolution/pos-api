@@ -1,6 +1,6 @@
 import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
-const PurchasesController = () => import('#controllers/tenants/purchases_controller')
+const PurchasesController = () => import('#controllers/tenant/purchases_controller')
 
 router
   .group(() => {
