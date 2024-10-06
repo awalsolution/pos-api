@@ -22,6 +22,7 @@ router.post('/api/v1/tenant-register', [AuthController, 'tenantRegister'])
 router.post('/api/v1/upload', [UploadController, 'imageUploader'])
 router.get('/api/v1/verify-domain/:name', [AuthController, 'verifyDomainName'])
 
+import '#start/routes/menu'
 import '#start/routes/auth'
 import '#start/routes/user'
 import '#start/routes/plan'
