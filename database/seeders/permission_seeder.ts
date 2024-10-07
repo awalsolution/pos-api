@@ -18,12 +18,6 @@ export default class extends BaseSeeder {
       },
       {
         menuId: 1,
-        name: 'management menu',
-        type: 'public',
-        created_by: 'Iqbal Hassan',
-      },
-      {
-        menuId: 1,
         name: 'dashboard menu',
         type: 'public',
         created_by: 'Iqbal Hassan',
@@ -203,6 +197,12 @@ export default class extends BaseSeeder {
         created_by: 'Iqbal Hassan',
       },
       // tenant permissions
+      {
+        menuId: 1,
+        name: 'management menu',
+        type: 'public',
+        created_by: 'Iqbal Hassan',
+      },
       {
         menuId: 8,
         name: 'customer menu',
