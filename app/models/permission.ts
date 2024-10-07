@@ -1,6 +1,13 @@
 import { DateTime } from 'luxon'
-import { BaseModel, SnakeCaseNamingStrategy, column, manyToMany } from '@adonisjs/lucid/orm'
-import type { ManyToMany } from '@adonisjs/lucid/types/relations'
+import {
+  BaseModel,
+  SnakeCaseNamingStrategy,
+  belongsTo,
+  column,
+  manyToMany,
+} from '@adonisjs/lucid/orm'
+import type { BelongsTo, ManyToMany } from '@adonisjs/lucid/types/relations'
+import Menu from '#models/menu'
 import Role from '#models/role'
 import Plan from '#models/plan'
 
@@ -11,16 +18,19 @@ export default class Permission extends BaseModel {
   declare id: number
 
   @column()
+  declare menuId: number | null
+
+  @column()
   declare name: string
 
   @column()
   declare type: string
 
   @column()
-  declare status: boolean
+  declare status: boolean | number
 
   @column()
-  declare created_by: string | null
+  declare created_by: string
 
   @column.dateTime({
     autoCreate: true,
@@ -36,6 +46,9 @@ export default class Permission extends BaseModel {
   declare updatedAt: DateTime
 
   // relation
+  @belongsTo(() => Menu)
+  declare menus: BelongsTo<typeof Menu>
+
   @manyToMany(() => Role, {
     pivotTable: 'role_has_permissions',
     pivotTimestamps: true,

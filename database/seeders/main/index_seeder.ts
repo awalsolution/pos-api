@@ -5,6 +5,7 @@ export default class IndexSeeder extends BaseSeeder {
     await new Seeder.default(this.client).run()
   }
   async run() {
+    await this.runSeeder(await import('#database/seeders/menu_seeder'))
     await this.runSeeder(await import('#database/seeders/user_seeder'))
     await this.runSeeder(await import('#database/seeders/role_seeder'))
     await this.runSeeder(await import('#database/seeders/permission_seeder'))
