@@ -11,6 +11,7 @@ import Permission from '#models/permission'
 import Role from '#models/role'
 import User from '#models/user'
 import Plan from '#models/plan'
+import Menu from '#models/menu'
 
 export default class TenantController extends BaseController {
   async index({ request, response }: HttpContext) {
@@ -202,8 +203,11 @@ export default class TenantController extends BaseController {
           data: DQ,
         })
       } else {
-        const plan: any = await Plan.query().preload('permissions').where('id', DQ.planId!).first()
-        if (request.body().role_id && plan.permissions.length > 0) {
+        const plan = await Plan.query()
+          .preload('permissions', (sq) => sq.preload('menus'))
+          .where('id', DQ.planId!)
+          .first()
+        if (plan && request.body().role_id && plan.permissions.length > 0) {
           const dbName: string = `tenant_${string.snakeCase(DQ.tenant_name)}_db`
           const tenantApiKey = `tenant_${string.snakeCase(DQ.tenant_name)}_api_key`
           DQ.status = 1
@@ -225,9 +229,21 @@ export default class TenantController extends BaseController {
           let allPermissions = []
           if (plan.permissions) {
             for (const item of plan.permissions) {
+              const mExist = await Menu.query().where('name', item.menus.name).first()
+              let menu = mExist
+              if (!mExist) {
+                menu = await Menu.create({
+                  name: item.menus.name,
+                  type: item.menus.type,
+                  status: item.status,
+                  created_by: 'system',
+                })
+              }
               const data = await Permission.create({
+                menuId: menu?.id,
                 name: item.name,
                 type: item.type,
+                status: item.status,
                 created_by: 'system',
               })
               allPermissions.push(data.id)
@@ -270,7 +286,7 @@ export default class TenantController extends BaseController {
         } else {
           return response.notFound({
             code: 400,
-            message: 'Please select role! & plan have no permissions',
+            message: 'Please select role! & Assign permissions to plan first!',
             data: null,
           })
         }
