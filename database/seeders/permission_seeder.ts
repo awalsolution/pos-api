@@ -6,6 +6,18 @@ export default class extends BaseSeeder {
     await Permission.createMany([
       {
         menuId: 1,
+        name: 'home menu',
+        type: 'public',
+        created_by: 'Iqbal Hassan',
+      },
+      {
+        menuId: 1,
+        name: 'admin menu',
+        type: 'public',
+        created_by: 'Iqbal Hassan',
+      },
+      {
+        menuId: 1,
         name: 'dashboard menu',
         type: 'public',
         created_by: 'Iqbal Hassan',
