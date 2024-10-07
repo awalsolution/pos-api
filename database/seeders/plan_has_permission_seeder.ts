@@ -47,12 +47,6 @@ export default class extends BaseSeeder {
       { plan_id: 1, permission_id: 51 },
       { plan_id: 1, permission_id: 52 },
       { plan_id: 1, permission_id: 53 },
-      { plan_id: 1, permission_id: 54 },
-      { plan_id: 1, permission_id: 55 },
-      { plan_id: 1, permission_id: 56 },
-      { plan_id: 1, permission_id: 57 },
-      { plan_id: 1, permission_id: 58 },
-      { plan_id: 1, permission_id: 59 },
     ])
   }
 }

@@ -46,6 +46,30 @@ export default class extends BaseSeeder {
         status: 1,
         created_by: 'Iqbal Hassan',
       },
+      {
+        name: 'Customers',
+        type: 'public',
+        status: 1,
+        created_by: 'Iqbal Hassan',
+      },
+      {
+        name: 'Inventories',
+        type: 'public',
+        status: 1,
+        created_by: 'Iqbal Hassan',
+      },
+      {
+        name: 'Purchases',
+        type: 'public',
+        status: 1,
+        created_by: 'Iqbal Hassan',
+      },
+      {
+        name: 'Vendors',
+        type: 'public',
+        status: 1,
+        created_by: 'Iqbal Hassan',
+      },
     ])
   }
 }
