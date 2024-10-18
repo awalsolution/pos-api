@@ -1,6 +1,4 @@
 import { DateTime } from 'luxon'
-import db from '@adonisjs/lucid/services/db'
-import string from '@adonisjs/core/helpers/string'
 import logger from '@adonisjs/core/services/logger'
 import { HttpContext } from '@adonisjs/core/http'
 import { BaseController } from '#controllers/base_controller'
@@ -12,6 +10,7 @@ import Role from '#models/role'
 import User from '#models/user'
 import Plan from '#models/plan'
 import Menu from '#models/menu'
+import { cuid } from '@adonisjs/core/helpers'
 
 export default class TenantController extends BaseController {
   async index({ request, response }: HttpContext) {
@@ -208,8 +207,8 @@ export default class TenantController extends BaseController {
           .where('id', DQ.planId!)
           .first()
         if (plan && request.body().role_id && plan.permissions.length > 0) {
-          const dbName: string = `tenant_${string.snakeCase(DQ.tenant_name)}_db`
-          const tenantApiKey = `tenant_${string.snakeCase(DQ.tenant_name)}_api_key`
+          const dbName: string = `tenant_${cuid()}_db`
+          const tenantApiKey = `tenant_${cuid()}_api_key`
           DQ.status = 1
           DQ.activated = 1
           DQ.db_name = dbName
@@ -219,46 +218,54 @@ export default class TenantController extends BaseController {
           logger.info(`Database: ${dbName} created Successfully!`)
           await this.dealsWithMigrations(dbName)
 
-          db.primaryConnectionName = 'mysql'
-
           const role: any = await Role.query().where('id', request.body().role_id).first()
 
           await tenantConnectionPatch(dbName)
-          db.primaryConnectionName = 'tenant'
 
           let allPermissions = []
           if (plan.permissions) {
             for (const item of plan.permissions) {
-              const mExist = await Menu.query().where('name', item.menus.name).first()
+              const mExist = await Menu.query({ connection: 'tenant' })
+                .where('name', item.menus.name)
+                .first()
               let menu = mExist
               if (!mExist) {
-                menu = await Menu.create({
-                  name: item.menus.name,
-                  type: item.menus.type,
+                menu = await Menu.create(
+                  {
+                    name: item.menus.name,
+                    type: item.menus.type,
+                    status: item.status,
+                    created_by: 'system',
+                  },
+                  { connection: 'tenant' }
+                )
+              }
+              const data = await Permission.create(
+                {
+                  menuId: menu?.id,
+                  name: item.name,
+                  type: item.type,
                   status: item.status,
                   created_by: 'system',
-                })
-              }
-              const data = await Permission.create({
-                menuId: menu?.id,
-                name: item.name,
-                type: item.type,
-                status: item.status,
-                created_by: 'system',
-              })
+                },
+                { connection: 'tenant' }
+              )
               allPermissions.push(data.id)
               logger.info(`Permissions Inserted into tenant database: ${dbName} Successfully!`)
             }
           }
 
-          const createdRole = await Role.create({ name: role.name, created_by: 'system' })
+          const createdRole = await Role.create(
+            { name: role.name, created_by: 'system' },
+            { connection: 'tenant' }
+          )
           logger.info(`Role Inserted into tenant database: ${dbName} Successfully!`)
           createdRole.related('permissions').sync(allPermissions)
           logger.info(
             `Permissions Assign to ${createdRole.name} into tenant database: ${dbName} successfully!`
           )
 
-          const user = new User()
+          const user = new User().useConnection('tenant')
 
           user.email = DQ.email!
           user.password = 'admin@123'
@@ -277,7 +284,7 @@ export default class TenantController extends BaseController {
           logger.info(
             `${createdRole.name} Assign to admin user into tenant database: ${dbName} successfully!`
           )
-          db.primaryConnectionName = 'mysql'
+
           return response.ok({
             code: 200,
             message: 'Activated Successfully!',
@@ -368,7 +375,7 @@ export default class TenantController extends BaseController {
   // find tenant profile
   async findTenantProfile({ request, response }: HttpContext) {
     try {
-      const DQ = await Tenant.query({ connection: 'mysql' })
+      const DQ = await Tenant.query()
         .where('tenant_api_key', request.param('apiKey'))
         .select('id', 'phone_number', 'address', 'city', 'state', 'country', 'logo')
         .first()
@@ -395,9 +402,7 @@ export default class TenantController extends BaseController {
   // edit tenant profile
   async EditTenantProfile({ request, response }: HttpContext) {
     try {
-      const DQ = await Tenant.query({ connection: 'mysql' })
-        .where('id', request.param('id'))
-        .first()
+      const DQ = await Tenant.query().where('id', request.param('id')).first()
 
       if (!DQ) {
         return response.notFound({

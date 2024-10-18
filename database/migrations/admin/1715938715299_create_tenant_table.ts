@@ -16,7 +16,7 @@ export default class extends BaseSchema {
         .onDelete('CASCADE')
       table.string('domain_name').notNullable().unique()
       table.string('tenant_name').nullable()
-      table.string('db_name').nullable()
+      table.text('db_name').nullable()
       table.text('tenant_api_key').nullable()
       table.string('created_by').notNullable().defaultTo('online registration')
       table.boolean('status').notNullable().defaultTo(false)

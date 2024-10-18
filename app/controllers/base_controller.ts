@@ -5,6 +5,7 @@ import { tenantConnectionPatch } from '#services/db_connection_switcher_service'
 import { MigrationRunner } from '@adonisjs/lucid/migration'
 import app from '@adonisjs/core/services/app'
 import logger from '@adonisjs/core/services/logger'
+
 export class BaseController {
   async checkRole(user?: User, role?: string) {
     if (user?.roles && user.roles.length) {
@@ -20,9 +21,7 @@ export class BaseController {
 
   async isTenant(key: string) {
     if (key) {
-      const tenant = await Tenant.findBy('tenant_api_key', key, {
-        connection: 'mysql',
-      })
+      const tenant = await Tenant.findBy('tenant_api_key', key)
       return tenant?.serialize()
     }
   }
@@ -38,11 +37,11 @@ export class BaseController {
   async dealsWithMigrations(db_name: string) {
     try {
       await tenantConnectionPatch(db_name)
-      db.primaryConnectionName = 'tenant'
 
       const migrator = new MigrationRunner(db, app, {
         direction: 'up',
         dryRun: false,
+        connectionName: 'tenant',
       })
 
       await migrator.run()

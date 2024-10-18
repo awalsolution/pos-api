@@ -73,7 +73,7 @@ export default class AuthController extends BaseController {
   }
 
   async authenticated({ auth, response }: HttpContext) {
-    const authenticatedUser = auth.use('api').user!
+    const authenticatedUser = auth.user!
     if (!authenticatedUser) {
       return response.unauthorized({ code: 401, message: 'Unauthorized' })
     }
@@ -179,9 +179,7 @@ export default class AuthController extends BaseController {
 
   async verifyDomainName({ request, response }: HttpContext) {
     try {
-      const DQ = await Tenant.query({ connection: 'mysql' })
-        .where('domain_name', request.param('name'))
-        .first()
+      const DQ = await Tenant.query().where('domain_name', request.param('name')).first()
 
       if (!DQ) {
         return response.notFound({
