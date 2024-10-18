@@ -1,25 +1,31 @@
 import { BaseSchema } from '@adonisjs/lucid/schema'
 
 export default class extends BaseSchema {
-  protected tableName = 'purchases'
+  protected tableName = 'purchase_items'
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table
-        .integer('supplier_id')
+        .integer('purchase_id')
         .unsigned()
         .references('id')
-        .inTable('suppliers')
+        .inTable('purchases')
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
-      table.string('invoice_no').nullable()
-      table.decimal('gst').nullable()
-      table.decimal('shipping_amount').defaultTo(0)
-      table.decimal('total_items').defaultTo(0)
-      table.decimal('total_qty').defaultTo(0)
+      table
+        .integer('product_id')
+        .unsigned()
+        .references('id')
+        .inTable('products')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE')
+      table.integer('ordered_qty').nullable()
+      table.integer('recevied_qty').nullable()
+      table.decimal('cost').nullable()
       table.decimal('total_amount').defaultTo(0)
       table.text('notes').nullable()
+      table.string('vendor_stock_code').nullable()
       table.string('status').defaultTo('draft')
       table.string('created_by').nullable()
 
