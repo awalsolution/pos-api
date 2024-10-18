@@ -20,7 +20,7 @@ export default class extends BaseSeeder {
       // { plan_id: 1, permission_id: 14 },
       // { plan_id: 1, permission_id: 15 },
       // { plan_id: 1, permission_id: 16 },
-      { plan_id: 1, permission_id: 17 },
+      // { plan_id: 1, permission_id: 17 },
       { plan_id: 1, permission_id: 18 },
       // { plan_id: 1, permission_id: 19 },
       // { plan_id: 1, permission_id: 20 },

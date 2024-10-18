@@ -103,7 +103,7 @@ export default class extends BaseSeeder {
       {
         menuId: 4,
         name: 'plan assign permission',
-        type: 'public',
+        type: 'private',
         created_by: 'Iqbal Hassan',
       },
       {
