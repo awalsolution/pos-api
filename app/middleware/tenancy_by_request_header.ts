@@ -1,7 +1,6 @@
 import { HttpContext } from '@adonisjs/core/http'
 import TenancyNotInitializedException from '#exceptions/tenancy_not_initialized_exception'
 import { tenantConnectionPatch } from '#services/db_connection_switcher_service'
-import db from '@adonisjs/lucid/services/db'
 import Tenant from '#models/tenant'
 
 export default class TenancyByRequestHeader {
@@ -18,9 +17,6 @@ export default class TenancyByRequestHeader {
       }
 
       await tenantConnectionPatch(tenant?.db_name)
-      db.primaryConnectionName = 'tenant'
-    } else {
-      db.primaryConnectionName = 'mysql'
     }
     await next()
   }
