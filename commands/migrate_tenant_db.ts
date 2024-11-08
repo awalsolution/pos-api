@@ -17,11 +17,11 @@ export default class MigrateTenantDb extends BaseCommand {
     const dbName = this.dbName
     const db = await this.app.container.make('lucid.db')
     await tenantConnectionPatch(dbName)
-    db.primaryConnectionName = 'tenant'
 
     const migrator = new MigrationRunner(db, app, {
       direction: 'up',
       dryRun: false,
+      connectionName: 'tenant',
     })
 
     await migrator.run()
