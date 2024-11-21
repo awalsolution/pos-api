@@ -26,8 +26,8 @@ router.get('/api/v1/verify-domain/:name', [AuthController, 'verifyDomainName'])
 import '#start/routes/tenant/customer'
 import '#start/routes/tenant/vendor'
 import '#start/routes/tenant/purchase'
-import '#start/routes/tenant/inventory'
-import '#start/routes/tenant/inventory_category'
+import '#start/routes/tenant/product'
+import '#start/routes/tenant/product_categories'
 //admin
 import '#start/routes/menu'
 import '#start/routes/auth'

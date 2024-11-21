@@ -11,4 +11,4 @@ router
     router.delete('/:id', [InventoriesController, 'destroy'])
   })
   .use([middleware.auth({ guards: ['api'] }), middleware.tenant()])
-  .prefix('/api/v1/inventories')
+  .prefix('/api/v1/products')
