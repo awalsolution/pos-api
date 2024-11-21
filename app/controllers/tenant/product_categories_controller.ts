@@ -1,10 +1,10 @@
 import { HttpContext } from '@adonisjs/core/http'
-import Inventory from '#models/tenant/inventory'
+import ProductCategory from '#models/tenant/product_category'
 import logger from '@adonisjs/core/services/logger'
 
-export default class InventoriesController {
+export default class ProductsCategoriesController {
   async index({ request, response }: HttpContext) {
-    let DQ = Inventory.query()
+    let DQ = ProductCategory.query()
 
     const page = request.input('page')
     const perPage = request.input('perPage')
@@ -30,7 +30,7 @@ export default class InventoriesController {
 
   async show({ request, response }: HttpContext) {
     try {
-      const DQ = await Inventory.query().where('id', request.param('id')).first()
+      const DQ = await ProductCategory.query().where('id', request.param('id')).first()
 
       if (!DQ) {
         return response.notFound({
@@ -55,7 +55,7 @@ export default class InventoriesController {
   async create({ auth, request, response }: HttpContext) {
     try {
       const currentUser = auth.user!
-      const DE = await Inventory.findBy('name', request.body().name)
+      const DE = await ProductCategory.findBy('name', request.body().name)
 
       if (DE) {
         return response.conflict({
@@ -64,13 +64,13 @@ export default class InventoriesController {
         })
       }
 
-      const DM = new Inventory()
+      const DM = new ProductCategory()
 
       DM.status = request.body().status
       DM.created_by = currentUser?.name
 
       const DQ = await DM.save()
-      logger.info(`Inventory ${DQ.name} is created successfully!`)
+      logger.info(`ProductCategory ${DQ.name} is created successfully!`)
       return response.ok({
         code: 200,
         message: 'Created successfully!',
@@ -88,14 +88,14 @@ export default class InventoriesController {
   async update({ auth, request, response }: HttpContext) {
     try {
       const currentUser = auth.user!
-      const DQ = await Inventory.findBy('id', request.param('id'))
+      const DQ = await ProductCategory.findBy('id', request.param('id'))
       if (!DQ) {
         return response.notFound({
           code: 400,
           message: 'Data does not exists!',
         })
       }
-      const DE = await Inventory.query()
+      const DE = await ProductCategory.query()
         .where('name', 'like', request.body().name)
         .whereNot('id', request.param('id'))
         .first()
@@ -111,7 +111,7 @@ export default class InventoriesController {
       DQ.created_by = currentUser?.name
 
       await DQ.save()
-      logger.info(`Inventory ${DQ.name} is updated successfully!`)
+      logger.info(`ProductCategory ${DQ.name} is updated successfully!`)
       return response.ok({
         code: 200,
         message: 'Updated successfully!',
@@ -128,7 +128,7 @@ export default class InventoriesController {
 
   async destroy({ request, response }: HttpContext) {
     try {
-      const DQ = await Inventory.findBy('id', request.param('id'))
+      const DQ = await ProductCategory.findBy('id', request.param('id'))
       if (!DQ) {
         return response.notFound({
           code: 400,
@@ -136,7 +136,7 @@ export default class InventoriesController {
         })
       }
       await DQ.delete()
-      logger.info(`Inventory ${DQ.name} is deleted successfully!`)
+      logger.info(`ProductCategory ${DQ.name} is deleted successfully!`)
       return response.ok({
         code: 200,
         message: 'Deleted successfully!',
