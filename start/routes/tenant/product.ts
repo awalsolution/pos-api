@@ -1,14 +1,14 @@
 import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
-const InventoriesController = () => import('#controllers/tenant/inventories_controller')
+const ProductsController = () => import('#controllers/tenant/products_controller')
 
 router
   .group(() => {
-    router.get('/', [InventoriesController, 'index'])
-    router.post('/', [InventoriesController, 'create'])
-    router.get('/:id', [InventoriesController, 'show'])
-    router.put('/:id', [InventoriesController, 'update'])
-    router.delete('/:id', [InventoriesController, 'destroy'])
+    router.get('/', [ProductsController, 'index'])
+    router.post('/', [ProductsController, 'create'])
+    router.get('/:id', [ProductsController, 'show'])
+    router.put('/:id', [ProductsController, 'update'])
+    router.delete('/:id', [ProductsController, 'destroy'])
   })
   .use([middleware.auth({ guards: ['api'] }), middleware.tenant()])
   .prefix('/api/v1/products')
