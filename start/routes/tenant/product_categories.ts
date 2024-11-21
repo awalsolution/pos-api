@@ -12,4 +12,4 @@ router
     router.delete('/:id', [InventoryCategoriesController, 'destroy'])
   })
   .use([middleware.auth({ guards: ['api'] }), middleware.tenant()])
-  .prefix('/api/v1/inventory-categories')
+  .prefix('/api/v1/product-categories')
