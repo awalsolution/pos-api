@@ -1,12 +1,12 @@
 import { DateTime } from 'luxon'
 import { BaseModel, SnakeCaseNamingStrategy, column, hasMany } from '@adonisjs/lucid/orm'
 import type { HasMany } from '@adonisjs/lucid/types/relations'
-import VendorAddress from '#models/tenant/vendor_address'
-import VendorMetadata from '#models/tenant/vendor_metadata'
+import SupplierAddress from '#models/tenant/supplier_address'
+import SupplierMetadata from '#models/tenant/supplier_metadata'
 
 BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
 
-export default class Vendor extends BaseModel {
+export default class Supplier extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
 
@@ -53,9 +53,9 @@ export default class Vendor extends BaseModel {
   })
   declare updatedAt: DateTime
 
-  @hasMany(() => VendorAddress)
-  declare address: HasMany<typeof VendorAddress>
+  @hasMany(() => SupplierAddress)
+  declare address: HasMany<typeof SupplierAddress>
 
-  @hasMany(() => VendorMetadata)
-  declare metadata: HasMany<typeof VendorMetadata>
+  @hasMany(() => SupplierMetadata)
+  declare metadata: HasMany<typeof SupplierMetadata>
 }
