@@ -66,7 +66,9 @@ export default class ProductsCategoriesController {
 
       const DM = new ProductCategory()
 
+      DM.name = request.body().name
       DM.status = request.body().status
+      DM.url = ''
       DM.created_by = currentUser?.name
 
       const DQ = await DM.save()
@@ -107,7 +109,9 @@ export default class ProductsCategoriesController {
         })
       }
 
+      DQ.name = request.body().name
       DQ.status = request.body().status
+      DQ.url = ''
       DQ.created_by = currentUser?.name
 
       await DQ.save()
