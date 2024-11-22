@@ -5,6 +5,10 @@ import drive from '@adonisjs/drive/services/main'
 import logger from '@adonisjs/core/services/logger'
 
 export default class UploadController extends BaseController {
+  /**
+   * @imageUploader
+   * @requestFormDataBody {"name":{"type":"string"},"image":{"type":"string","format":"binary"}}
+   */
   async imageUploader(ctx: HttpContext) {
     try {
       const img = ctx.request.file('image')
