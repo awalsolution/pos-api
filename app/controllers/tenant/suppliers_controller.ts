@@ -1,10 +1,10 @@
 import { HttpContext } from '@adonisjs/core/http'
 import logger from '@adonisjs/core/services/logger'
-import Vendor from '#models/tenant/vendor'
+import Supplier from '#models/tenant/supplier'
 
-export default class RoleController {
+export default class SuppliersController {
   async index({ request, response }: HttpContext) {
-    let DQ = Vendor.query()
+    let DQ = Supplier.query()
 
     const page = request.input('page')
     const perPage = request.input('perPage')
@@ -30,7 +30,7 @@ export default class RoleController {
 
   async show({ request, response }: HttpContext) {
     try {
-      const DQ = await Vendor.query().where('id', request.param('id')).preload('address').first()
+      const DQ = await Supplier.query().where('id', request.param('id')).preload('address').first()
       if (!DQ) {
         return response.notFound({
           code: 400,
@@ -54,7 +54,7 @@ export default class RoleController {
   async create({ auth, request, response }: HttpContext) {
     try {
       const currentUser = auth.user!
-      const DE = await Vendor.findBy('name', request.body().name)
+      const DE = await Supplier.findBy('name', request.body().name)
 
       if (DE) {
         return response.conflict({
@@ -63,7 +63,7 @@ export default class RoleController {
         })
       }
 
-      const DM = new Vendor()
+      const DM = new Supplier()
       DM.name = request.body().name
       DM.contact = request.body().contact
       DM.phone = request.body().phone
@@ -82,7 +82,7 @@ export default class RoleController {
       } else {
         DQ.related('address').create({ ...request.body().mailingAddress, type: 'mailing' })
       }
-      logger.info(`Vendor ${DQ.name} is created successfully!`)
+      logger.info(`Supplier ${DQ.name} is created successfully!`)
       return response.ok({
         code: 200,
         message: 'Created successfully!',
@@ -100,14 +100,14 @@ export default class RoleController {
   async update({ auth, request, response }: HttpContext) {
     try {
       const currentUser = auth.user!
-      const DM = await Vendor.query().preload('address').where('id', request.param('id')).first()
+      const DM = await Supplier.query().preload('address').where('id', request.param('id')).first()
       if (!DM) {
         return response.notFound({
           code: 400,
           message: 'Data does not exists!',
         })
       }
-      const DE = await Vendor.query()
+      const DE = await Supplier.query()
         .where('name', 'like', request.body().name)
         .whereNot('id', request.param('id'))
         .first()
@@ -171,7 +171,7 @@ export default class RoleController {
         )
       }
 
-      logger.info(`Vendor ${DM.name} is updated successfully!`)
+      logger.info(`Supplier ${DM.name} is updated successfully!`)
       return response.ok({
         code: 200,
         message: 'Updated successfully!',
@@ -188,7 +188,7 @@ export default class RoleController {
 
   async destroy({ request, response }: HttpContext) {
     try {
-      const DQ = await Vendor.findBy('id', request.param('id'))
+      const DQ = await Supplier.findBy('id', request.param('id'))
       if (!DQ) {
         return response.notFound({
           code: 400,
@@ -196,7 +196,7 @@ export default class RoleController {
         })
       }
       await DQ.delete()
-      logger.info(`Vendor ${DQ.name} is deleted successfully!`)
+      logger.info(`Supplier ${DQ.name} is deleted successfully!`)
       return response.ok({
         code: 200,
         message: 'Deleted successfully!',
