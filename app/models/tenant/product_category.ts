@@ -14,6 +14,9 @@ export default class ProductCategory extends BaseModel {
   declare status: boolean
 
   @column()
+  declare url: string
+
+  @column()
   declare created_by: string | null
 
   @column.dateTime({
