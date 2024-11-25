@@ -17,6 +17,7 @@ export default class CustomersController {
       return response.ok({
         code: 200,
         data: await DQ.preload('address')
+          .preload('auther')
           .preload('metadata')
           .orderBy('created_at', 'desc')
           .paginate(page, perPage),
@@ -34,6 +35,7 @@ export default class CustomersController {
   async show({ request, response }: HttpContext) {
     try {
       const DQ = await Customer.query()
+        .preload('auther')
         .preload('address')
         .preload('metadata')
         .where('id', request.param('id'))
@@ -73,6 +75,7 @@ export default class CustomersController {
 
       const DM = new Customer()
 
+      DM.userId = currentUser?.id
       DM.name = request.body().name
       DM.email = request.body().email
       DM.contact = request.body().contact
@@ -81,7 +84,6 @@ export default class CustomersController {
       DM.max_credit = request.body().max_credit
       DM.tex_category = request.body().tex_category
       DM.status = request.body().status
-      DM.created_by = currentUser?.name
 
       const DQ = await DM.save()
 
@@ -130,6 +132,7 @@ export default class CustomersController {
         })
       }
 
+      DQ.userId = currentUser?.id
       DQ.name = request.body().name
       DQ.email = request.body().email
       DQ.contact = request.body().contact
@@ -138,7 +141,6 @@ export default class CustomersController {
       DQ.max_credit = request.body().max_credit
       DQ.tex_category = request.body().tex_category
       DQ.status = request.body().status
-      DQ.created_by = currentUser?.name
 
       await DQ.save()
 

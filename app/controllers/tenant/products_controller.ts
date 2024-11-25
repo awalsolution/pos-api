@@ -67,7 +67,7 @@ export default class ProductsController {
       const DM = new Product()
 
       DM.status = request.body().status
-      DM.created_by = currentUser?.name
+      DM.userId = currentUser?.id
 
       const DQ = await DM.save()
       logger.info(`Product ${DQ.name} is created successfully!`)
@@ -107,8 +107,8 @@ export default class ProductsController {
         })
       }
 
+      DQ.userId = currentUser?.id
       DQ.status = request.body().status
-      DQ.created_by = currentUser?.name
 
       await DQ.save()
       logger.info(`Product ${DQ.name} is updated successfully!`)

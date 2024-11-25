@@ -16,13 +16,20 @@ export default class SuppliersController {
     if (perPage) {
       return response.ok({
         code: 200,
-        data: await DQ.orderBy('created_at', 'desc').paginate(page, perPage),
+        data: await DQ.preload('auther')
+          .preload('address')
+          .preload('metadata')
+          .orderBy('created_at', 'desc')
+          .paginate(page, perPage),
         message: 'Record find successfully!',
       })
     } else {
       return response.ok({
         code: 200,
-        data: await DQ.orderBy('created_at', 'desc'),
+        data: await DQ.preload('auther')
+          .preload('address')
+          .preload('metadata')
+          .orderBy('created_at', 'desc'),
         message: 'Record find successfully!',
       })
     }
@@ -30,7 +37,12 @@ export default class SuppliersController {
 
   async show({ request, response }: HttpContext) {
     try {
-      const DQ = await Supplier.query().where('id', request.param('id')).preload('address').first()
+      const DQ = await Supplier.query()
+        .preload('auther')
+        .preload('address')
+        .preload('metadata')
+        .where('id', request.param('id'))
+        .first()
       if (!DQ) {
         return response.notFound({
           code: 400,
@@ -64,6 +76,8 @@ export default class SuppliersController {
       }
 
       const DM = new Supplier()
+
+      DM.userId = currentUser?.id
       DM.name = request.body().name
       DM.contact = request.body().contact
       DM.phone = request.body().phone
@@ -72,7 +86,6 @@ export default class SuppliersController {
       DM.pdFrightAmount = request.body().pd_fright_amount
       DM.shipVia = request.body().ship_via
       DM.defaulPoDays = request.body().defaul_po_days
-      DM.created_by = currentUser?.name
 
       const DQ = await DM.save()
 
@@ -100,7 +113,11 @@ export default class SuppliersController {
   async update({ auth, request, response }: HttpContext) {
     try {
       const currentUser = auth.user!
-      const DM = await Supplier.query().preload('address').where('id', request.param('id')).first()
+      const DM = await Supplier.query()
+        .preload('address')
+        .preload('metadata')
+        .where('id', request.param('id'))
+        .first()
       if (!DM) {
         return response.notFound({
           code: 400,
@@ -119,6 +136,7 @@ export default class SuppliersController {
         })
       }
 
+      DM.userId = currentUser?.id
       DM.name = request.body().name
       DM.contact = request.body().contact
       DM.phone = request.body().phone
@@ -127,7 +145,6 @@ export default class SuppliersController {
       DM.pdFrightAmount = request.body().pd_fright_amount
       DM.shipVia = request.body().shipVia
       DM.defaulPoDays = request.body().defaul_po_days
-      DM.created_by = currentUser?.name
 
       await DM.save()
 
