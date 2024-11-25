@@ -13,6 +13,14 @@ export default class extends BaseSchema {
         .inTable('products')
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
+      table
+        .integer('user_id')
+        .unsigned()
+        .references('id')
+        .inTable('users')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE')
+
       table.string('name').notNullable().index()
       table.boolean('tax_able').notNullable().defaultTo(false)
       table.boolean('gst').notNullable().defaultTo(false)
@@ -29,7 +37,6 @@ export default class extends BaseSchema {
       table.integer('target_qty').notNullable().defaultTo(1)
       table.string('manufacture').nullable().index()
       table.string('url').nullable()
-      table.string('created_by').nullable()
 
       table.timestamp('created_at')
       table.timestamp('updated_at')
