@@ -13,6 +13,14 @@ export default class extends BaseSchema {
         .inTable('suppliers')
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
+      table
+        .integer('user_id')
+        .unsigned()
+        .references('id')
+        .inTable('users')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE')
+
       table.string('invoice_no').nullable()
       table.decimal('gst').nullable()
       table.decimal('shipping_amount').defaultTo(0)
@@ -21,7 +29,6 @@ export default class extends BaseSchema {
       table.decimal('total_amount').defaultTo(0)
       table.text('notes').nullable()
       table.string('status').defaultTo('draft')
-      table.string('created_by').nullable()
 
       table.timestamp('created_at')
       table.timestamp('updated_at')
