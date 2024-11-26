@@ -72,7 +72,7 @@ export default class ProductsCategoriesController {
       DM.userId = currentUser?.id
       DM.name = request.body().name
       DM.status = request.body().status
-      DM.url = ''
+      DM.thumbnail = request.body().thumbnail
 
       const DQ = await DM.save()
       logger.info(`ProductCategory ${DQ.name} is created successfully!`)
@@ -115,7 +115,7 @@ export default class ProductsCategoriesController {
       DQ.userId = currentUser?.id
       DQ.name = request.body().name
       DQ.status = request.body().status
-      DQ.url = ''
+      DQ.thumbnail = request.body().thumbnail
 
       await DQ.save()
       logger.info(`ProductCategory ${DQ.name} is updated successfully!`)
