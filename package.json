@@ -11,7 +11,9 @@
     "test": "node ace test",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "docs": "node ace docs:generate",
+    "cp": "cp swagger.yml build/"
   },
   "imports": {
     "#controllers/*": "./app/controllers/*.js",
