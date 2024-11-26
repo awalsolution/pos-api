@@ -16,7 +16,7 @@ export default class PurchasesController {
     if (perPage) {
       return response.ok({
         code: 200,
-        data: await DQ.orderBy('created_at', 'desc').paginate(page, perPage),
+        data: await DQ.preload('auther').orderBy('created_at', 'desc').paginate(page, perPage),
         message: 'Record find successfully!',
       })
     } else {
@@ -30,7 +30,7 @@ export default class PurchasesController {
 
   async show({ request, response }: HttpContext) {
     try {
-      const DQ = await Purchase.query().where('id', request.param('id')).first()
+      const DQ = await Purchase.query().preload('auther').where('id', request.param('id')).first()
 
       if (!DQ) {
         return response.notFound({
@@ -66,9 +66,9 @@ export default class PurchasesController {
 
       const DM = new Purchase()
 
+      DM.userId = currentUser?.id
       DM.name = request.body().name
       DM.status = request.body().status
-      DM.created_by = currentUser?.name
 
       const DQ = await DM.save()
       logger.info(`Purchase ${DQ.name} is created successfully!`)
@@ -108,9 +108,9 @@ export default class PurchasesController {
         })
       }
 
+      DQ.userId = currentUser?.id
       DQ.name = request.body().name
       DQ.status = request.body().status
-      DQ.created_by = currentUser?.name
 
       await DQ.save()
       logger.info(`Purchase ${DQ.name} is updated successfully!`)

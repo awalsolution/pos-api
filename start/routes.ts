@@ -6,7 +6,8 @@
 | The routes file is used for defining the HTTP routes.
 |
 */
-
+import AutoSwagger from 'adonis-autoswagger'
+import swagger from '#config/swagger'
 import router from '@adonisjs/core/services/router'
 const AuthController = () => import('#controllers/auth_controller')
 const UploadController = () => import('#controllers/upload_controller')
@@ -16,6 +17,15 @@ router.get('/', async ({ response }) => {
     code: 200,
     data: "Awal HR Management System REST API's is Started.",
   })
+})
+
+router.get('/swagger', async () => {
+  return AutoSwagger.default.docs(router.toJSON(), swagger)
+})
+router.get('/docs', async () => {
+  return AutoSwagger.default.ui('/swagger', swagger)
+  // return AutoSwagger.default.scalar("/swagger"); to use Scalar instead
+  // return AutoSwagger.default.rapidoc("/swagger", "view"); to use RapiDoc instead (pass "view" default, or "read" to change the render-style)
 })
 
 router.post('/api/v1/tenant-register', [AuthController, 'tenantRegister'])

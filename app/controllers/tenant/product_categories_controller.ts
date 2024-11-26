@@ -16,13 +16,13 @@ export default class ProductsCategoriesController {
     if (perPage) {
       return response.ok({
         code: 200,
-        data: await DQ.orderBy('created_at', 'desc').paginate(page, perPage),
+        data: await DQ.preload('auther').orderBy('created_at', 'desc').paginate(page, perPage),
         message: 'Record find successfully!',
       })
     } else {
       return response.ok({
         code: 200,
-        data: await DQ.orderBy('created_at', 'desc'),
+        data: await DQ.preload('auther').orderBy('created_at', 'desc'),
         message: 'Record find successfully!',
       })
     }
@@ -30,7 +30,10 @@ export default class ProductsCategoriesController {
 
   async show({ request, response }: HttpContext) {
     try {
-      const DQ = await ProductCategory.query().where('id', request.param('id')).first()
+      const DQ = await ProductCategory.query()
+        .preload('auther')
+        .where('id', request.param('id'))
+        .first()
 
       if (!DQ) {
         return response.notFound({
@@ -66,10 +69,10 @@ export default class ProductsCategoriesController {
 
       const DM = new ProductCategory()
 
+      DM.userId = currentUser?.id
       DM.name = request.body().name
       DM.status = request.body().status
       DM.url = ''
-      DM.created_by = currentUser?.name
 
       const DQ = await DM.save()
       logger.info(`ProductCategory ${DQ.name} is created successfully!`)
@@ -109,10 +112,10 @@ export default class ProductsCategoriesController {
         })
       }
 
+      DQ.userId = currentUser?.id
       DQ.name = request.body().name
       DQ.status = request.body().status
       DQ.url = ''
-      DQ.created_by = currentUser?.name
 
       await DQ.save()
       logger.info(`ProductCategory ${DQ.name} is updated successfully!`)
