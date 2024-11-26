@@ -64,7 +64,7 @@ export default class Product extends BaseModel {
   declare manufacture: string | null
 
   @column()
-  declare url: string | null
+  declare thumbnail: string | null
 
   @column.dateTime({
     autoCreate: true,

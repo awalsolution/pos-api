@@ -36,7 +36,7 @@ export default class extends BaseSchema {
       table.integer('min_qty').notNullable().defaultTo(1)
       table.integer('target_qty').notNullable().defaultTo(1)
       table.string('manufacture').nullable().index()
-      table.string('url').nullable()
+      table.string('thumbnail').nullable()
 
       table.timestamp('created_at')
       table.timestamp('updated_at')

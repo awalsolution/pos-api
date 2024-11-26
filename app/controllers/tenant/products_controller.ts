@@ -52,6 +52,10 @@ export default class ProductsController {
     }
   }
 
+  /**
+   * @create
+   * @requestBody <Product>
+   */
   async create({ auth, request, response }: HttpContext) {
     try {
       const currentUser = auth.user!
@@ -66,10 +70,41 @@ export default class ProductsController {
 
       const DM = new Product()
 
-      DM.status = request.body().status
       DM.userId = currentUser?.id
+      DM.productCategoryId = request.body().category_id
+      DM.name = request.body().name
+      DM.tax_able = request.body().tax_able
+      DM.gst = request.body().name
+      DM.serialized = request.body().serialized
+      DM.status = request.body().status
+      DM.weight = request.body().weight
+      DM.description = request.body().description
+      DM.base_price = request.body().base_price
+      DM.list_price = request.body().list_price
+      DM.discount = request.body().discount
+      DM.reminder = request.body().reminder
+      DM.location = request.body().location
+      DM.min_qty = request.body().min_qty
+      DM.target_qty = request.body().target_qty
+      DM.manufacture = request.body().manufacture
+      DM.thumbnail = request.body().thumbnail
 
       const DQ = await DM.save()
+
+      if (request.body().product_codes) {
+        const codes = request.body().product_codes
+        for (const item of codes) {
+          await DQ.related('product_codes').create({ code: item.code })
+        }
+      }
+
+      if (request.body().product_images) {
+        const images = request.body().product_images
+        for (const item of images) {
+          await DQ.related('product_images').create({ url: item.url })
+        }
+      }
+
       logger.info(`Product ${DQ.name} is created successfully!`)
       return response.ok({
         code: 200,
@@ -85,6 +120,10 @@ export default class ProductsController {
     }
   }
 
+  /**
+   * @update
+   * @requestBody <Product>
+   */
   async update({ auth, request, response }: HttpContext) {
     try {
       const currentUser = auth.user!
@@ -108,7 +147,23 @@ export default class ProductsController {
       }
 
       DQ.userId = currentUser?.id
+      DQ.productCategoryId = request.body().category_id
+      DQ.name = request.body().name
+      DQ.tax_able = request.body().tax_able
+      DQ.gst = request.body().name
+      DQ.serialized = request.body().serialized
       DQ.status = request.body().status
+      DQ.weight = request.body().weight
+      DQ.description = request.body().description
+      DQ.base_price = request.body().base_price
+      DQ.list_price = request.body().list_price
+      DQ.discount = request.body().discount
+      DQ.reminder = request.body().reminder
+      DQ.location = request.body().location
+      DQ.min_qty = request.body().min_qty
+      DQ.target_qty = request.body().target_qty
+      DQ.manufacture = request.body().manufacture
+      DQ.thumbnail = request.body().thumbnail
 
       await DQ.save()
       logger.info(`Product ${DQ.name} is updated successfully!`)
