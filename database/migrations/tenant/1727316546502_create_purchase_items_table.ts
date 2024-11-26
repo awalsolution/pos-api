@@ -27,7 +27,6 @@ export default class extends BaseSchema {
       table.text('notes').nullable()
       table.string('vendor_stock_code').nullable()
       table.string('status').defaultTo('draft')
-      table.string('created_by').nullable()
 
       table.timestamp('created_at')
       table.timestamp('updated_at')

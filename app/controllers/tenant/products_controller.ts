@@ -16,13 +16,22 @@ export default class ProductsController {
     if (perPage) {
       return response.ok({
         code: 200,
-        data: await DQ.orderBy('created_at', 'desc').paginate(page, perPage),
+        data: await DQ.preload('auther')
+          .preload('category')
+          .preload('product_codes')
+          .preload('product_images')
+          .orderBy('created_at', 'desc')
+          .paginate(page, perPage),
         message: 'Record find successfully!',
       })
     } else {
       return response.ok({
         code: 200,
-        data: await DQ.orderBy('created_at', 'desc'),
+        data: await DQ.preload('auther')
+          .preload('category')
+          .preload('product_codes')
+          .preload('product_images')
+          .orderBy('created_at', 'desc'),
         message: 'Record find successfully!',
       })
     }
@@ -30,7 +39,13 @@ export default class ProductsController {
 
   async show({ request, response }: HttpContext) {
     try {
-      const DQ = await Product.query().where('id', request.param('id')).first()
+      const DQ = await Product.query()
+        .preload('auther')
+        .preload('category')
+        .preload('product_codes')
+        .preload('product_images')
+        .where('id', request.param('id'))
+        .first()
 
       if (!DQ) {
         return response.notFound({
