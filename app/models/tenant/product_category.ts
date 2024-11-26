@@ -19,7 +19,7 @@ export default class ProductCategory extends BaseModel {
   declare status: boolean
 
   @column()
-  declare url: string
+  declare thumbnail: string
 
   @column.dateTime({
     autoCreate: true,
