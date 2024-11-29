@@ -10,7 +10,7 @@ export default class extends BaseSchema {
         .integer('product_category_id')
         .unsigned()
         .references('id')
-        .inTable('products')
+        .inTable('product_categories')
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
       table
