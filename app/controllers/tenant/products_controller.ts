@@ -86,7 +86,7 @@ export default class ProductsController {
       const DM = new Product()
 
       DM.userId = currentUser?.id
-      DM.productCategoryId = request.body().category_id
+      DM.productCategoryId = request.body().product_category_id
       DM.name = request.body().name
       DM.tax_able = request.body().tax_able
       DM.gst = request.body().gst
@@ -162,7 +162,7 @@ export default class ProductsController {
       }
 
       DQ.userId = currentUser?.id
-      DQ.productCategoryId = request.body().category_id
+      DQ.productCategoryId = request.body().product_category_id
       DQ.name = request.body().name
       DQ.tax_able = request.body().tax_able
       DQ.gst = request.body().gst
