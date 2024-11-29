@@ -89,7 +89,7 @@ export default class ProductsController {
       DM.productCategoryId = request.body().category_id
       DM.name = request.body().name
       DM.tax_able = request.body().tax_able
-      DM.gst = request.body().name
+      DM.gst = request.body().gst
       DM.serialized = request.body().serialized
       DM.status = request.body().status
       DM.weight = request.body().weight
@@ -165,7 +165,7 @@ export default class ProductsController {
       DQ.productCategoryId = request.body().category_id
       DQ.name = request.body().name
       DQ.tax_able = request.body().tax_able
-      DQ.gst = request.body().name
+      DQ.gst = request.body().gst
       DQ.serialized = request.body().serialized
       DQ.status = request.body().status
       DQ.weight = request.body().weight
