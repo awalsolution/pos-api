@@ -3,6 +3,7 @@ import { BaseModel, SnakeCaseNamingStrategy, column, hasMany, belongsTo } from '
 import type { HasMany, BelongsTo } from '@adonisjs/lucid/types/relations'
 import SupplierAddress from '#models/tenant/supplier_address'
 import SupplierMetadata from '#models/tenant/supplier_metadata'
+import Purchase from '#models/tenant/purchase'
 import User from '#models/user'
 
 BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
@@ -62,4 +63,7 @@ export default class Supplier extends BaseModel {
 
   @hasMany(() => SupplierMetadata)
   declare metadata: HasMany<typeof SupplierMetadata>
+
+  @hasMany(() => Purchase)
+  declare purchases: HasMany<typeof Purchase>
 }
