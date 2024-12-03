@@ -23,16 +23,16 @@ export default class PurchaseItem extends BaseModel {
   declare recevied_qty: number | null
 
   @column()
-  declare cost: number | null
+  declare cost_price: number | null
+
+  @column()
+  declare list_price: number | null
+
+  @column()
+  declare sale_price: number | null
 
   @column()
   declare total_amount: number | null
-
-  @column()
-  declare notes: string | null
-
-  @column()
-  declare vendor_stock_code: string | null
 
   @column()
   declare status: string | null

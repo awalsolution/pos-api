@@ -23,9 +23,10 @@ export default class extends BaseSchema {
 
       table.integer('ordered_qty').nullable()
       table.integer('recevied_qty').nullable()
-      table.decimal('cost').nullable()
+      table.decimal('cost_price').nullable()
+      table.decimal('list_price').nullable()
+      table.decimal('sale_price').nullable()
       table.decimal('total_amount').defaultTo(0)
-      table.string('vendor_stock_code').nullable()
       table.string('status').defaultTo('draft')
 
       table.timestamp('created_at')

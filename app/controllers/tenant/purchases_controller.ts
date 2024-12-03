@@ -66,30 +66,15 @@ export default class PurchasesController {
   async create({ auth, request, response }: HttpContext) {
     try {
       const currentUser = auth.user!
-      const DE = await Purchase.findBy('invoice_no', request.body().invoice_no)
-
-      if (DE) {
-        return response.conflict({
-          code: 409,
-          message: 'Already exists!',
-        })
-      }
-
       const DM = new Purchase()
 
       DM.userId = currentUser?.id
       DM.supplierId = request.body().supplier_id
-      DM.invoice_no = request.body().invoice_no
-      DM.gst = request.body().gst
-      DM.shipping_amount = request.body().shipping_amount
-      DM.total_items = request.body().total_items
-      DM.total_qty = request.body().total_qty
-      DM.total_amount = request.body().total_amount
-      DM.notes = request.body().notes
       DM.notes = request.body().notes
 
       const DQ = await DM.save()
-      logger.info(`Purchase ${DQ.invoice_no} is created successfully!`)
+
+      logger.info(`Purchase with id:${DQ.id} is created successfully!`)
       return response.ok({
         code: 200,
         message: 'Created successfully!',
@@ -114,32 +99,15 @@ export default class PurchasesController {
           message: 'Data does not exists!',
         })
       }
-      const DE = await Purchase.query()
-        .where('invoice_no', 'like', request.body().invoice_no)
-        .whereNot('id', request.param('id'))
-        .first()
-
-      if (DE) {
-        return response.conflict({
-          code: 409,
-          message: 'Already exist!',
-        })
-      }
 
       DQ.userId = currentUser?.id
       DQ.supplierId = request.body().supplier_id
       DQ.invoice_no = request.body().invoice_no
-      DQ.gst = request.body().gst
-      DQ.shipping_amount = request.body().shipping_amount
-      DQ.total_items = request.body().total_items
-      DQ.total_qty = request.body().total_qty
-      DQ.total_amount = request.body().total_amount
       DQ.notes = request.body().notes
-      DQ.notes = request.body().notes
-      DQ.status = request.body().status
 
       await DQ.save()
-      logger.info(`Purchase ${DQ.invoice_no} is updated successfully!`)
+
+      logger.info(`Purchase with id:${DQ.id} is updated successfully!`)
       return response.ok({
         code: 200,
         message: 'Updated successfully!',
