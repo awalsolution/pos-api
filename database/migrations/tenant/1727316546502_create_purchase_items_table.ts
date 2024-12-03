@@ -20,11 +20,11 @@ export default class extends BaseSchema {
         .inTable('products')
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
+
       table.integer('ordered_qty').nullable()
       table.integer('recevied_qty').nullable()
       table.decimal('cost').nullable()
       table.decimal('total_amount').defaultTo(0)
-      table.text('notes').nullable()
       table.string('vendor_stock_code').nullable()
       table.string('status').defaultTo('draft')
 

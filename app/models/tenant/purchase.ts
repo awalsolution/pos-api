@@ -1,7 +1,8 @@
 import { DateTime } from 'luxon'
-import { BaseModel, SnakeCaseNamingStrategy, column, belongsTo } from '@adonisjs/lucid/orm'
-import type { BelongsTo } from '@adonisjs/lucid/types/relations'
+import { BaseModel, SnakeCaseNamingStrategy, column, belongsTo, hasMany } from '@adonisjs/lucid/orm'
+import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 import Supplier from '#models/tenant/supplier'
+import PurchaseItem from '#models/tenant/purchase_item'
 import User from '#models/user'
 
 BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
@@ -44,6 +45,7 @@ export default class Purchase extends BaseModel {
     autoCreate: true,
     serialize: (value) => value?.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY),
   })
+  // @no-swagger
   declare createdAt: DateTime
 
   @column.dateTime({
@@ -51,6 +53,7 @@ export default class Purchase extends BaseModel {
     autoUpdate: true,
     serialize: (value) => value?.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY),
   })
+  // @no-swagger
   declare updatedAt: DateTime
 
   @belongsTo(() => User)
@@ -58,4 +61,7 @@ export default class Purchase extends BaseModel {
 
   @belongsTo(() => Supplier)
   declare supplier: BelongsTo<typeof Supplier>
+
+  @hasMany(() => PurchaseItem)
+  declare purchase_items: HasMany<typeof PurchaseItem>
 }
