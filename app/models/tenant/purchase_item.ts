@@ -2,10 +2,11 @@ import { DateTime } from 'luxon'
 import { BaseModel, SnakeCaseNamingStrategy, belongsTo, column } from '@adonisjs/lucid/orm'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 import Product from '#models/tenant/product'
+import Purchase from '#models/tenant/purchase'
 
 BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
 
-export default class ProductCode extends BaseModel {
+export default class PurchaseItem extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
 
@@ -13,13 +14,33 @@ export default class ProductCode extends BaseModel {
   declare productId: number
 
   @column()
-  declare code: string | null
+  declare purchaseId: number
+
+  @column()
+  declare ordered_qty: number | null
+
+  @column()
+  declare recevied_qty: number | null
+
+  @column()
+  declare cost_price: number | null
+
+  @column()
+  declare list_price: number | null
+
+  @column()
+  declare sale_price: number | null
+
+  @column()
+  declare total_amount: number | null
+
+  @column()
+  declare status: string | null
 
   @column.dateTime({
     autoCreate: true,
     serialize: (value) => value?.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY),
   })
-  // @no-swagger
   declare createdAt: DateTime
 
   @column.dateTime({
@@ -27,10 +48,12 @@ export default class ProductCode extends BaseModel {
     autoUpdate: true,
     serialize: (value) => value?.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY),
   })
-  // @no-swagger
   declare updatedAt: DateTime
 
   // relation
   @belongsTo(() => Product)
   declare products: BelongsTo<typeof Product>
+
+  @belongsTo(() => Purchase)
+  declare purchase: BelongsTo<typeof Purchase>
 }

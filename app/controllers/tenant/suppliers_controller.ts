@@ -63,6 +63,11 @@ export default class SuppliersController {
     }
   }
 
+  /**
+   * @create
+   * @requestBody <Supplier>
+   */
+
   async create({ auth, request, response }: HttpContext) {
     try {
       const currentUser = auth.user!

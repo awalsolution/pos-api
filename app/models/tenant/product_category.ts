@@ -25,6 +25,7 @@ export default class ProductCategory extends BaseModel {
     autoCreate: true,
     serialize: (value) => value?.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY),
   })
+  // @no-swagger
   declare createdAt: DateTime
 
   @column.dateTime({
@@ -32,6 +33,7 @@ export default class ProductCategory extends BaseModel {
     autoUpdate: true,
     serialize: (value) => value?.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY),
   })
+  // @no-swagger
   declare updatedAt: DateTime
 
   @belongsTo(() => User)

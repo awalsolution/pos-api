@@ -70,6 +70,7 @@ export default class Product extends BaseModel {
     autoCreate: true,
     serialize: (value) => value?.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY),
   })
+  // @no-swaggerpar
   declare createdAt: DateTime
 
   @column.dateTime({
@@ -77,6 +78,7 @@ export default class Product extends BaseModel {
     autoUpdate: true,
     serialize: (value) => value?.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY),
   })
+  // @no-swagger
   declare updatedAt: DateTime
 
   // relation
