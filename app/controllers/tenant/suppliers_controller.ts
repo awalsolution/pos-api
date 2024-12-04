@@ -87,10 +87,7 @@ export default class SuppliersController {
       DM.contact = request.body().contact
       DM.phone = request.body().phone
       DM.email = request.body().email
-      DM.minOrder = request.body().min_order
-      DM.pdFrightAmount = request.body().pd_fright_amount
-      DM.shipVia = request.body().ship_via
-      DM.defaulPoDays = request.body().defaul_po_days
+      DM.status = request.body().status
 
       const DQ = await DM.save()
 
@@ -146,10 +143,7 @@ export default class SuppliersController {
       DM.contact = request.body().contact
       DM.phone = request.body().phone
       DM.email = request.body().email
-      DM.minOrder = request.body().min_order
-      DM.pdFrightAmount = request.body().pd_fright_amount
-      DM.shipVia = request.body().shipVia
-      DM.defaulPoDays = request.body().defaul_po_days
+      DM.status = request.body().status
 
       await DM.save()
 
