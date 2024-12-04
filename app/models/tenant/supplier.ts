@@ -27,17 +27,17 @@ export default class Supplier extends BaseModel {
   @column()
   declare email: string
 
-  @column()
-  declare minOrder: number
+  // @column()
+  // declare minOrder: number
 
-  @column()
-  declare pdFrightAmount: number
+  // @column()
+  // declare pdFrightAmount: number
 
-  @column()
-  declare shipVia: string
+  // @column()
+  // declare shipVia: string
 
-  @column()
-  declare defaulPoDays: number
+  // @column()
+  // declare defaulPoDays: number
 
   @column()
   declare status: boolean
