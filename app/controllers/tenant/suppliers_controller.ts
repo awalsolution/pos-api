@@ -91,11 +91,11 @@ export default class SuppliersController {
 
       const DQ = await DM.save()
 
-      DQ.related('address').create(request.body().shippingAddress)
-      if (request.body().sameAsShipping) {
-        DQ.related('address').create({ ...request.body().shippingAddress, type: 'mailing' })
+      DQ.related('address').create(request.body().shipping_address)
+      if (request.body().same_as_shipping) {
+        DQ.related('address').create({ ...request.body().shipping_address, type: 'mailing' })
       } else {
-        DQ.related('address').create({ ...request.body().mailingAddress, type: 'mailing' })
+        DQ.related('address').create({ ...request.body().mailing_address, type: 'mailing' })
       }
       logger.info(`Supplier ${DQ.name} is created successfully!`)
       return response.ok({
@@ -120,12 +120,14 @@ export default class SuppliersController {
         .preload('metadata')
         .where('id', request.param('id'))
         .first()
+
       if (!DM) {
         return response.notFound({
           code: 400,
           message: 'Data does not exists!',
         })
       }
+
       const DE = await Supplier.query()
         .where('name', 'like', request.body().name)
         .whereNot('id', request.param('id'))
