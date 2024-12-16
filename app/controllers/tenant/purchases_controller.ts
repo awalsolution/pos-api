@@ -4,29 +4,34 @@ import logger from '@adonisjs/core/services/logger'
 
 export default class PurchasesController {
   async index({ request, response }: HttpContext) {
-    let DQ = Purchase.query()
+    try {
+      let DQ = Purchase.query()
 
-    const page = request.input('page')
-    const perPage = request.input('perPage')
+      const page = request.input('page')
+      const perPage = request.input('perPage')
 
-    if (request.input('name')) {
-      DQ = DQ.whereILike('invoice_no', request.input('name') + '%')
-    }
+      let data
 
-    if (perPage) {
-      return response.ok({
-        code: 200,
-        data: await DQ.preload('auther')
+      if (perPage) {
+        data = await DQ.preload('auther')
           .preload('supplier')
+          .preload('purchase_items')
           .orderBy('created_at', 'desc')
-          .paginate(page, perPage),
-        message: 'Record find successfully!',
-      })
-    } else {
+          .paginate(page, perPage)
+      } else {
+        data = await DQ.select('*').orderBy('created_at', 'desc')
+      }
+
       return response.ok({
         code: 200,
-        data: await DQ.orderBy('created_at', 'desc'),
-        message: 'Record find successfully!',
+        message: 'Record find Successfully',
+        data: data,
+      })
+    } catch (e) {
+      logger.error('something went wrong', e.toString())
+      return response.internalServerError({
+        code: 500,
+        message: e.toString(),
       })
     }
   }
@@ -108,6 +113,37 @@ export default class PurchasesController {
       await DQ.save()
 
       logger.info(`Purchase with id:${DQ.id} is updated successfully!`)
+      return response.ok({
+        code: 200,
+        message: 'Updated successfully!',
+        data: DQ,
+      })
+    } catch (e) {
+      console.log('error', e.toString())
+      return response.internalServerError({
+        code: 500,
+        message: e.message,
+      })
+    }
+  }
+  // update status
+  async updateStatus({ auth, request, response }: HttpContext) {
+    try {
+      const currentUser = auth.user!
+      const DQ = await Purchase.findBy('id', request.param('id'))
+      if (!DQ) {
+        return response.notFound({
+          code: 400,
+          message: 'Data does not exists!',
+        })
+      }
+
+      DQ.userId = currentUser?.id
+      DQ.status = request.body().status
+
+      await DQ.save()
+
+      logger.info(`Purchase with id:${DQ.id} status:${DQ.status} is updated successfully!`)
       return response.ok({
         code: 200,
         message: 'Updated successfully!',

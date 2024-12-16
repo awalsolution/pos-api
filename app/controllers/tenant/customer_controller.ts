@@ -4,30 +4,34 @@ import Customer from '#models/tenant/customer'
 
 export default class CustomersController {
   async index({ request, response }: HttpContext) {
-    let DQ = Customer.query()
+    try {
+      let DQ = Customer.query()
 
-    const page = request.input('page')
-    const perPage = request.input('perPage')
+      const page = request.input('page')
+      const perPage = request.input('perPage')
 
-    if (request.input('name')) {
-      DQ = DQ.whereILike('name', request.input('name') + '%')
-    }
+      let data
 
-    if (perPage) {
-      return response.ok({
-        code: 200,
-        data: await DQ.preload('address')
+      if (perPage) {
+        data = await DQ.preload('address')
           .preload('auther')
           .preload('metadata')
           .orderBy('created_at', 'desc')
-          .paginate(page, perPage),
-        message: 'Record find successfully!',
-      })
-    } else {
+          .paginate(page, perPage)
+      } else {
+        data = await DQ.select('*').orderBy('created_at', 'desc')
+      }
+
       return response.ok({
         code: 200,
-        data: await DQ.orderBy('created_at', 'desc'),
-        message: 'Record find successfully!',
+        message: 'Record find Successfully',
+        data: data,
+      })
+    } catch (e) {
+      logger.error('something went wrong', e.toString())
+      return response.internalServerError({
+        code: 500,
+        message: e.toString(),
       })
     }
   }

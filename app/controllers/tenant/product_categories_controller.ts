@@ -4,26 +4,30 @@ import logger from '@adonisjs/core/services/logger'
 
 export default class ProductsCategoriesController {
   async index({ request, response }: HttpContext) {
-    let DQ = ProductCategory.query()
+    try {
+      let DQ = ProductCategory.query()
 
-    const page = request.input('page')
-    const perPage = request.input('perPage')
+      const page = request.input('page')
+      const perPage = request.input('perPage')
 
-    if (request.input('name')) {
-      DQ = DQ.whereILike('name', request.input('name') + '%')
-    }
+      let data
 
-    if (perPage) {
+      if (perPage) {
+        data = await DQ.preload('auther').orderBy('created_at', 'desc').paginate(page, perPage)
+      } else {
+        data = await DQ.select('*').orderBy('created_at', 'desc')
+      }
+
       return response.ok({
         code: 200,
-        data: await DQ.preload('auther').orderBy('created_at', 'desc').paginate(page, perPage),
-        message: 'Record find successfully!',
+        message: 'Record find Successfully',
+        data: data,
       })
-    } else {
-      return response.ok({
-        code: 200,
-        data: await DQ.preload('auther').orderBy('created_at', 'desc'),
-        message: 'Record find successfully!',
+    } catch (e) {
+      logger.error('something went wrong', e.toString())
+      return response.internalServerError({
+        code: 500,
+        message: e.toString(),
       })
     }
   }
